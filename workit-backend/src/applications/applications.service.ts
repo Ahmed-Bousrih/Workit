@@ -1,0 +1,275 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Not } from 'typeorm';
+import { Application, ApplicationStatus } from './entities/application.entity';
+import { User } from '../users/entities/user.entity';
+import { Job } from '../jobs/entities/job.entity';
+import { MailService } from '../mail/mail.service';
+
+@Injectable()
+export class ApplicationsService {
+  constructor(
+    @InjectRepository(Application)
+    private readonly appRepo: Repository<Application>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+    @InjectRepository(Job)
+    private readonly jobRepo: Repository<Job>,
+    private readonly mailService: MailService,
+  ) {}
+
+  async updateStatus(
+    id: string,
+    status: ApplicationStatus,
+    customMessage?: string,
+  ) {
+    const app = await this.appRepo.findOne({
+      where: { id },
+      relations: ['user', 'job'],
+    });
+
+    if (!app) throw new NotFoundException('Candidature introuvable');
+
+    app.status = status;
+    await this.appRepo.save(app);
+
+    const userName = app.user.profile?.firstName || '';
+
+    // 💬 Fallback to standard message if no customMessage provided
+    const text =
+      customMessage?.trim() ||
+      this.buildStandardMessage(
+        status,
+        app.job?.title,
+        app.isSpontaneous,
+        userName,
+      );
+    const html = `<p>${text.replace(/\n/g, '<br>')}</p>`;
+
+    const subject = app.isSpontaneous
+      ? status === 'rejected'
+        ? 'Réponse à votre candidature spontanée'
+        : 'Votre candidature spontanée avance'
+      : status === 'rejected'
+        ? `Réponse à votre candidature - ${app.job?.title}`
+        : `Votre candidature avance - ${app.job?.title}`;
+
+    await this.mailService.sendMail(app.user.email, subject, text, html);
+
+    return { message: 'Statut mis à jour et email envoyé avec succès' };
+  }
+
+  private buildStandardMessage(
+    status: ApplicationStatus,
+    jobTitle?: string,
+    isSpontaneous?: boolean,
+    userName: string = '',
+  ): string {
+    if (isSpontaneous) {
+      return status === 'rejected'
+        ? `Bonjour ${userName},
+
+  Nous vous remercions pour votre candidature spontanée. Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`
+        : `Bonjour ${userName},
+
+  Bonne nouvelle ! Votre candidature spontanée a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+    }
+
+    return status === 'rejected'
+      ? `Bonjour ${userName},
+
+  Nous vous remercions pour votre candidature au poste "${jobTitle}". Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`
+      : `Bonjour ${userName},
+
+  Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+  }
+
+  async findAll(status?: ApplicationStatus) {
+    const where = status ? { status } : {};
+    return this.appRepo.find({
+      where,
+      relations: ['user', 'user.profile', 'job'],
+      order: { appliedAt: 'DESC' },
+    });
+  }
+
+  async findSpontaneous() {
+    return this.appRepo.find({
+      where: {
+        isSpontaneous: true,
+        status: Not('rejected'),
+      },
+      relations: ['user', 'user.profile', 'job'],
+      order: { appliedAt: 'DESC' },
+    });
+  }
+
+  findOne(id: string) {
+    return this.appRepo.findOne({
+      where: { id },
+      relations: ['user', 'user.profile', 'job'],
+    });
+  }
+
+  remove(id: string) {
+    return this.appRepo.delete(id);
+  }
+
+  async getRecent() {
+    return this.appRepo.find({
+      where: { status: Not('rejected') },
+      relations: ['user', 'user.profile', 'job'],
+      order: { appliedAt: 'DESC' },
+      take: 5,
+    });
+  }
+
+  async getByJobId(jobId: string) {
+    return this.appRepo.find({
+      where: {
+        job: { id: jobId },
+        status: Not('rejected'), // optional, to exclude rejected
+      },
+      relations: ['user', 'user.profile', 'job'],
+      order: { appliedAt: 'DESC' },
+    });
+  }
+
+  async count(spontaneous?: boolean) {
+    const where: any = {
+      status: Not('rejected'),
+    };
+    if (spontaneous !== undefined) {
+      where.isSpontaneous = spontaneous;
+    }
+    const total = await this.appRepo.count({ where });
+    return { total };
+  }
+
+  async countForUser(userId: string) {
+    const total = await this.appRepo.count({ where: { user: { id: userId } } });
+    return { total };
+  }
+
+  async recentForUser(userId: string, limit: number) {
+    return this.appRepo.find({
+      where: { user: { id: userId } },
+      order: { appliedAt: 'DESC' },
+      take: limit,
+      relations: ['job', 'user', 'user.profile'],
+    });
+  }
+
+  async findMine(userId: string) {
+    return this.appRepo.find({
+      where: { user: { id: userId } },
+      relations: ['job', 'user', 'user.profile'],
+      order: { appliedAt: 'DESC' },
+    });
+  }
+
+  async applyToJob(userId: string, jobId: string, coverletter: string | null) {
+    const cleanCover = cleanCoverletter(coverletter);
+
+    const application = this.appRepo.create({
+      user: { id: userId },
+      job: { id: jobId },
+      coverletter: cleanCover,
+      isSpontaneous: false,
+    });
+
+    const saved = await this.appRepo.save(application);
+
+    const user = await this.userRepo.findOne({
+      where: { id: userId },
+      relations: ['profile'],
+    });
+
+    const job = await this.jobRepo.findOne({
+      where: { id: jobId },
+    });
+
+    if (user?.email && job?.title) {
+      const subject = `📩 Candidature reçue pour le poste : ${job.title}`;
+      const text = `Bonjour,
+  
+  Nous avons bien reçu votre candidature pour le poste de "${job.title}" via WorkIt.
+  
+  Notre équipe de recrutement l'examinera prochainement.
+  
+  Cordialement,
+  L'équipe WorkIt`;
+
+      const html = `
+        <p>Bonjour ${user.profile?.firstName || ''},</p>
+        <p>Nous avons bien reçu votre <strong>candidature</strong> pour le poste de <strong>${job.title}</strong> sur WorkIt.</p>
+        <p>Vous recevrez une réponse une fois qu'elle aura été examinée.</p>
+        <p style="margin-top: 1rem;">Cordialement,<br/>L'équipe WorkIt</p>
+      `;
+
+      await this.mailService.sendMail(user.email, subject, text, html);
+    }
+
+    return saved;
+  }
+
+  async applySpontaneously(userId: string, coverletter: string | null) {
+    const cleanCover = cleanCoverletter(coverletter);
+    const application = this.appRepo.create({
+      user: { id: userId },
+      job: null,
+      coverletter: cleanCover,
+      isSpontaneous: true,
+    });
+
+    const saved = await this.appRepo.save(application);
+
+    const user = await this.userRepo.findOne({
+      where: { id: userId },
+      relations: ['profile'],
+    });
+
+    if (user?.email) {
+      const subject = '📩 Votre candidature spontanée a bien été reçue';
+      const text = `Bonjour,
+  
+        Nous avons bien reçu votre candidature spontanée sur WorkIt.
+        
+        Elle sera examinée par notre équipe dès que possible.
+        
+        Cordialement,
+        L'équipe WorkIt`;
+
+      const html = `
+        <p>Bonjour ${user.profile?.firstName || ''},</p>
+        <p>Nous avons bien reçu votre <strong>candidature spontanée</strong> sur WorkIt.</p>
+        <p>Nous vous contacterons si un poste correspond à votre profil.</p>
+        <p style="margin-top: 1rem;">Cordialement,<br/>L'équipe WorkIt</p>
+      `;
+
+      await this.mailService.sendMail(user.email, subject, text, html);
+    }
+
+    return saved;
+  }
+  async checkIfUserApplied(userId: string, jobId: string) {
+    const existing = await this.appRepo.findOne({
+      where: {
+        user: { id: userId },
+        job: { id: jobId },
+      },
+    });
+
+    return { applied: !!existing };
+  }
+}
+
+function cleanCoverletter(text: string | null): string | null {
+  if (!text) return null;
+
+  return text
+    .replace(/\r\n/g, '\n') // normalize Windows line breaks
+    .replace(/\r/g, '\n') // normalize Mac line breaks
+    .replace(/\n{3,}/g, '\n\n') // limit multiple blank lines
+    .trim();
+}

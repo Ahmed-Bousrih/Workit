@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================== */
+/* 🌐 Browser-Specific Fixes (Quirks) */
+/* =============================== */
+/* 🔐 Edge: hide built-in "show password" and "clear" buttons */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+/* 💡 Chrome/Safari: override autofill background in light mode */
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #1e293b;
+}
+
+/* 🌙 Autofill background/text color in dark mode */
+.dark input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px #1e293b inset !important;
+  -webkit-text-fill-color: #f8fafc;
+}
+
+/* 📅 Firefox: ensure consistent height for date inputs */
+input[type="date"] {
+  min-height: 2.5rem;
+}
+
+/* 🧩 Optional: hide scrollbars consistently (uncomment to use) */
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
