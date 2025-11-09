@@ -1,12 +1,3 @@
-# Ignore university & documentation files
-Cahier des Charges WorkIt .docx
-Detailed Technical Specifications.docx
-Mémoire.docx
-Mémoire_BOUSRIH_Ahmed.pdf
-Soutenance.pptx
-steps.txt
-util.txt
-
 # Ignore all Office documents (just in case)
 *.docx
 *.pptx
@@ -19,11 +10,11 @@ workit-frontend/dist/
 
 workit-backend/node_modules/
 workit-backend/dist/
-workit-backend/uploads/
 
 # Ignore environment files
 workit-frontend/.env
 workit-backend/.env
+start.bat
 
 # Logs and temp files
 *.log
