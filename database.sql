@@ -1,12 +1,12 @@
 -- =====================================
--- WorkIt Refined Database Schema
+-- WorkIt Refined Database Schema v2
 -- =====================================
 
 -- Enable citext extension for case-insensitive emails
 CREATE EXTENSION IF NOT EXISTS citext;
 
 -- =====================================
--- Users Table
+-- Users Table (credentials and status only)
 -- =====================================
 CREATE TABLE Users (
     id BIGSERIAL PRIMARY KEY,
@@ -38,7 +38,7 @@ FOR EACH ROW
 EXECUTE FUNCTION update_updatedAt_column();
 
 -- =====================================
--- UserProfile Table
+-- UserProfile Table (user details)
 -- =====================================
 CREATE TABLE UserProfile (
     userId BIGINT PRIMARY KEY REFERENCES Users(id) ON DELETE CASCADE,
@@ -48,7 +48,9 @@ CREATE TABLE UserProfile (
     address TEXT,
     resumeUrl TEXT,
     aboutMe TEXT,
-    photoUrl TEXT
+    photoUrl TEXT,
+    birthDate DATE,
+    gender TEXT CHECK (gender IN ('male','female'))
 );
 
 -- =====================================
@@ -91,8 +93,12 @@ CREATE TABLE Education (
     fieldOfStudy TEXT NOT NULL,
     startYear INT NOT NULL,
     endYear INT,
+    currentlyStudying BOOLEAN DEFAULT FALSE,
     CONSTRAINT uniq_edu UNIQUE(userId, institution, degree, startYear)
 );
+
+-- Index for faster lookups
+CREATE INDEX idx_education_userId ON Education(userId);
 
 -- =====================================
 -- WorkExperience Table
@@ -104,9 +110,13 @@ CREATE TABLE WorkExperience (
     position TEXT NOT NULL,
     startDate DATE NOT NULL,
     endDate DATE,
+    currentlyWorking BOOLEAN DEFAULT FALSE,
     description TEXT,
     CONSTRAINT uniq_work UNIQUE(userId, company, position, startDate)
 );
+
+-- Index for faster lookups
+CREATE INDEX idx_workexperience_userId ON WorkExperience(userId);
 
 -- =====================================
 -- Jobs Table
@@ -120,6 +130,8 @@ CREATE TABLE Jobs (
     deletedAt TIMESTAMP,
     postedBy BIGINT REFERENCES Users(id),
     location TEXT,
+    category TEXT,
+    jobType TEXT,
     description_general TEXT,
     missions TEXT,
     profile TEXT,
@@ -131,6 +143,9 @@ CREATE TRIGGER trigger_jobs_updatedAt
 BEFORE UPDATE ON Jobs
 FOR EACH ROW
 EXECUTE FUNCTION update_updatedAt_column();
+
+-- Index for postedBy
+CREATE INDEX idx_jobs_postedBy ON Jobs(postedBy);
 
 -- =====================================
 -- Applications Table
@@ -148,16 +163,6 @@ CREATE TABLE Applications (
     CONSTRAINT uniq_user_job UNIQUE(userId, jobId)
 );
 
--- =====================================
--- PasswordResetRequests Table
--- =====================================
-CREATE TABLE PasswordResetRequests (
-    id BIGSERIAL PRIMARY KEY,
-    userId BIGINT REFERENCES Users(id) ON DELETE CASCADE,
-    resetToken TEXT NOT NULL,
-    expiresAt TIMESTAMP NOT NULL,
-    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
--- Index for fast lookup of reset tokens
-CREATE INDEX idx_resetToken ON PasswordResetRequests(resetToken);
+-- Indexes for Applications
+CREATE INDEX idx_applications_userId ON Applications(userId);
+CREATE INDEX idx_applications_jobId ON Applications(jobId);
