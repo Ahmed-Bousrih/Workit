@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/role.guard';
@@ -16,7 +26,10 @@ export class AdminController {
 
   @Get('candidates')
   @Roles('hr')
-  searchCandidates(@Query('skill') skill?: string, @Query('jobTitle') jobTitle?: string) {
+  searchCandidates(
+    @Query('skill') skill?: string,
+    @Query('jobTitle') jobTitle?: string,
+  ) {
     return this.profilesService.searchCandidates(skill, jobTitle);
   }
 
@@ -40,7 +53,10 @@ export class AdminController {
   ) {
     const profileData = {
       ...body,
-      userId: typeof body.userId === 'string' ? parseInt(body.userId, 10) : body.userId,
+      userId:
+        typeof body.userId === 'string'
+          ? parseInt(body.userId, 10)
+          : body.userId,
     };
     return this.profilesService.createProfile(profileData);
   }

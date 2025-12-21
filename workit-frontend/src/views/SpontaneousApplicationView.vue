@@ -1,14 +1,20 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <GlobalHeader />
 
     <main class="max-w-3xl mx-auto px-4 py-16 space-y-8">
-      <h2 class="text-3xl font-bold text-center text-cyan-700 dark:text-cyan-400">
+      <h2
+        class="text-3xl font-bold text-center text-cyan-700 dark:text-cyan-400"
+      >
         🎯 Candidature Spontanée
       </h2>
 
       <form @submit.prevent="submitApplication" class="space-y-4">
-        <label for="coverletter" class="block font-medium">Lettre de motivation (facultatif)</label>
+        <label for="coverletter" class="block font-medium"
+          >Lettre de motivation (facultatif)</label
+        >
         <textarea
           id="coverletter"
           v-model="coverletter"

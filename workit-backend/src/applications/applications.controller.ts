@@ -39,14 +39,23 @@ export class ApplicationsController {
 
   @Post('/spontaneous')
   @UseGuards(JwtAuthGuard)
-  async applySpontaneously(@Body('coverletter') coverletter: string, @Request() req: any) {
-    return this.appService.applySpontaneously(parseInt(req.user.userId, 10), coverletter || null);
+  async applySpontaneously(
+    @Body('coverletter') coverletter: string,
+    @Request() req: any,
+  ) {
+    return this.appService.applySpontaneously(
+      parseInt(req.user.userId, 10),
+      coverletter || null,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('check')
   async checkIfApplied(@Query('jobId') jobId: string, @Request() req: any) {
-    return this.appService.checkIfUserApplied(parseInt(req.user.userId, 10), parseInt(jobId, 10));
+    return this.appService.checkIfUserApplied(
+      parseInt(req.user.userId, 10),
+      parseInt(jobId, 10),
+    );
   }
 
   // Count applications for the current user
@@ -61,7 +70,10 @@ export class ApplicationsController {
   @UseGuards(JwtAuthGuard)
   recentMine(@Req() req: any, @Query('limit') limit: string) {
     const parsedLimit = parseInt(limit, 10) || 3;
-    return this.appService.recentForUser(parseInt((req.user as any).userId, 10), parsedLimit);
+    return this.appService.recentForUser(
+      parseInt((req.user as any).userId, 10),
+      parsedLimit,
+    );
   }
 
   @Get('mine')
@@ -124,6 +136,10 @@ export class ApplicationsController {
     @Body('status') status: ApplicationStatus,
     @Body('customMessage') customMessage?: string,
   ) {
-    return this.appService.updateStatus(parseInt(id, 10), status, customMessage);
+    return this.appService.updateStatus(
+      parseInt(id, 10),
+      status,
+      customMessage,
+    );
   }
 }

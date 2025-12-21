@@ -3,7 +3,9 @@
     @submit.prevent="handleSubmit"
     class="space-y-4 p-6 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl shadow max-w-xl mx-auto transition"
   >
-    <h2 class="text-xl font-bold text-cyan-700 dark:text-cyan-400">Nouvelle Offre d'emploi</h2>
+    <h2 class="text-xl font-bold text-cyan-700 dark:text-cyan-400">
+      Nouvelle Offre d'emploi
+    </h2>
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -43,7 +45,9 @@
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Missions</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >Missions</label
+      >
       <textarea
         v-model="form.missions"
         placeholder="Missions principales"

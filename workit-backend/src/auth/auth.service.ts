@@ -30,7 +30,9 @@ export class AuthService {
     if (!isMatch) return null;
 
     if (!user.isEmailVerified) {
-      throw new UnauthorizedException("Votre adresse email n'est pas encore vérifiée.");
+      throw new UnauthorizedException(
+        "Votre adresse email n'est pas encore vérifiée.",
+      );
     }
 
     return user;
@@ -99,7 +101,8 @@ export class AuthService {
       await this.mailService.sendMail(email, subject, text, html);
       console.log(`✅ Confirmation email sent to ${email}`);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       console.error(`❌ Failed to send email to ${email}: ${errorMessage}`);
     }
 
@@ -148,7 +151,11 @@ export class AuthService {
 
   async resetPassword(token: string, newPassword: string) {
     const user = await this.usersService.findByResetToken(token);
-    if (!user || !user.passwordResetExpiresAt || user.passwordResetExpiresAt < new Date()) {
+    if (
+      !user ||
+      !user.passwordResetExpiresAt ||
+      user.passwordResetExpiresAt < new Date()
+    ) {
       throw new BadRequestException('Lien invalide ou expiré.');
     }
 
@@ -162,7 +169,11 @@ export class AuthService {
     return { message: 'Mot de passe réinitialisé avec succès ✅' };
   }
 
-  async changePassword(userId: number, currentPassword: string, newPassword: string) {
+  async changePassword(
+    userId: number,
+    currentPassword: string,
+    newPassword: string,
+  ) {
     const user = await this.usersService.findById(userId);
 
     const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
@@ -171,7 +182,9 @@ export class AuthService {
     }
 
     if (currentPassword === newPassword) {
-      throw new ConflictException("Le nouveau mot de passe ne peut pas être identique à l'ancien");
+      throw new ConflictException(
+        "Le nouveau mot de passe ne peut pas être identique à l'ancien",
+      );
     }
 
     const hashed = await bcrypt.hash(newPassword, 10);

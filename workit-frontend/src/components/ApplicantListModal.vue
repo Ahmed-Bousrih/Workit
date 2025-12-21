@@ -1,5 +1,8 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+  <div
+    v-if="visible"
+    class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+  >
     <div
       class="bg-white dark:bg-slate-800 rounded-xl w-full max-w-2xl p-6 shadow-xl text-slate-800 dark:text-slate-100"
     >
@@ -7,7 +10,10 @@
         Candidatures pour "{{ jobTitle }}"
       </h2>
 
-      <div v-if="loading" class="text-slate-500 dark:text-slate-400 text-center py-6">
+      <div
+        v-if="loading"
+        class="text-slate-500 dark:text-slate-400 text-center py-6"
+      >
         Chargement...
       </div>
       <div
@@ -29,8 +35,11 @@
               class="text-cyan-700 dark:text-cyan-300 hover:underline font-medium"
             >
               <span>
-                {{ app.user.profile?.firstName }} {{ app.user.profile?.lastName }}
-                <small class="text-slate-400 dark:text-slate-500">({{ app.user.email }})</small>
+                {{ app.user.profile?.firstName }}
+                {{ app.user.profile?.lastName }}
+                <small class="text-slate-400 dark:text-slate-500"
+                  >({{ app.user.email }})</small
+                >
               </span>
             </router-link>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -85,7 +94,9 @@
               >
                 ✅ Accepter
               </button>
-              <span class="text-sm text-blue-600 dark:text-blue-300 font-semibold">
+              <span
+                class="text-sm text-blue-600 dark:text-blue-300 font-semibold"
+              >
                 👀 En cours d'examen
               </span>
             </template>

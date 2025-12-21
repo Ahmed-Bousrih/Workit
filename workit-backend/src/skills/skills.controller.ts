@@ -1,4 +1,11 @@
-import { Controller, Get, Patch, Body, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Body,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { SkillsService } from './skills.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -18,9 +25,14 @@ export class SkillsController {
 
   // Private: Update skills of logged-in user
   @Patch('profile/skills')
-  updateMySkills(@Request() req: any, @Body() body: { skillIds: number[] | string[] }) {
+  updateMySkills(
+    @Request() req: any,
+    @Body() body: { skillIds: number[] | string[] },
+  ) {
     const userId = parseInt(req.user.userId, 10);
-    const skillIds = body.skillIds.map((id) => (typeof id === 'string' ? parseInt(id, 10) : id));
+    const skillIds = body.skillIds.map((id) =>
+      typeof id === 'string' ? parseInt(id, 10) : id,
+    );
     return this.skillsService.updateUserSkills(userId, skillIds);
   }
 }

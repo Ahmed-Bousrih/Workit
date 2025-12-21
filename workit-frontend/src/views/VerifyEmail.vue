@@ -12,7 +12,10 @@
     </p>
     <p v-else class="text-red-600 text-lg">Lien invalide ou expiré ❌</p>
 
-    <router-link to="/login" class="mt-6 text-cyan-600 underline hover:opacity-80 text-sm">
+    <router-link
+      to="/login"
+      class="mt-6 text-cyan-600 underline hover:opacity-80 text-sm"
+    >
       Retour à la connexion
     </router-link>
   </div>

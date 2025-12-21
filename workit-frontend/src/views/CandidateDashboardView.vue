@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <GlobalHeader />
 
     <main class="max-w-7xl mx-auto px-4 py-12 space-y-12">
@@ -36,14 +38,20 @@
       <!-- Stats Section -->
       <section class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
         <div class="bg-slate-100 dark:bg-slate-800 p-6 rounded-xl shadow">
-          <p class="text-4xl font-bold text-cyan-600 dark:text-cyan-400">+{{ stats.jobs }}</p>
-          <p class="mt-2 text-slate-600 dark:text-slate-300">Offres disponibles</p>
+          <p class="text-4xl font-bold text-cyan-600 dark:text-cyan-400">
+            +{{ stats.jobs }}
+          </p>
+          <p class="mt-2 text-slate-600 dark:text-slate-300">
+            Offres disponibles
+          </p>
         </div>
         <div class="bg-slate-100 dark:bg-slate-800 p-6 rounded-xl shadow">
           <p class="text-4xl font-bold text-cyan-600 dark:text-cyan-400">
             +{{ stats.myApplications }}
           </p>
-          <p class="mt-2 text-slate-600 dark:text-slate-300">Candidatures envoyées</p>
+          <p class="mt-2 text-slate-600 dark:text-slate-300">
+            Candidatures envoyées
+          </p>
         </div>
       </section>
 
@@ -51,7 +59,10 @@
       <section>
         <h3 class="text-xl font-bold mb-4">Mes 3 dernières candidatures</h3>
 
-        <div v-if="recentApps.length" class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <div
+          v-if="recentApps.length"
+          class="grid gap-4 sm:grid-cols-2 md:grid-cols-3"
+        >
           <div
             v-for="app in sortedApps"
             :key="app.id"
@@ -77,7 +88,9 @@
           </div>
         </div>
 
-        <p v-else class="text-sm text-slate-500 dark:text-slate-400">Aucune candidature trouvée.</p>
+        <p v-else class="text-sm text-slate-500 dark:text-slate-400">
+          Aucune candidature trouvée.
+        </p>
 
         <div class="mt-6 text-center">
           <RouterLink
@@ -90,7 +103,10 @@
       </section>
     </main>
 
-    <ApplicationDetailModal :application="selectedApp" @close="selectedApp = null" />
+    <ApplicationDetailModal
+      :application="selectedApp"
+      @close="selectedApp = null"
+    />
     <GlobalFooter />
   </div>
 </template>

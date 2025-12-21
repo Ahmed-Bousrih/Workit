@@ -1,8 +1,14 @@
 <template>
   <div class="space-y-4">
     <div class="flex justify-between items-center">
-      <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">Éducation</h3>
-      <button v-if="isEditing" @click="addEducation" class="text-sm text-cyan-600 hover:underline">
+      <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
+        Éducation
+      </h3>
+      <button
+        v-if="isEditing"
+        @click="addEducation"
+        class="text-sm text-cyan-600 hover:underline"
+      >
         Ajouter une formation
       </button>
     </div>
@@ -17,7 +23,9 @@
       </h4>
       <div class="grid md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Établissement</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+            >Établissement</label
+          >
           <input
             v-model="edu.institution"
             :readonly="!isEditing"
@@ -25,7 +33,9 @@
           />
         </div>
         <div>
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Diplôme</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+            >Diplôme</label
+          >
           <input
             v-model="edu.degree"
             :readonly="!isEditing"
@@ -35,7 +45,9 @@
       </div>
 
       <div>
-        <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Domaine d'étude</label>
+        <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+          >Domaine d'étude</label
+        >
         <input
           v-model="edu.fieldOfStudy"
           :readonly="!isEditing"
@@ -45,7 +57,9 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Année de début</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+            >Année de début</label
+          >
           <input
             v-model="edu.startYear"
             type="number"
@@ -54,7 +68,9 @@
           />
         </div>
         <div>
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Année de fin</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+            >Année de fin</label
+          >
           <input
             v-model="edu.endYear"
             type="number"
@@ -79,7 +95,10 @@
       </div>
 
       <div v-if="isEditing" class="text-right">
-        <button @click="removeEducation(index)" class="text-sm text-red-500 hover:underline">
+        <button
+          @click="removeEducation(index)"
+          class="text-sm text-red-500 hover:underline"
+        >
           Supprimer
         </button>
       </div>

@@ -1,15 +1,21 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center bg-[#1e2a38] px-4">
+  <div
+    class="min-h-screen flex flex-col items-center justify-center bg-[#1e2a38] px-4"
+  >
     <router-link to="/" class="mb-8 mt-8">
       <img src="@/assets/logo.png" alt="WorkIt Logo" class="w-40 mb-8" />
     </router-link>
 
     <div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Créer un compte</h2>
+      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
+        Créer un compte
+      </h2>
 
       <form @submit.prevent="handleSignup">
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Adresse email</label
+          >
           <input
             v-model="email"
             type="email"
@@ -17,11 +23,15 @@
             placeholder="adresse@exemple.com"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
-          <p v-if="emailError" class="text-red-500 text-sm mt-1">{{ emailError }}</p>
+          <p v-if="emailError" class="text-red-500 text-sm mt-1">
+            {{ emailError }}
+          </p>
         </div>
 
         <div class="mb-4 relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Mot de passe</label
+          >
           <input
             v-model="password"
             :type="showPassword ? 'text' : 'password'"
@@ -36,7 +46,9 @@
           >
             <component :is="showPassword ? EyeOff : Eye" class="w-5 h-5" />
           </button>
-          <p v-if="passwordError" class="text-red-500 text-sm mt-1">{{ passwordError }}</p>
+          <p v-if="passwordError" class="text-red-500 text-sm mt-1">
+            {{ passwordError }}
+          </p>
         </div>
 
         <div class="mb-4 relative">
@@ -55,7 +67,10 @@
             @click="showConfirmPassword = !showConfirmPassword"
             class="absolute right-3 top-9 text-gray-500 hover:text-cyan-600"
           >
-            <component :is="showConfirmPassword ? EyeOff : Eye" class="w-5 h-5" />
+            <component
+              :is="showConfirmPassword ? EyeOff : Eye"
+              class="w-5 h-5"
+            />
           </button>
           <p v-if="confirmPasswordError" class="text-red-500 text-sm mt-1">
             {{ confirmPasswordError }}
@@ -67,7 +82,9 @@
             <input type="checkbox" v-model="agreed" class="mt-1" />
             <span>
               J'accepte les
-              <router-link to="/mentions-legales" class="text-cyan-600 underline"
+              <router-link
+                to="/mentions-legales"
+                class="text-cyan-600 underline"
                 >conditions générales</router-link
               >
               et la
@@ -76,7 +93,9 @@
               >.
             </span>
           </label>
-          <p v-if="agreedError" class="text-red-500 text-sm mt-1">{{ agreedError }}</p>
+          <p v-if="agreedError" class="text-red-500 text-sm mt-1">
+            {{ agreedError }}
+          </p>
         </div>
 
         <button
@@ -87,11 +106,15 @@
           S'inscrire
         </button>
 
-        <p v-if="formError" class="text-red-500 text-center text-sm mt-4">{{ formError }}</p>
+        <p v-if="formError" class="text-red-500 text-center text-sm mt-4">
+          {{ formError }}
+        </p>
 
         <p class="mt-6 text-sm text-center text-gray-600">
           Vous avez déjà un compte ?
-          <router-link to="/login" class="text-cyan-600 font-semibold hover:underline"
+          <router-link
+            to="/login"
+            class="text-cyan-600 font-semibold hover:underline"
             >Connectez-vous</router-link
           >
         </p>
@@ -163,18 +186,26 @@ const handleSignup = async () => {
     confirmPasswordError.value = 'Les mots de passe ne correspondent pas'
   }
 
-  if (emailError.value || passwordError.value || agreedError.value || confirmPasswordError.value)
+  if (
+    emailError.value ||
+    passwordError.value ||
+    agreedError.value ||
+    confirmPasswordError.value
+  )
     return
 
   try {
     await auth.register(email.value, password.value)
-    toast.success('Compte créé avec succès ✅ Un email de confirmation vous a été envoyé.')
+    toast.success(
+      'Compte créé avec succès ✅ Un email de confirmation vous a été envoyé.',
+    )
     router.push('/login')
   } catch (err: unknown) {
     const axiosErr = err as AxiosError<{ message?: string }>
     const backendMessage = axiosErr?.response?.data?.message
 
-    formError.value = backendMessage ?? "Erreur lors de l'inscription. Veuillez réessayer."
+    formError.value =
+      backendMessage ?? "Erreur lors de l'inscription. Veuillez réessayer."
     toast.error(formError.value)
   }
 }

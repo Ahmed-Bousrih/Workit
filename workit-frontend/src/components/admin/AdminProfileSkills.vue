@@ -1,6 +1,8 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-2">Compétences</h3>
+    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-2">
+      Compétences
+    </h3>
     <div class="flex flex-wrap gap-2">
       <template v-for="(skill, index) in visibleSkills" :key="index">
         <div
@@ -23,7 +25,9 @@
       v-if="showAllModal"
       class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
     >
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-lg max-w-md w-full shadow-lg space-y-4">
+      <div
+        class="bg-white dark:bg-slate-800 p-6 rounded-lg max-w-md w-full shadow-lg space-y-4"
+      >
         <h4 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
           Toutes les compétences
         </h4>
@@ -39,7 +43,10 @@
         </div>
 
         <div class="text-right pt-4">
-          <button @click="showAllModal = false" class="text-sm text-cyan-600 hover:underline">
+          <button
+            @click="showAllModal = false"
+            class="text-sm text-cyan-600 hover:underline"
+          >
             Fermer
           </button>
         </div>

@@ -14,7 +14,11 @@ export class MailService {
       this.logger.log('SendGrid mail service initialized');
     }
     // Initialize Nodemailer as fallback if SMTP config is provided
-    else if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    else if (
+      process.env.SMTP_HOST &&
+      process.env.SMTP_USER &&
+      process.env.SMTP_PASS
+    ) {
       this.transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT || '587', 10),
@@ -56,7 +60,8 @@ export class MailService {
         await sgMail.send(msg);
         this.logger.log(`✅ Email sent successfully to ${to}`);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         this.logger.error(`❌ SendGrid error: ${errorMessage}`);
         throw error;
       }
@@ -78,13 +83,16 @@ export class MailService {
         await this.transporter.sendMail(mailOptions);
         this.logger.log(`✅ Email sent successfully to ${to}`);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         this.logger.error(`❌ SMTP error: ${errorMessage}`);
         throw error;
       }
     } else {
       // Log email in development mode if no mail service is configured
-      this.logger.warn(`⚠️  Mail service not configured. Would send email to ${to}`);
+      this.logger.warn(
+        `⚠️  Mail service not configured. Would send email to ${to}`,
+      );
       this.logger.debug(`Subject: ${subject}`);
       this.logger.debug(`Content: ${text}`);
       // Don't throw error in development, just log

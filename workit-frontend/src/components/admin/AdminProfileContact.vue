@@ -1,6 +1,8 @@
 <template>
   <section class="space-y-5">
-    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">Coordonnées</h3>
+    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
+      Coordonnées
+    </h3>
 
     <div class="flex items-center gap-3 text-slate-700 dark:text-slate-200">
       <svg
@@ -47,7 +49,9 @@
           clip-rule="evenodd"
         />
       </svg>
-      <span class="text-slate-700 dark:text-slate-200">{{ address || '—' }}</span>
+      <span class="text-slate-700 dark:text-slate-200">{{
+        address || '—'
+      }}</span>
     </div>
   </section>
 </template>

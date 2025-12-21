@@ -9,7 +9,9 @@
         {{ icon }}
       </div>
 
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">{{ label }}</p>
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">
+        {{ label }}
+      </p>
       <p class="text-3xl font-bold" :class="textColor">
         {{ animatedValue }}
       </p>

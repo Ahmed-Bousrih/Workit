@@ -1,14 +1,20 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center bg-[#1e2a38] px-4">
+  <div
+    class="min-h-screen flex flex-col items-center justify-center bg-[#1e2a38] px-4"
+  >
     <router-link to="/" class="mb-8">
       <img src="@/assets/logo.png" alt="WorkIt Logo" class="w-40 mb-8" />
     </router-link>
     <div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Connexion à WorkIt</h2>
+      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
+        Connexion à WorkIt
+      </h2>
 
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Adresse email</label
+          >
           <input
             v-model="email"
             type="email"
@@ -16,11 +22,15 @@
             placeholder="adresse@exemple.com"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
-          <p v-if="emailError" class="text-red-500 text-sm mt-1">{{ emailError }}</p>
+          <p v-if="emailError" class="text-red-500 text-sm mt-1">
+            {{ emailError }}
+          </p>
         </div>
 
         <div class="mb-6 relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Mot de passe</label
+          >
           <input
             :type="showPassword ? 'text' : 'password'"
             v-model="password"
@@ -37,7 +47,9 @@
             <Eye v-if="showPassword" class="w-5 h-5" />
             <EyeOff v-else class="w-5 h-5" />
           </button>
-          <p v-if="passwordError" class="text-red-500 text-sm mt-1">{{ passwordError }}</p>
+          <p v-if="passwordError" class="text-red-500 text-sm mt-1">
+            {{ passwordError }}
+          </p>
         </div>
 
         <button
@@ -48,7 +60,10 @@
         </button>
 
         <p class="mt-4 text-sm text-center">
-          <router-link to="/forgot-password" class="text-cyan-600 hover:underline">
+          <router-link
+            to="/forgot-password"
+            class="text-cyan-600 hover:underline"
+          >
             Mot de passe oublié ?
           </router-link>
         </p>
@@ -59,7 +74,10 @@
 
         <p class="mt-6 text-sm text-center text-gray-600">
           Vous n'avez pas de compte ?
-          <router-link to="/signup" class="text-cyan-600 font-semibold hover:underline">
+          <router-link
+            to="/signup"
+            class="text-cyan-600 font-semibold hover:underline"
+          >
             Créer un compte
           </router-link>
         </p>
@@ -126,7 +144,8 @@ const handleLogin = async () => {
   } catch (err: unknown) {
     const axiosErr = err as AxiosError<{ message?: string }>
     formError.value =
-      axiosErr?.response?.data?.message ?? 'Échec de connexion. Veuillez vérifier vos identifiants.'
+      axiosErr?.response?.data?.message ??
+      'Échec de connexion. Veuillez vérifier vos identifiants.'
     toast.error(formError.value)
   }
 }

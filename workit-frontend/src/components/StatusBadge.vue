@@ -10,7 +10,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ApplicationStatus, ApplicationStatusLabels, ApplicationStatusColors } from '@/types/enums'
+import {
+  ApplicationStatus,
+  ApplicationStatusLabels,
+  ApplicationStatusColors,
+} from '@/types/enums'
 
 const props = withDefaults(
   defineProps<{

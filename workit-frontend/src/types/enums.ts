@@ -65,7 +65,10 @@ export const ApplicationStatusLabels: Record<ApplicationStatus, string> = {
   [ApplicationStatus.REJECTED]: 'Rejetée',
 }
 
-export const ApplicationStatusColors: Record<ApplicationStatus, { bg: string; text: string }> = {
+export const ApplicationStatusColors: Record<
+  ApplicationStatus,
+  { bg: string; text: string }
+> = {
   [ApplicationStatus.PENDING]: {
     bg: 'bg-yellow-100 dark:bg-yellow-900/30',
     text: 'text-yellow-700 dark:text-yellow-300',

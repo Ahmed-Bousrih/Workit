@@ -1,4 +1,11 @@
-import { IsOptional, IsString, IsArray, MaxLength, IsEnum, IsDateString } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsArray,
+  MaxLength,
+  IsEnum,
+  IsDateString,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Gender } from './create-profile.dto';
 
@@ -18,7 +25,9 @@ export class UpdateProfileDto {
   @ApiPropertyOptional({ description: 'Phone number', maxLength: 20 })
   @IsOptional()
   @IsString()
-  @MaxLength(20, { message: 'Le numéro de téléphone ne peut pas dépasser 20 caractères' })
+  @MaxLength(20, {
+    message: 'Le numéro de téléphone ne peut pas dépasser 20 caractères',
+  })
   phone?: string;
 
   @ApiPropertyOptional({ description: 'Address', maxLength: 500 })
@@ -30,7 +39,9 @@ export class UpdateProfileDto {
   @ApiPropertyOptional({ description: 'About me section', maxLength: 2000 })
   @IsOptional()
   @IsString()
-  @MaxLength(2000, { message: 'La description ne peut pas dépasser 2000 caractères' })
+  @MaxLength(2000, {
+    message: 'La description ne peut pas dépasser 2000 caractères',
+  })
   aboutMe?: string;
 
   @ApiPropertyOptional({ description: 'Skills array' })

@@ -32,9 +32,12 @@
                   :to="`/admin/profile/${app.user.id}`"
                   class="text-cyan-600 dark:text-cyan-400 hover:underline transition"
                 >
-                  {{ app.user.profile?.firstName }} {{ app.user.profile?.lastName }}
+                  {{ app.user.profile?.firstName }}
+                  {{ app.user.profile?.lastName }}
                 </router-link>
-                <span class="text-slate-500 dark:text-slate-400">({{ app.user.email }})</span>
+                <span class="text-slate-500 dark:text-slate-400"
+                  >({{ app.user.email }})</span
+                >
               </p>
               <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">
                 Soumise le {{ formatDate(app.appliedAt) }}
@@ -70,7 +73,9 @@
             @click="toggleLetter(app.id)"
           >
             {{
-              expandedLetters[app.id] ? 'Masquer la lettre de motivation' : '+ Lettre de motivation'
+              expandedLetters[app.id]
+                ? 'Masquer la lettre de motivation'
+                : '+ Lettre de motivation'
             }}
           </div>
 
@@ -199,7 +204,9 @@ const confirmStatusUpdate = async () => {
     }
     toast.success(statusMessages[selectedStatus.value] || 'Statut mis à jour')
 
-    applications.value = applications.value.filter((app) => app.id !== selectedAppId.value)
+    applications.value = applications.value.filter(
+      (app) => app.id !== selectedAppId.value,
+    )
   } catch (err) {
     toast.error('Erreur lors de la mise à jour')
     console.error(err)

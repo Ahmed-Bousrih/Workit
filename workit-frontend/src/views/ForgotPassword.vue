@@ -1,6 +1,10 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center bg-[#1e2a38] px-4 text-center">
-    <div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md text-slate-800">
+  <div
+    class="min-h-screen flex flex-col items-center justify-center bg-[#1e2a38] px-4 text-center"
+  >
+    <div
+      class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md text-slate-800"
+    >
       <h2 class="text-2xl font-bold mb-4">Réinitialiser votre mot de passe</h2>
       <p class="text-sm mb-6 text-gray-600">
         Entrez votre adresse email pour recevoir un lien de réinitialisation.

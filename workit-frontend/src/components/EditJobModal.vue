@@ -7,46 +7,63 @@
       <div
         class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 p-6 rounded-xl shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
       >
-        <h2 class="text-xl font-bold text-cyan-700 dark:text-cyan-400 mb-4">Modifier l'offre</h2>
+        <h2 class="text-xl font-bold text-cyan-700 dark:text-cyan-400 mb-4">
+          Modifier l'offre
+        </h2>
 
         <form @submit.prevent="handleSubmit" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               >Titre du poste</label
             >
-            <input v-model="form.title" type="text" class="input-style" required />
+            <input
+              v-model="form.title"
+              type="text"
+              class="input-style"
+              required
+            />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               >Localisation (optionnel)</label
             >
             <input v-model="form.location" type="text" class="input-style" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               >Présentation générale</label
             >
-            <textarea v-model="form.descriptionGeneral" rows="3" class="input-style" />
+            <textarea
+              v-model="form.descriptionGeneral"
+              rows="3"
+              class="input-style"
+            />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               >Missions principales</label
             >
             <textarea v-model="form.missions" rows="4" class="input-style" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               >Profil recherché</label
             >
             <textarea v-model="form.profile" rows="4" class="input-style" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               >Avantages (optionnel)</label
             >
             <textarea v-model="form.advantages" rows="3" class="input-style" />
@@ -121,7 +138,8 @@ const handleSubmit = async () => {
 
     if (form.title) payload.title = form.title
     if (form.location) payload.location = form.location
-    if (form.descriptionGeneral) payload.descriptionGeneral = form.descriptionGeneral
+    if (form.descriptionGeneral)
+      payload.descriptionGeneral = form.descriptionGeneral
     if (form.missions) payload.missions = form.missions
     if (form.profile) payload.profile = form.profile
     if (form.advantages) payload.advantages = form.advantages

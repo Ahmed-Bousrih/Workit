@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <GlobalHeader />
 
     <main class="max-w-3xl mx-auto px-4 py-12 space-y-10">
@@ -18,7 +20,9 @@
         <div v-if="showPasswordForm" class="mt-6 space-y-4">
           <form @submit.prevent="handlePasswordChange" class="space-y-4">
             <div class="relative">
-              <label class="block text-sm font-medium mb-1">Mot de passe actuel</label>
+              <label class="block text-sm font-medium mb-1"
+                >Mot de passe actuel</label
+              >
               <input
                 :type="showCurrent ? 'text' : 'password'"
                 v-model="currentPassword"
@@ -35,7 +39,9 @@
             </div>
 
             <div class="relative">
-              <label class="block text-sm font-medium mb-1">Nouveau mot de passe</label>
+              <label class="block text-sm font-medium mb-1"
+                >Nouveau mot de passe</label
+              >
               <input
                 :type="showNew ? 'text' : 'password'"
                 v-model="newPassword"
@@ -52,7 +58,9 @@
             </div>
 
             <div class="relative">
-              <label class="block text-sm font-medium mb-1">Confirmer le mot de passe</label>
+              <label class="block text-sm font-medium mb-1"
+                >Confirmer le mot de passe</label
+              >
               <input
                 :type="showConfirm ? 'text' : 'password'"
                 v-model="confirmPassword"
@@ -84,8 +92,8 @@
       >
         <h3 class="text-xl font-semibold mb-4">❌ Supprimer le compte</h3>
         <p class="text-sm mb-4">
-          Cette action est <strong>irréversible</strong>. Toutes vos données seront supprimées
-          définitivement.
+          Cette action est <strong>irréversible</strong>. Toutes vos données
+          seront supprimées définitivement.
         </p>
 
         <div v-if="!confirmDeleteVisible">
@@ -102,7 +110,8 @@
           class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white p-4 rounded-xl mt-4 space-y-4"
         >
           <p class="text-sm font-medium text-center">
-            Merci de confirmer les éléments suivants avant la suppression de votre compte.
+            Merci de confirmer les éléments suivants avant la suppression de
+            votre compte.
           </p>
           <label class="flex items-start gap-2">
             <input type="checkbox" v-model="confirmIrreversible" class="mt-1" />
@@ -110,7 +119,10 @@
           </label>
           <label class="flex items-start gap-2">
             <input type="checkbox" v-model="confirmDataLoss" class="mt-1" />
-            <span>Je consens à la suppression de toutes mes données et de mon compte.</span>
+            <span
+              >Je consens à la suppression de toutes mes données et de mon
+              compte.</span
+            >
           </label>
 
           <div class="flex gap-3 justify-center">
@@ -185,7 +197,8 @@ const handlePasswordChange = async () => {
     showPasswordForm.value = false
   } catch (err) {
     const axiosErr = err as AxiosError<{ message?: string }>
-    const msg = axiosErr.response?.data?.message || 'Erreur lors de la mise à jour'
+    const msg =
+      axiosErr.response?.data?.message || 'Erreur lors de la mise à jour'
     toast.error(msg)
   }
 }
@@ -195,7 +208,9 @@ const confirmDeleteVisible = ref(false)
 const confirmIrreversible = ref(false)
 const confirmDataLoss = ref(false)
 
-const canDelete = computed(() => confirmIrreversible.value && confirmDataLoss.value)
+const canDelete = computed(
+  () => confirmIrreversible.value && confirmDataLoss.value,
+)
 const handleDeleteAccount = async () => {
   try {
     await api.delete('/auth/profile')
@@ -204,7 +219,9 @@ const handleDeleteAccount = async () => {
     router.push('/')
   } catch (err) {
     const axiosErr = err as AxiosError<{ message?: string }>
-    toast.error(axiosErr.response?.data?.message || 'Erreur lors de la suppression.')
+    toast.error(
+      axiosErr.response?.data?.message || 'Erreur lors de la suppression.',
+    )
   }
 }
 </script>

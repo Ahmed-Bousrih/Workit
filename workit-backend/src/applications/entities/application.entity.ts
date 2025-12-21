@@ -9,7 +9,11 @@ import {
 import { User } from '../../users/entities/user.entity';
 import { Job } from '../../jobs/entities/job.entity';
 
-export type ApplicationStatus = 'pending' | 'reviewed' | 'accepted' | 'rejected';
+export type ApplicationStatus =
+  | 'pending'
+  | 'reviewed'
+  | 'accepted'
+  | 'rejected';
 
 @Entity('applications')
 export class Application {

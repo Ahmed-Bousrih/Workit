@@ -12,7 +12,9 @@
         📩
         <strong>
           {{ app.user.profile?.firstName }} {{ app.user.profile?.lastName }}
-          <small class="text-slate-500 dark:text-slate-400">({{ app.user.email }})</small>
+          <small class="text-slate-500 dark:text-slate-400"
+            >({{ app.user.email }})</small
+          >
         </strong>
         <span v-if="app.job"
           >a postulé à <strong>{{ app.job.title }}</strong></span

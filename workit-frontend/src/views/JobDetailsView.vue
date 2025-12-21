@@ -4,7 +4,9 @@
   >
     <GlobalHeader />
 
-    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-10">
+    <main
+      class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-10"
+    >
       <!-- Return Button -->
       <div>
         <RouterLink
@@ -15,11 +17,17 @@
         </RouterLink>
       </div>
 
-      <div v-if="loading" class="text-center text-slate-500 dark:text-slate-400 py-10">
+      <div
+        v-if="loading"
+        class="text-center text-slate-500 dark:text-slate-400 py-10"
+      >
         Chargement de l'offre...
       </div>
 
-      <div v-else-if="!job" class="text-center text-slate-500 dark:text-slate-400 py-10">
+      <div
+        v-else-if="!job"
+        class="text-center text-slate-500 dark:text-slate-400 py-10"
+      >
         Offre introuvable.
       </div>
 
@@ -34,10 +42,12 @@
             class="flex flex-col sm:flex-row justify-center gap-8 text-slate-600 dark:text-slate-400 text-sm"
           >
             <div>
-              <span class="font-semibold">📍 Lieu :</span> {{ job.location || 'Non précisé' }}
+              <span class="font-semibold">📍 Lieu :</span>
+              {{ job.location || 'Non précisé' }}
             </div>
             <div>
-              <span class="font-semibold">🗓️ Publié le :</span> {{ formatDate(job.createdAt) }}
+              <span class="font-semibold">🗓️ Publié le :</span>
+              {{ formatDate(job.createdAt) }}
             </div>
           </div>
         </div>
@@ -45,12 +55,22 @@
         <!-- Job Sections -->
         <div class="space-y-8 text-lg leading-relaxed">
           <section v-if="job.descriptionGeneral">
-            <h3 class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2">Présentation</h3>
-            <p class="text-slate-700 dark:text-slate-200">{{ job.descriptionGeneral }}</p>
+            <h3
+              class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2"
+            >
+              Présentation
+            </h3>
+            <p class="text-slate-700 dark:text-slate-200">
+              {{ job.descriptionGeneral }}
+            </p>
           </section>
 
           <section v-if="job.missions">
-            <h3 class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2">Missions</h3>
+            <h3
+              class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2"
+            >
+              Missions
+            </h3>
             <p
               class="text-slate-700 dark:text-slate-200"
               v-html="formatMultiline(job.missions)"
@@ -58,14 +78,23 @@
           </section>
 
           <section v-if="job.profile">
-            <h3 class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2">
+            <h3
+              class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2"
+            >
               Profil recherché
             </h3>
-            <p class="text-slate-700 dark:text-slate-200" v-html="formatMultiline(job.profile)"></p>
+            <p
+              class="text-slate-700 dark:text-slate-200"
+              v-html="formatMultiline(job.profile)"
+            ></p>
           </section>
 
           <section v-if="job.advantages">
-            <h3 class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2">Avantages</h3>
+            <h3
+              class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2"
+            >
+              Avantages
+            </h3>
             <p
               class="text-slate-700 dark:text-slate-200"
               v-html="formatMultiline(job.advantages)"
@@ -76,7 +105,10 @@
         <!-- Apply Section -->
         <div class="text-center mt-12 space-y-4">
           <div v-if="isLoggedIn">
-            <p v-if="alreadyApplied" class="text-green-600 dark:text-green-400 font-medium">
+            <p
+              v-if="alreadyApplied"
+              class="text-green-600 dark:text-green-400 font-medium"
+            >
               ✅ Vous avez déjà postulé à cette offre.
             </p>
 

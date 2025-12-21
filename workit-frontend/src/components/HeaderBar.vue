@@ -1,11 +1,20 @@
 <template>
-  <header class="bg-[#1e2a38] dark:bg-slate-800 px-6 py-4 shadow flex justify-between items-center">
+  <header
+    class="bg-[#1e2a38] dark:bg-slate-800 px-6 py-4 shadow flex justify-between items-center"
+  >
     <router-link to="/admin/dashboard">
-      <img src="@/assets/logo.png" alt="WorkIt Logo" class="w-36 cursor-pointer" />
+      <img
+        src="@/assets/logo.png"
+        alt="WorkIt Logo"
+        class="w-36 cursor-pointer"
+      />
     </router-link>
     <div class="flex items-center gap-4">
       <!-- Dark Mode Toggle Button -->
-      <button @click="toggleDark" class="text-white hover:text-cyan-400 transition text-xl">
+      <button
+        @click="toggleDark"
+        class="text-white hover:text-cyan-400 transition text-xl"
+      >
         <span v-if="isDark">☀️</span>
         <span v-else>🌙</span>
       </button>

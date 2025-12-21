@@ -1,6 +1,8 @@
 <template>
   <div class="space-y-4">
-    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">Éducation</h3>
+    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
+      Éducation
+    </h3>
     <div
       v-for="(edu, index) in education"
       :key="index"

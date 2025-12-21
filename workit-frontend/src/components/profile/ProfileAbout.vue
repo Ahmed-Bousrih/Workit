@@ -1,6 +1,8 @@
 <template>
   <section class="space-y-2">
-    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">À propos de moi</h3>
+    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
+      À propos de moi
+    </h3>
 
     <!-- Editable textarea -->
     <textarea

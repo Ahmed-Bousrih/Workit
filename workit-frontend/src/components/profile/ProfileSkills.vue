@@ -1,14 +1,18 @@
 <template>
   <div class="space-y-4">
     <!-- Header -->
-    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-2 text-center">
+    <h3
+      class="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-2 text-center"
+    >
       Compétences
     </h3>
 
     <!-- Input Field (Edit Mode Only) -->
     <div v-if="isEditing" class="flex justify-center mb-4">
       <div class="relative w-full sm:w-80">
-        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl">➕</span>
+        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl"
+          >➕</span
+        >
         <input
           v-model="newSkill"
           @keyup.enter="addSkill"
@@ -50,7 +54,9 @@
         v-if="showAllModal"
         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       >
-        <div class="bg-white dark:bg-slate-800 p-6 rounded-lg max-w-md w-full shadow-lg space-y-4">
+        <div
+          class="bg-white dark:bg-slate-800 p-6 rounded-lg max-w-md w-full shadow-lg space-y-4"
+        >
           <h4 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
             Toutes les compétences
           </h4>
@@ -74,7 +80,10 @@
           </div>
 
           <div class="text-right pt-4">
-            <button @click="showAllModal = false" class="text-sm text-cyan-600 hover:underline">
+            <button
+              @click="showAllModal = false"
+              class="text-sm text-cyan-600 hover:underline"
+            >
               Fermer
             </button>
           </div>
@@ -107,7 +116,10 @@ const visibleSkills = computed(() => props.skills.slice(0, 10))
 
 const addSkill = () => {
   const name = newSkill.value.trim()
-  if (name && !props.skills.some((s) => s.name.toLowerCase() === name.toLowerCase())) {
+  if (
+    name &&
+    !props.skills.some((s) => s.name.toLowerCase() === name.toLowerCase())
+  ) {
     emit('update:skills', [...props.skills, { name }])
     newSkill.value = ''
   }

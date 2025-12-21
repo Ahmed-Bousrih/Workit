@@ -5,9 +5,14 @@
     <GlobalHeader />
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <h2 class="text-4xl font-bold mb-8 text-center">📋 Offres d'emploi disponibles</h2>
+      <h2 class="text-4xl font-bold mb-8 text-center">
+        📋 Offres d'emploi disponibles
+      </h2>
 
-      <div v-if="loading" class="text-center text-slate-500 dark:text-slate-400 py-10">
+      <div
+        v-if="loading"
+        class="text-center text-slate-500 dark:text-slate-400 py-10"
+      >
         Chargement des offres...
       </div>
 
@@ -24,12 +29,14 @@
           v-if="isLoggedIn"
           class="bg-slate-100 dark:bg-slate-800 p-6 rounded-xl shadow hover:shadow-lg transition border-2 border-dashed border-emerald-500"
         >
-          <h3 class="text-xl font-semibold text-emerald-700 dark:text-emerald-400 mb-2">
+          <h3
+            class="text-xl font-semibold text-emerald-700 dark:text-emerald-400 mb-2"
+          >
             🚀 Candidature Spontanée
           </h3>
           <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-            Aucune offre ne correspond à votre profil ? Vous pouvez toujours envoyer une candidature
-            spontanée.
+            Aucune offre ne correspond à votre profil ? Vous pouvez toujours
+            envoyer une candidature spontanée.
           </p>
           <RouterLink
             to="/apply/spontaneous"
@@ -45,10 +52,14 @@
           :key="job.id"
           class="bg-slate-100 dark:bg-slate-800 p-6 rounded-xl shadow hover:shadow-lg transition"
         >
-          <h3 class="text-xl font-semibold text-cyan-700 dark:text-cyan-400 mb-2 truncate">
+          <h3
+            class="text-xl font-semibold text-cyan-700 dark:text-cyan-400 mb-2 truncate"
+          >
             {{ job.title }}
           </h3>
-          <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 mb-4">
+          <p
+            class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 mb-4"
+          >
             {{ job.descriptionGeneral }}
           </p>
           <RouterLink

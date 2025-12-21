@@ -5,16 +5,21 @@
     <!-- GlobalHeader locally included -->
     <GlobalHeader />
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <main
+      class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center"
+    >
       <!-- Hero Welcome -->
       <h2 class="text-4xl font-bold mb-6 text-[#1C1E26] dark:text-white">
         Bienvenue sur la plateforme de recrutement MedTrust
       </h2>
 
-      <p class="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-12 text-lg">
-        Cette plateforme est exclusivement dédiée au recrutement interne de MedTrust.<br />
-        Découvrez les opportunités qui vous attendent et rejoignez une entreprise engagée et
-        innovante.
+      <p
+        class="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-12 text-lg"
+      >
+        Cette plateforme est exclusivement dédiée au recrutement interne de
+        MedTrust.<br />
+        Découvrez les opportunités qui vous attendent et rejoignez une
+        entreprise engagée et innovante.
       </p>
 
       <!-- MedTrust Logo Placeholder -->
@@ -36,31 +41,40 @@
         <div
           class="p-6 bg-slate-100 dark:bg-slate-800 rounded-2xl shadow hover:shadow-lg transition"
         >
-          <h3 class="font-semibold text-xl text-cyan-700 dark:text-cyan-400 mb-2">
+          <h3
+            class="font-semibold text-xl text-cyan-700 dark:text-cyan-400 mb-2"
+          >
             Opportunités Diversifiées
           </h3>
           <p class="dark:text-slate-300">
-            Des postes adaptés à différents profils et parcours, au sein des équipes MedTrust.
+            Des postes adaptés à différents profils et parcours, au sein des
+            équipes MedTrust.
           </p>
         </div>
         <div
           class="p-6 bg-slate-100 dark:bg-slate-800 rounded-2xl shadow hover:shadow-lg transition"
         >
-          <h3 class="font-semibold text-xl text-cyan-700 dark:text-cyan-400 mb-2">
+          <h3
+            class="font-semibold text-xl text-cyan-700 dark:text-cyan-400 mb-2"
+          >
             Recrutement Simplifié
           </h3>
           <p class="dark:text-slate-300">
-            Postulez rapidement et suivez vos candidatures en toute transparence.
+            Postulez rapidement et suivez vos candidatures en toute
+            transparence.
           </p>
         </div>
         <div
           class="p-6 bg-slate-100 dark:bg-slate-800 rounded-2xl shadow hover:shadow-lg transition"
         >
-          <h3 class="font-semibold text-xl text-cyan-700 dark:text-cyan-400 mb-2">
+          <h3
+            class="font-semibold text-xl text-cyan-700 dark:text-cyan-400 mb-2"
+          >
             Accès Sécurisé
           </h3>
           <p class="dark:text-slate-300">
-            Connexion simple et sécurisée pour les candidats et les recruteurs internes.
+            Connexion simple et sécurisée pour les candidats et les recruteurs
+            internes.
           </p>
         </div>
       </div>
@@ -71,11 +85,15 @@
       >
         <div>
           <p class="text-4xl">+{{ stats.jobs || '...' }}</p>
-          <p class="text-slate-600 dark:text-slate-300 mt-2">Offres disponibles</p>
+          <p class="text-slate-600 dark:text-slate-300 mt-2">
+            Offres disponibles
+          </p>
         </div>
         <div>
           <p class="text-4xl">+{{ stats.candidates || '...' }}</p>
-          <p class="text-slate-600 dark:text-slate-300 mt-2">Candidats inscrits</p>
+          <p class="text-slate-600 dark:text-slate-300 mt-2">
+            Candidats inscrits
+          </p>
         </div>
       </div>
     </main>

@@ -33,7 +33,9 @@ export class AuthController {
     const user = await this.authService.validateUser(email, password);
 
     if (!user) {
-      throw new UnauthorizedException('Adresse email ou mot de passe incorrect.');
+      throw new UnauthorizedException(
+        'Adresse email ou mot de passe incorrect.',
+      );
     }
 
     return this.authService.login(user);
@@ -82,7 +84,10 @@ export class AuthController {
   }
 
   @Post('reset-password/:token')
-  async resetPassword(@Param('token') token: string, @Body('password') password: string) {
+  async resetPassword(
+    @Param('token') token: string,
+    @Body('password') password: string,
+  ) {
     return this.authService.resetPassword(token, password);
   }
 

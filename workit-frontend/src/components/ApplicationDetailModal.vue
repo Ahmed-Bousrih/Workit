@@ -19,7 +19,9 @@
               {{ initials }}
             </div>
             <div>
-              <p class="text-sm text-slate-500 flex items-center gap-1">📧 Candidat</p>
+              <p class="text-sm text-slate-500 flex items-center gap-1">
+                📧 Candidat
+              </p>
               <p class="font-semibold">
                 {{
                   application.user?.profile
@@ -32,7 +34,9 @@
 
           <!-- Job Info -->
           <div>
-            <p class="text-sm text-slate-500 flex items-center gap-1">🧑‍💼 Offre</p>
+            <p class="text-sm text-slate-500 flex items-center gap-1">
+              🧑‍💼 Offre
+            </p>
             <p class="font-semibold">
               <RouterLink
                 v-if="application.job"
@@ -47,13 +51,17 @@
 
           <!-- Submission Date -->
           <div>
-            <p class="text-sm text-slate-500 flex items-center gap-1">📅 Soumise le</p>
+            <p class="text-sm text-slate-500 flex items-center gap-1">
+              📅 Soumise le
+            </p>
             <p>{{ formatDate(application.appliedAt) }}</p>
           </div>
 
           <!-- Status -->
           <div>
-            <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-2">
+            <p
+              class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-2"
+            >
               📌 Statut
             </p>
             <StatusBadge :status="application.status" />
@@ -61,7 +69,10 @@
         </div>
 
         <div class="mt-6 text-right">
-          <button @click="emitClose" class="text-cyan-600 hover:underline font-semibold">
+          <button
+            @click="emitClose"
+            class="text-cyan-600 hover:underline font-semibold"
+          >
             Fermer
           </button>
         </div>

@@ -1,9 +1,13 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <GlobalHeader />
 
     <main class="max-w-4xl mx-auto px-4 py-12">
-      <h2 class="text-2xl font-bold mb-6 text-center">Toutes mes candidatures</h2>
+      <h2 class="text-2xl font-bold mb-6 text-center">
+        Toutes mes candidatures
+      </h2>
 
       <ul v-if="applications.length" class="space-y-4">
         <li
@@ -29,7 +33,9 @@
               <p class="font-semibold text-base">
                 {{ app.job?.title || 'Candidature Spontanée' }}
               </p>
-              <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
+              <p
+                class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1"
+              >
                 📅 {{ formatDate(app.appliedAt) }}
               </p>
             </div>
@@ -45,7 +51,11 @@
       </p>
     </main>
 
-    <ApplicationDetailModal v-if="selected" :application="selected" @close="selected = null" />
+    <ApplicationDetailModal
+      v-if="selected"
+      :application="selected"
+      @close="selected = null"
+    />
 
     <GlobalFooter />
   </div>

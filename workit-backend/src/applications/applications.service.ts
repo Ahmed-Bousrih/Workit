@@ -18,7 +18,11 @@ export class ApplicationsService {
     private readonly mailService: MailService,
   ) {}
 
-  async updateStatus(id: number, status: ApplicationStatus, customMessage?: string) {
+  async updateStatus(
+    id: number,
+    status: ApplicationStatus,
+    customMessage?: string,
+  ) {
     const app = await this.appRepo.findOne({
       where: { id },
       relations: ['user', 'job'],
@@ -34,7 +38,12 @@ export class ApplicationsService {
     // 💬 Fallback to standard message if no customMessage provided
     const text =
       customMessage?.trim() ||
-      this.buildStandardMessage(status, app.job?.title, app.isSpontaneous, userName);
+      this.buildStandardMessage(
+        status,
+        app.job?.title,
+        app.isSpontaneous,
+        userName,
+      );
     const html = `<p>${text.replace(/\n/g, '<br>')}</p>`;
 
     const subject = app.isSpontaneous

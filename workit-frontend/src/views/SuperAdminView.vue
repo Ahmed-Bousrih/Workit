@@ -1,9 +1,13 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+  <div
+    class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-white"
+  >
     <HeaderBar />
 
     <main class="max-w-6xl mx-auto px-4 py-12">
-      <h2 class="text-3xl font-bold text-center mb-6">Gestion des Utilisateurs</h2>
+      <h2 class="text-3xl font-bold text-center mb-6">
+        Gestion des Utilisateurs
+      </h2>
 
       <!-- Search Bar -->
       <div class="mb-6 max-w-md mx-auto">
@@ -15,7 +19,10 @@
         />
       </div>
 
-      <div v-if="loading" class="text-center text-slate-500 dark:text-slate-400 py-10">
+      <div
+        v-if="loading"
+        class="text-center text-slate-500 dark:text-slate-400 py-10"
+      >
         Chargement des utilisateurs...
       </div>
 
@@ -37,7 +44,9 @@
             :key="user.id"
             class="border-b border-slate-200 dark:border-slate-700"
           >
-            <td class="p-3">{{ user.profile?.firstName }} {{ user.profile?.lastName }}</td>
+            <td class="p-3">
+              {{ user.profile?.firstName }} {{ user.profile?.lastName }}
+            </td>
             <td class="p-3">{{ user.email }}</td>
             <td class="p-3 capitalize">{{ user.role.replace('_', ' ') }}</td>
             <td class="p-3">{{ formatDate(user.createdAt) }}</td>
@@ -66,11 +75,14 @@
         v-if="userToDelete"
         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       >
-        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl max-w-md w-full">
+        <div
+          class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl max-w-md w-full"
+        >
           <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
           <p class="mb-6">
             Êtes-vous sûr de vouloir supprimer l'utilisateur
-            <strong>{{ userToDelete.email }}</strong> ? Cette action est irréversible.
+            <strong>{{ userToDelete.email }}</strong> ? Cette action est
+            irréversible.
           </p>
           <div class="flex justify-end gap-3">
             <button
@@ -155,7 +167,9 @@ const filteredUsers = computed(() => {
   return users.value.filter(
     (u) =>
       u.email.toLowerCase().includes(term) ||
-      `${u.profile?.firstName || ''} ${u.profile?.lastName || ''}`.toLowerCase().includes(term),
+      `${u.profile?.firstName || ''} ${u.profile?.lastName || ''}`
+        .toLowerCase()
+        .includes(term),
   )
 })
 

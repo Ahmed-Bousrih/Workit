@@ -36,7 +36,9 @@
 
       <!-- Contact + CV -->
       <div class="flex flex-col lg:flex-row gap-8">
-        <div class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+        <div
+          class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+        >
           <ProfileContact
             :email="user?.email || ''"
             v-model:phone="profile.phone"
@@ -45,7 +47,9 @@
           />
         </div>
 
-        <div class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+        <div
+          class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+        >
           <ProfileResume
             :resumeUrl="resumeUrl"
             :resumeName="resumeName"
@@ -58,10 +62,17 @@
 
       <!-- About Me + Skills -->
       <div class="flex flex-col lg:flex-row gap-8">
-        <div class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
-          <ProfileAbout v-model:aboutMe="profile.aboutMe" :isEditing="isEditing" />
+        <div
+          class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+        >
+          <ProfileAbout
+            v-model:aboutMe="profile.aboutMe"
+            :isEditing="isEditing"
+          />
         </div>
-        <div class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+        <div
+          class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+        >
           <ProfileSkills
             :isEditing="isEditing"
             :skills="profile.skills"
@@ -71,7 +82,9 @@
       </div>
 
       <!-- Education -->
-      <section class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+      <section
+        class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+      >
         <ProfileEducation
           :isEditing="isEditing"
           :education="profile.education"
@@ -80,7 +93,9 @@
       </section>
 
       <!-- Experience -->
-      <section class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+      <section
+        class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+      >
         <ProfileExperience
           :isEditing="isEditing"
           :experience="profile.experience"
@@ -164,18 +179,24 @@ onMounted(async () => {
         address: p.address || '',
         aboutMe: p.aboutMe || '',
         education: res.data.educations || [],
-        experience: (res.data.workExperiences || []).map((exp: WorkExperience) => ({
-          ...exp,
-          startDate: exp.startDate?.slice(0, 7) || '',
-          endDate: exp.endDate ? exp.endDate.slice(0, 7) : null,
-          isOngoing: !exp.endDate, // ✅ ← this ensures it's set for reactivity
-        })),
+        experience: (res.data.workExperiences || []).map(
+          (exp: WorkExperience) => ({
+            ...exp,
+            startDate: exp.startDate?.slice(0, 7) || '',
+            endDate: exp.endDate ? exp.endDate.slice(0, 7) : null,
+            isOngoing: !exp.endDate, // ✅ ← this ensures it's set for reactivity
+          }),
+        ),
         skills: res.data.skills || [],
       }
 
       resumeName.value = p.resumeUrl?.split('/').pop() || null
-      resumeUrl.value = p.resumeUrl ? `http://localhost:3000${p.resumeUrl}` : null
-      profilePicture.value = p.photoUrl ? `http://localhost:3000${p.photoUrl}` : null
+      resumeUrl.value = p.resumeUrl
+        ? `http://localhost:3000${p.resumeUrl}`
+        : null
+      profilePicture.value = p.photoUrl
+        ? `http://localhost:3000${p.photoUrl}`
+        : null
       // console.log('Loaded skills:', profile.value.skills);
     }
   } catch (err) {
@@ -220,7 +241,8 @@ const handlePhotoUpload = async (e: Event) => {
     toast.success('Photo de profil mise à jour ✅')
   } catch (error: unknown) {
     const err = error as AxiosError<{ message: string | string[] }>
-    const message = err.response?.data?.message || "Échec de l'envoi de la photo ❌"
+    const message =
+      err.response?.data?.message || "Échec de l'envoi de la photo ❌"
     toast.error(Array.isArray(message) ? message.join(', ') : message)
   }
 }

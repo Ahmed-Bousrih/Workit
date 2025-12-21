@@ -26,7 +26,9 @@
 
       <!-- Contact + CV -->
       <div class="flex flex-col lg:flex-row gap-8">
-        <div class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+        <div
+          class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+        >
           <AdminProfileContact
             :email="user?.email || ''"
             :phone="profile.phone"
@@ -34,28 +36,38 @@
           />
         </div>
 
-        <div class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+        <div
+          class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+        >
           <AdminProfileResume :resumeUrl="resumeUrl" />
         </div>
       </div>
 
       <!-- About Me + Skills -->
       <div class="flex flex-col lg:flex-row gap-8">
-        <div class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+        <div
+          class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+        >
           <AdminProfileAbout :aboutMe="profile.aboutMe" />
         </div>
-        <div class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+        <div
+          class="flex-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+        >
           <AdminProfileSkills :skills="profile.skills" />
         </div>
       </div>
 
       <!-- Education -->
-      <section class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+      <section
+        class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+      >
         <AdminProfileEducation :education="profile.education" />
       </section>
 
       <!-- Experience -->
-      <section class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner">
+      <section
+        class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 shadow-inner"
+      >
         <AdminProfileExperience :experience="profile.experience" />
       </section>
     </main>
@@ -106,17 +118,23 @@ onMounted(async () => {
         address: p.address || '',
         aboutMe: p.aboutMe || '',
         education: res.data.educations || [],
-        experience: (res.data.workExperiences || []).map((exp: WorkExperience) => ({
-          ...exp,
-          startDate: exp.startDate?.slice(0, 7) || '',
-          endDate: exp.endDate ? exp.endDate.slice(0, 7) : null,
-          isOngoing: !exp.endDate,
-        })),
+        experience: (res.data.workExperiences || []).map(
+          (exp: WorkExperience) => ({
+            ...exp,
+            startDate: exp.startDate?.slice(0, 7) || '',
+            endDate: exp.endDate ? exp.endDate.slice(0, 7) : null,
+            isOngoing: !exp.endDate,
+          }),
+        ),
         skills: res.data.skills || [],
       }
 
-      resumeUrl.value = p.resumeUrl ? `http://localhost:3000${p.resumeUrl}` : null
-      profilePicture.value = p.photoUrl ? `http://localhost:3000${p.photoUrl}` : null
+      resumeUrl.value = p.resumeUrl
+        ? `http://localhost:3000${p.resumeUrl}`
+        : null
+      profilePicture.value = p.photoUrl
+        ? `http://localhost:3000${p.photoUrl}`
+        : null
     }
   } catch (err) {
     console.error('Erreur chargement admin profile', err)

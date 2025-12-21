@@ -32,7 +32,9 @@ api.interceptors.response.use(
       // Server responded with error status
       const status = error.response.status
       const message =
-        error.response.data?.message || error.response.data?.error || 'Une erreur est survenue'
+        error.response.data?.message ||
+        error.response.data?.error ||
+        'Une erreur est survenue'
 
       switch (status) {
         case 401:
@@ -44,7 +46,9 @@ api.interceptors.response.use(
           toast.error('Session expirée. Veuillez vous reconnecter.')
           break
         case 403:
-          toast.error("Accès refusé. Vous n'avez pas les permissions nécessaires.")
+          toast.error(
+            "Accès refusé. Vous n'avez pas les permissions nécessaires.",
+          )
           break
         case 404:
           toast.error('Ressource non trouvée.')
@@ -54,7 +58,9 @@ api.interceptors.response.use(
           break
         case 422:
           // Validation errors
-          toast.error(message || 'Données invalides. Veuillez vérifier vos informations.')
+          toast.error(
+            message || 'Données invalides. Veuillez vérifier vos informations.',
+          )
           break
         case 500:
           toast.error('Erreur serveur. Veuillez réessayer plus tard.')
@@ -64,7 +70,9 @@ api.interceptors.response.use(
       }
     } else if (error.request) {
       // Request made but no response received
-      toast.error('Impossible de contacter le serveur. Vérifiez votre connexion.')
+      toast.error(
+        'Impossible de contacter le serveur. Vérifiez votre connexion.',
+      )
     } else {
       // Something else happened
       toast.error('Une erreur inattendue est survenue.')

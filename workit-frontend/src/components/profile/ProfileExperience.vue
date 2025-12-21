@@ -4,7 +4,11 @@
       <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
         Expérience Professionnelle
       </h3>
-      <button v-if="isEditing" @click="addExperience" class="text-sm text-cyan-600 hover:underline">
+      <button
+        v-if="isEditing"
+        @click="addExperience"
+        class="text-sm text-cyan-600 hover:underline"
+      >
         Ajouter une expérience
       </button>
     </div>
@@ -20,7 +24,9 @@
 
       <div class="grid md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Entreprise</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+            >Entreprise</label
+          >
           <input
             v-model="exp.company"
             :readonly="!isEditing"
@@ -28,7 +34,9 @@
           />
         </div>
         <div>
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Poste</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+            >Poste</label
+          >
           <input
             v-model="exp.position"
             :readonly="!isEditing"
@@ -39,7 +47,9 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Date de début</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+            >Date de début</label
+          >
           <input
             v-model="exp.startDate"
             type="month"
@@ -50,7 +60,9 @@
 
         <!-- Date de fin -->
         <div>
-          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Date de fin</label>
+          <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+            >Date de fin</label
+          >
           <div class="space-y-1">
             <!-- When not editing and ongoing, show 'En cours' -->
             <input
@@ -89,7 +101,9 @@
       </div>
 
       <div>
-        <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Description</label>
+        <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+          >Description</label
+        >
         <textarea
           v-model="exp.description"
           :readonly="!isEditing"
@@ -99,7 +113,10 @@
       </div>
 
       <div v-if="isEditing" class="text-right">
-        <button @click="removeExperience(index)" class="text-sm text-red-500 hover:underline">
+        <button
+          @click="removeExperience(index)"
+          class="text-sm text-red-500 hover:underline"
+        >
           Supprimer
         </button>
       </div>
@@ -122,7 +139,10 @@ const emit = defineEmits<{
 
 const addExperience = () => {
   const now = new Date()
-  const formatted = now.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit' }) // "YYYY-MM"
+  const formatted = now.toLocaleDateString('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+  }) // "YYYY-MM"
 
   const updated = [
     ...props.experience,

@@ -6,21 +6,35 @@
       </RouterLink>
 
       <!-- Mobile menu button -->
-      <button @click="menuOpen = !menuOpen" class="md:hidden text-2xl focus:outline-none">
+      <button
+        @click="menuOpen = !menuOpen"
+        class="md:hidden text-2xl focus:outline-none"
+      >
         ☰
       </button>
 
       <!-- Desktop nav -->
       <nav class="hidden md:flex gap-4 items-center">
-        <RouterLink to="/" class="hover:text-cyan-400 hover:underline">Accueil</RouterLink>
-        <RouterLink to="/jobs" class="hover:text-cyan-400 hover:underline">Offres</RouterLink>
-        <button @click="toggleDark" class="hover:text-cyan-400 transition text-lg">
+        <RouterLink to="/" class="hover:text-cyan-400 hover:underline"
+          >Accueil</RouterLink
+        >
+        <RouterLink to="/jobs" class="hover:text-cyan-400 hover:underline"
+          >Offres</RouterLink
+        >
+        <button
+          @click="toggleDark"
+          class="hover:text-cyan-400 transition text-lg"
+        >
           <span v-if="isDark">☀️</span>
           <span v-else>🌙</span>
         </button>
         <template v-if="isLoggedIn">
-          <RouterLink to="/dashboard" class="hover:text-cyan-400">Mon espace</RouterLink>
-          <button @click="logout" class="hover:text-orange-400">Déconnexion</button>
+          <RouterLink to="/dashboard" class="hover:text-cyan-400"
+            >Mon espace</RouterLink
+          >
+          <button @click="logout" class="hover:text-orange-400">
+            Déconnexion
+          </button>
         </template>
         <template v-else>
           <RouterLink
@@ -42,15 +56,26 @@
       v-if="menuOpen"
       class="flex flex-col gap-4 px-4 pb-4 md:hidden bg-slate-800 text-white shadow-md"
     >
-      <RouterLink to="/" class="hover:text-cyan-400 hover:underline">Accueil</RouterLink>
-      <RouterLink to="/jobs" class="hover:text-cyan-400 hover:underline">Offres</RouterLink>
-      <button @click="toggleDark" class="hover:text-cyan-400 transition text-lg text-left">
+      <RouterLink to="/" class="hover:text-cyan-400 hover:underline"
+        >Accueil</RouterLink
+      >
+      <RouterLink to="/jobs" class="hover:text-cyan-400 hover:underline"
+        >Offres</RouterLink
+      >
+      <button
+        @click="toggleDark"
+        class="hover:text-cyan-400 transition text-lg text-left"
+      >
         <span v-if="isDark">☀️</span>
         <span v-else>🌙</span>
       </button>
       <template v-if="isLoggedIn">
-        <RouterLink to="/dashboard" class="hover:text-cyan-400">Mon espace</RouterLink>
-        <button @click="logout" class="hover:text-orange-400 text-left">Déconnexion</button>
+        <RouterLink to="/dashboard" class="hover:text-cyan-400"
+          >Mon espace</RouterLink
+        >
+        <button @click="logout" class="hover:text-orange-400 text-left">
+          Déconnexion
+        </button>
       </template>
       <template v-else>
         <RouterLink

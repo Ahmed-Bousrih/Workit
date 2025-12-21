@@ -65,7 +65,9 @@
           class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow hover:shadow-md transition p-4 flex flex-col justify-between"
         >
           <div class="flex items-center justify-between mb-2">
-            <h3 class="text-lg font-bold text-cyan-800 dark:text-cyan-400 truncate">
+            <h3
+              class="text-lg font-bold text-cyan-800 dark:text-cyan-400 truncate"
+            >
               {{ job.title }}
             </h3>
             <span
@@ -75,7 +77,9 @@
               {{ job.applications.length }} candidatures
             </span>
           </div>
-          <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-3">
+          <p
+            class="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-3"
+          >
             {{ job.descriptionGeneral }}
           </p>
 
