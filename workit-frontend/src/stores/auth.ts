@@ -6,12 +6,28 @@ import { jwtDecode } from 'jwt-decode'
 type JwtPayload = {
   userId: number
   role: 'hr' | 'candidate' | 'super_admin'
+  exp?: number
+  iat?: number
 }
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem('token') || '',
   }),
+
+  getters: {
+    isTokenExpired(): boolean {
+      if (!this.token) return true
+      try {
+        const decoded = jwtDecode<JwtPayload>(this.token)
+        if (!decoded.exp) return true
+        // Check if token is expired (exp is in seconds, Date.now() is in milliseconds)
+        return decoded.exp * 1000 < Date.now()
+      } catch {
+        return true
+      }
+    },
+  },
 
   actions: {
     async login(email: string, password: string) {
@@ -43,7 +59,13 @@ export const useAuthStore = defineStore('auth', {
     },
 
     isLoggedIn() {
-      return !!this.token
+      if (!this.token) return false
+      // Check if token is expired
+      if (this.isTokenExpired) {
+        this.logout()
+        return false
+      }
+      return true
     },
   },
 })

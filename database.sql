@@ -159,9 +159,9 @@ CREATE TABLE Applications (
     status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'accepted', 'rejected')),
     coverLetter TEXT,
     isDeleted BOOLEAN DEFAULT FALSE,
-    deletedAt TIMESTAMP,
-    CONSTRAINT uniq_user_job UNIQUE(userId, jobId) WHERE isDeleted = FALSE
+    deletedAt TIMESTAMP
 );
+CREATE UNIQUE INDEX uniq_user_job_idx ON Applications(userId, jobId) WHERE isDeleted = FALSE;
 
 -- Indexes for Applications
 CREATE INDEX idx_applications_userId ON Applications(userId);

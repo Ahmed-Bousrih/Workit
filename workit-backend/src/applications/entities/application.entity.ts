@@ -31,15 +31,15 @@ export class Application {
   @JoinColumn({ name: 'jobid' })
   job: Job | null;
 
-  @CreateDateColumn({ name: 'appliedat' })
+  @CreateDateColumn({ name: 'appliedat', type: 'timestamp' })
   appliedAt: Date;
 
-  @Column({ default: 'pending' })
+  @Column({ default: 'pending', type: 'text' })
   status: ApplicationStatus;
 
-  @Column({ default: false, name: 'isspontaneous' })
+  @Column({ default: false, name: 'isspontaneous', type: 'boolean' })
   isSpontaneous: boolean;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: true, name: 'coverletter' })
   coverletter: string | null;
 }

@@ -16,20 +16,20 @@ export class Education {
   @JoinColumn({ name: 'userid' })
   user: User;
 
-  @Column()
+  @Column({ type: 'text' })
   institution: string;
 
-  @Column()
+  @Column({ type: 'text' })
   degree: string;
 
-  @Column({ name: 'fieldofstudy' })
+  @Column({ name: 'fieldofstudy', type: 'text' })
   fieldOfStudy: string;
 
-  @Column({ name: 'startyear' })
+  @Column({ name: 'startyear', type: 'int' })
   startYear: number;
 
-  @Column({ nullable: true, name: 'endyear' })
-  endYear?: number;
+  @Column({ nullable: true, name: 'endyear', type: 'int' })
+  endYear: number | null;
 
   @Column({ name: 'userid' })
   userId: number;

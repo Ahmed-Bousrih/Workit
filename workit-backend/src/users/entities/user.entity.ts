@@ -21,19 +21,19 @@ export class User {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'text' })
   email: string;
 
-  @Column({ name: 'passwordhash' }) // <-- maps to lowercase DB column
+  @Column({ name: 'passwordhash', type: 'text' }) // <-- maps to lowercase DB column
   passwordHash: string;
 
-  @Column({ default: 'candidate' })
+  @Column({ default: 'candidate', type: 'text' })
   role: 'super_admin' | 'hr' | 'candidate';
 
-  @Column({ default: false, name: 'isemailverified' })
+  @Column({ default: false, name: 'isemailverified', type: 'boolean' })
   isEmailVerified: boolean;
 
-  @Column({ nullable: true, name: 'email_verification_token' })
+  @Column({ nullable: true, name: 'email_verification_token', type: 'text' })
   emailVerificationToken: string | null;
 
   @OneToMany(() => Application, (application) => application.user)
@@ -51,10 +51,14 @@ export class User {
   })
   skills: Skill[];
 
-  @Column({ nullable: true, name: 'password_reset_token' })
+  @Column({ nullable: true, name: 'password_reset_token', type: 'text' })
   passwordResetToken: string | null;
 
-  @Column({ nullable: true, name: 'password_reset_expires_at' })
+  @Column({
+    nullable: true,
+    name: 'password_reset_expires_at',
+    type: 'timestamp',
+  })
   passwordResetExpiresAt: Date | null;
 
   @OneToMany(() => Education, (edu) => edu.user)
@@ -63,9 +67,9 @@ export class User {
   @OneToMany(() => WorkExperience, (we) => we.user)
   workExperiences: WorkExperience[];
 
-  @CreateDateColumn({ name: 'createdat' })
+  @CreateDateColumn({ name: 'createdat', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'lastseenat', nullable: true })
-  lastSeenAt: Date;
+  @UpdateDateColumn({ name: 'lastseenat', nullable: true, type: 'timestamp' })
+  lastSeenAt: Date | null;
 }

@@ -27,6 +27,8 @@ type JwtPayload = {
   userId: number
   email: string
   role: 'hr' | 'candidate' | 'super_admin'
+  exp?: number
+  iat?: number
 }
 
 const routes: RouteRecordRaw[] = [
@@ -174,6 +176,7 @@ router.beforeEach((to, _from, next) => {
   const isAuthRequired = to.meta.requiresAuth
   const requiredRole = to.meta.role
 
+  // Check if token exists and is not expired
   if (isAuthRequired && !auth.isLoggedIn()) {
     return next('/login')
   }
@@ -184,10 +187,18 @@ router.beforeEach((to, _from, next) => {
 
     try {
       const decoded = jwtDecode<JwtPayload>(token)
+
+      // Check if token is expired
+      if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+        auth.logout()
+        return next('/login')
+      }
+
       if (decoded.role !== requiredRole) {
         return next('/') // fallback
       }
     } catch {
+      auth.logout()
       return next('/login')
     }
   }

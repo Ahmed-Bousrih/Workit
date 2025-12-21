@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailModule } from '../mail/mail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordResetRequest } from './entities/password-reset-request.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { PasswordResetRequest } from './entities/password-reset-request.entity';
     UsersModule,
     PassportModule,
     MailModule,
-    TypeOrmModule.forFeature([PasswordResetRequest]),
+    TypeOrmModule.forFeature([PasswordResetRequest, User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

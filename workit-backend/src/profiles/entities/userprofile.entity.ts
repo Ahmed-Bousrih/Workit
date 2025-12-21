@@ -6,28 +6,34 @@ export class UserProfile {
   @PrimaryColumn({ name: 'userid', type: 'bigint' })
   userId: number;
 
-  @Column({ name: 'firstname' })
+  @Column({ name: 'firstname', type: 'text' })
   firstName: string;
 
-  @Column({ name: 'lastname' })
+  @Column({ name: 'lastname', type: 'text' })
   lastName: string;
 
-  @Column({ nullable: true })
-  phone: string;
+  @Column({ nullable: true, type: 'text' })
+  phone: string | null;
 
-  @Column({ nullable: true })
-  address: string;
+  @Column({ nullable: true, type: 'text' })
+  address: string | null;
 
-  @Column({ nullable: true, name: 'resumeurl' })
+  @Column({ nullable: true, name: 'resumeurl', type: 'text' })
   resumeUrl: string | null;
 
-  @Column({ nullable: true, name: 'aboutme' })
-  aboutMe: string;
+  @Column({ nullable: true, name: 'aboutme', type: 'text' })
+  aboutMe: string | null;
 
   @OneToOne(() => User, (user) => user.profile)
   @JoinColumn({ name: 'userid' }) // 🔥 very important to map correctly
   user: User;
 
-  @Column({ nullable: true, name: 'photourl' })
-  photoUrl: string;
+  @Column({ nullable: true, name: 'photourl', type: 'text' })
+  photoUrl: string | null;
+
+  @Column({ nullable: true, name: 'birthdate', type: 'date' })
+  birthDate: Date | null;
+
+  @Column({ nullable: true, type: 'text' })
+  gender: string | null;
 }

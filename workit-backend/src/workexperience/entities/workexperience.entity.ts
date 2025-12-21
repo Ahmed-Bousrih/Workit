@@ -21,18 +21,18 @@ export class WorkExperience {
   @Column({ name: 'userid' })
   userId: number;
 
-  @Column()
+  @Column({ type: 'text' })
   company: string;
 
-  @Column()
+  @Column({ type: 'text' })
   position: string;
 
   @Column({ type: 'date', name: 'startdate' })
   startDate: string;
 
   @Column({ type: 'date', nullable: true, name: 'enddate' })
-  endDate?: string;
+  endDate: string | null;
 
-  @Column({ nullable: true })
-  description?: string;
+  @Column({ nullable: true, type: 'text' })
+  description: string | null;
 }
