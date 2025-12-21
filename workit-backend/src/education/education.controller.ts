@@ -19,11 +19,11 @@ export class EducationController {
 
   @Post()
   create(@Request() req: any, @Body() body: any) {
-    return this.educationService.create(req.user.userId, body);
+    return this.educationService.create(parseInt(req.user.userId, 10), body);
   }
 
   @Get()
   findAll(@Request() req: any) {
-    return this.educationService.findAllByUser(req.user.userId);
+    return this.educationService.findAllByUser(parseInt(req.user.userId, 10));
   }
 }

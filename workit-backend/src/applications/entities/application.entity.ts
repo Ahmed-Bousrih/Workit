@@ -9,12 +9,12 @@ import {
 import { User } from '../../users/entities/user.entity';
 import { Job } from '../../jobs/entities/job.entity';
 
-export type ApplicationStatus = 'pending' | 'reviewed' | 'rejected';
+export type ApplicationStatus = 'pending' | 'reviewed' | 'accepted' | 'rejected';
 
 @Entity('applications')
 export class Application {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @ManyToOne(() => User, (user) => user.applications, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userid' }) // <-- explicitly tell TypeORM the column name

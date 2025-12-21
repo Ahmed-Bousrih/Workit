@@ -19,11 +19,11 @@ export class WorkExperienceController {
 
   @Post()
   create(@Request() req: any, @Body() body: any) {
-    return this.workService.create(req.user.userId, body);
+    return this.workService.create(parseInt(req.user.userId, 10), body);
   }
 
   @Get()
   findAll(@Request() req: any) {
-    return this.workService.findAllByUser(req.user.userId);
+    return this.workService.findAllByUser(parseInt(req.user.userId, 10));
   }
 }

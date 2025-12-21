@@ -9,11 +9,11 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity('education')
 export class Education {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @ManyToOne(() => User, (user) => user.educations, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userid' }) // <-- This fixes the mismatch
+  @JoinColumn({ name: 'userid' })
   user: User;
 
   @Column()
@@ -32,5 +32,5 @@ export class Education {
   endYear?: number;
 
   @Column({ name: 'userid' })
-  userId: string;
+  userId: number;
 }

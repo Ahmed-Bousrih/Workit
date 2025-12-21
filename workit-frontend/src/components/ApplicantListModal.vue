@@ -33,18 +33,7 @@
             </router-link>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
               {{ formatDate(app.appliedAt) }} —
-              <span
-                :class="[
-                  'text-xs font-semibold px-2 py-0.5 rounded-full',
-                  app.status === 'pending'
-                    ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300'
-                    : app.status === 'reviewed'
-                    ? 'bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300'
-                    : ''
-                ]"
-              >
-                {{ app.status === 'reviewed' ? 'Étape suivante' : app.status }}
-              </span>
+              <StatusBadge :status="app.status" size="sm" />
             </p>
             <div
               v-if="app.coverletter"
@@ -62,26 +51,44 @@
           </div>
 
           <div class="flex gap-2">
-            <template v-if="app.status === 'pending'">
+            <template v-if="app.status === ApplicationStatus.PENDING">
               <button
-                class="text-sm bg-green-100 dark:bg-green-700 hover:bg-green-200 dark:hover:bg-green-600 text-green-700 dark:text-green-200 px-3 py-1 rounded"
-                @click="openEmailModal(app.id, 'reviewed')"
+                class="text-sm bg-blue-100 dark:bg-blue-700 hover:bg-blue-200 dark:hover:bg-blue-600 text-blue-700 dark:text-blue-200 px-3 py-1 rounded transition"
+                @click="openEmailModal(app.id, ApplicationStatus.REVIEWED)"
               >
-                ✅ Étape suivante
+                👀 Étape suivante
               </button>
               <button
-                class="text-sm bg-red-100 dark:bg-red-700 hover:bg-red-200 dark:hover:bg-red-600 text-red-700 dark:text-red-200 px-3 py-1 rounded"
-                @click="openEmailModal(app.id, 'rejected')"
+                class="text-sm bg-green-100 dark:bg-green-700 hover:bg-green-200 dark:hover:bg-green-600 text-green-700 dark:text-green-200 px-3 py-1 rounded transition"
+                @click="openEmailModal(app.id, ApplicationStatus.ACCEPTED)"
+              >
+                ✅ Accepter
+              </button>
+              <button
+                class="text-sm bg-red-100 dark:bg-red-700 hover:bg-red-200 dark:hover:bg-red-600 text-red-700 dark:text-red-200 px-3 py-1 rounded transition"
+                @click="openEmailModal(app.id, ApplicationStatus.REJECTED)"
               >
                 ❌ Rejeter
               </button>
             </template>
 
+            <template v-else-if="app.status === ApplicationStatus.REVIEWED">
+              <button
+                class="text-sm bg-green-100 dark:bg-green-700 hover:bg-green-200 dark:hover:bg-green-600 text-green-700 dark:text-green-200 px-3 py-1 rounded transition"
+                @click="openEmailModal(app.id, ApplicationStatus.ACCEPTED)"
+              >
+                ✅ Accepter
+              </button>
+              <span class="text-sm text-blue-600 dark:text-blue-300 font-semibold">
+                👀 En cours d'examen
+              </span>
+            </template>
+
             <span
-              v-else-if="app.status === 'reviewed'"
+              v-else-if="app.status === ApplicationStatus.ACCEPTED"
               class="text-sm text-green-600 dark:text-green-300 font-semibold"
             >
-              ✅ Choisi pour l'étape suivante
+              ✅ Candidature acceptée
             </span>
           </div>
         </div>
@@ -133,10 +140,12 @@
 import { ref, watch, onMounted, computed } from "vue";
 import { api } from "@/services/api";
 import { useToast } from "vue-toastification";
+import StatusBadge from "./StatusBadge.vue";
 import type { Application } from "@/types/application";
+import { ApplicationStatus } from "@/types/enums";
 
 const props = defineProps<{
-  jobId: string;
+  jobId: number | string;
   jobTitle: string;
   visible: boolean;
 }>();
@@ -145,30 +154,36 @@ const applicants = ref<Application[]>([]);
 const loading = ref(false);
 const toast = useToast();
 
-const expandedLetters = ref<Record<string, boolean>>({});
+const expandedLetters = ref<Record<number, boolean>>({});
 const showEmailModal = ref(false);
-const selectedAppId = ref<string | null>(null);
-const selectedStatus = ref<'rejected' | 'reviewed' | null>(null);
+const selectedAppId = ref<number | null>(null);
+const selectedStatus = ref<ApplicationStatus | null>(null);
 const customMessage = ref('');
 
-const toggleLetter = (id: string) => {
+const toggleLetter = (id: number) => {
   expandedLetters.value[id] = !expandedLetters.value[id];
 };
 
 const buildDefaultMessage = (
-  status: 'rejected' | 'reviewed',
+  status: ApplicationStatus,
   jobTitle: string
 ) => {
-  return status === 'rejected'
-    ? `Bonjour,
+  if (status === ApplicationStatus.REJECTED) {
+    return `Bonjour,
 
-Nous vous remercions pour votre candidature au poste de "${jobTitle}". Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`
-    : `Bonjour,
+Nous vous remercions pour votre candidature au poste de "${jobTitle}". Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`;
+  } else if (status === ApplicationStatus.ACCEPTED) {
+    return `Bonjour,
+
+Félicitations ! Votre candidature au poste de "${jobTitle}" a été acceptée. Nous vous contacterons prochainement pour discuter des prochaines étapes.`;
+  } else {
+    return `Bonjour,
 
 Bonne nouvelle ! Votre candidature au poste de "${jobTitle}" a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+  }
 };
 
-const openEmailModal = (id: string, status: 'rejected' | 'reviewed') => {
+const openEmailModal = (id: number, status: ApplicationStatus) => {
   selectedAppId.value = id;
   selectedStatus.value = status;
   customMessage.value = buildDefaultMessage(status, props.jobTitle);
@@ -183,11 +198,13 @@ const confirmStatusUpdate = async () => {
       customMessage: customMessage.value.trim(),
     });
 
-    toast.success(
-      selectedStatus.value === 'rejected'
-        ? 'Candidat rejeté ❌'
-        : 'Le candidat passe à l\'étape suivante ✅'
-    );
+    const statusMessages: Record<ApplicationStatus, string> = {
+      [ApplicationStatus.PENDING]: 'Statut mis à jour',
+      [ApplicationStatus.REJECTED]: 'Candidat rejeté ❌',
+      [ApplicationStatus.REVIEWED]: 'Le candidat passe à l\'étape suivante 👀',
+      [ApplicationStatus.ACCEPTED]: 'Candidature acceptée ✅',
+    };
+    toast.success(statusMessages[selectedStatus.value] || 'Statut mis à jour');
 
     await loadApplicants();
   } catch {
@@ -201,7 +218,7 @@ const confirmStatusUpdate = async () => {
 };
 
 const visibleApplicants = computed(() =>
-  applicants.value.filter((app) => app.status !== "rejected")
+  applicants.value.filter((app) => app.status !== ApplicationStatus.REJECTED)
 );
 
 onMounted(() => {

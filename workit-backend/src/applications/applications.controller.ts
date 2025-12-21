@@ -31,8 +31,8 @@ export class ApplicationsController {
     @Request() req: any,
   ) {
     return this.appService.applyToJob(
-      req.user.userId,
-      jobId,
+      parseInt(req.user.userId, 10),
+      parseInt(jobId, 10),
       coverletter || null,
     );
   }
@@ -44,7 +44,7 @@ export class ApplicationsController {
     @Request() req: any,
   ) {
     return this.appService.applySpontaneously(
-      req.user.userId,
+      parseInt(req.user.userId, 10),
       coverletter || null,
     );
   }
@@ -52,54 +52,54 @@ export class ApplicationsController {
   @UseGuards(JwtAuthGuard)
   @Get('check')
   async checkIfApplied(@Query('jobId') jobId: string, @Request() req: any) {
-    return this.appService.checkIfUserApplied(req.user.userId, jobId);
+    return this.appService.checkIfUserApplied(parseInt(req.user.userId, 10), parseInt(jobId, 10));
   }
 
   // Count applications for the current user
   @Get('count-mine')
   @UseGuards(JwtAuthGuard)
-  countMine(@Req() req) {
-    return this.appService.countForUser(req.user.userId);
+  countMine(@Req() req: any) {
+    return this.appService.countForUser(parseInt((req.user as any).userId, 10));
   }
 
   // Get recent applications for current user
   @Get('recent-mine')
   @UseGuards(JwtAuthGuard)
-  recentMine(@Req() req, @Query('limit') limit: string) {
+  recentMine(@Req() req: any, @Query('limit') limit: string) {
     const parsedLimit = parseInt(limit, 10) || 3;
-    return this.appService.recentForUser(req.user.userId, parsedLimit);
+    return this.appService.recentForUser(parseInt((req.user as any).userId, 10), parsedLimit);
   }
 
   @Get('mine')
   @UseGuards(JwtAuthGuard)
   getMine(@Req() req: any) {
-    return this.appService.findMine(req.user.userId);
+    return this.appService.findMine(parseInt(req.user.userId, 10));
   }
 
   @Get('count')
   @UseGuards(JwtAuthGuard)
-  @Roles('admin')
+  @Roles('hr')
   countAll() {
     return this.appService.count();
   }
 
   @Get('count-spontaneous')
   @UseGuards(JwtAuthGuard)
-  @Roles('admin')
+  @Roles('hr')
   countSpontaneous() {
     return this.appService.count(true);
   }
 
   @Get('recent')
   @UseGuards(JwtAuthGuard)
-  @Roles('admin')
+  @Roles('hr')
   findRecent() {
     return this.appService.getRecent();
   }
 
   @Get('spontaneous')
   @UseGuards(JwtAuthGuard)
-  @Roles('admin')
+  @Roles('hr')
   getSpontaneousApps() {
     return this.appService.findSpontaneous();
   }
@@ -111,24 +111,25 @@ export class ApplicationsController {
   // }
   @Get('job/:jobId')
   @UseGuards(JwtAuthGuard)
-  @Roles('admin')
+  @Roles('hr')
   getByJob(@Param('jobId') jobId: string) {
-    return this.appService.getByJobId(jobId);
+    return this.appService.getByJobId(parseInt(jobId, 10));
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.appService.remove(id);
+    return this.appService.remove(parseInt(id, 10));
   }
 
   @Patch(':id/status')
   @UseGuards(JwtAuthGuard)
+  @Roles('hr')
   async updateStatus(
     @Param('id') id: string,
     @Body('status') status: ApplicationStatus,
     @Body('customMessage') customMessage?: string,
   ) {
-    return this.appService.updateStatus(id, status, customMessage);
+    return this.appService.updateStatus(parseInt(id, 10), status, customMessage);
   }
 }

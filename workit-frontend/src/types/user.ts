@@ -1,7 +1,7 @@
 export interface User {
-  id: string;
+  id: number;
   email: string;
-  role: 'admin' | 'candidate' | 'super_admin';
+  role: 'hr' | 'candidate' | 'super_admin';
   createdAt: string;
   profile?: {
     firstName?: string;

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
@@ -23,8 +24,10 @@ export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
   @Post()
-  create(@Body() createJobDto: CreateJobDto) {
-    return this.jobsService.create(createJobDto);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('hr')
+  create(@Body() createJobDto: CreateJobDto, @Request() req: any) {
+    return this.jobsService.create(createJobDto, parseInt(req.user.userId, 10));
   }
 
   @Get()
@@ -34,7 +37,7 @@ export class JobsController {
 
   @Get('last-five')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('hr')
   findLastFive() {
     return this.jobsService.findLastFive();
   }
@@ -48,16 +51,20 @@ export class JobsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.jobsService.findOne(id);
+    return this.jobsService.findOne(parseInt(id, 10));
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('hr')
   update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobsService.update(id, updateJobDto);
+    return this.jobsService.update(parseInt(id, 10), updateJobDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('hr')
   remove(@Param('id') id: string) {
-    return this.jobsService.remove(id);
+    return this.jobsService.remove(parseInt(id, 10));
   }
 }

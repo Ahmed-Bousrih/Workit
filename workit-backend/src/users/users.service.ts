@@ -34,8 +34,6 @@ export class UsersService {
     @InjectRepository(WorkExperience)
     private readonly experienceRepo: Repository<WorkExperience>,
 
-    @InjectRepository(Skill)
-    private readonly SkillRepo: Repository<Skill>,
 
     @InjectRepository(Application)
     private readonly appRepo: Repository<Application>,
@@ -49,16 +47,16 @@ export class UsersService {
     });
   }
 
-  async updateRole(id: string, role: string) {
+  async updateRole(id: number, role: 'super_admin' | 'hr' | 'candidate') {
     await this.userRepo.update({ id }, { role });
     return { message: 'Rôle mis à jour ✅' };
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     return this.userRepo.delete({ id });
   }
 
-  async findById(id: string) {
+  async findById(id: number) {
     const user = await this.userRepo.findOne({
       where: { id },
       relations: ['profile', 'skills', 'educations', 'workExperiences'], // 👈 include all
@@ -76,7 +74,7 @@ export class UsersService {
   async createUser(data: {
     email: string;
     passwordHash: string;
-    role: string;
+    role: 'super_admin' | 'hr' | 'candidate';
     isEmailVerified?: boolean;
     emailVerificationToken?: string;
   }) {
@@ -86,7 +84,7 @@ export class UsersService {
     return this.userRepo.save(user);
   }
 
-  async updateLastSeen(id: string) {
+  async updateLastSeen(id: number) {
     await this.userRepo.update(id, { lastSeenAt: new Date() });
   }
 
@@ -98,7 +96,7 @@ export class UsersService {
     return await this.userRepo.save(entity); // no spread, no partial object
   }
 
-  async markEmailVerified(userId: string) {
+  async markEmailVerified(userId: number) {
     await this.userRepo.update(
       { id: userId },
       {
@@ -108,7 +106,7 @@ export class UsersService {
     );
   }
 
-  async markPasswordResetToken(userId: string, token: string) {
+  async markPasswordResetToken(userId: number, token: string) {
     await this.userRepo.update(
       { id: userId },
       {
@@ -124,23 +122,23 @@ export class UsersService {
     });
   }
 
-  async updatePassword(userId: string, hashed: string) {
+  async updatePassword(userId: number, hashed: string) {
     return this.userRepo.update(
       { id: userId },
       {
         passwordHash: hashed,
-        passwordResetToken: null,
-        passwordResetExpiresAt: null,
+        passwordResetToken: null as any,
+        passwordResetExpiresAt: null as any,
       },
     );
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(id: number) {
     const user = await this.findById(id);
     return this.userRepo.remove(user);
   }
 
-  async updateUser(userId: string, updates: any) {
+  async updateUser(userId: number, updates: any) {
     const user = await this.userRepo.findOne({
       where: { id: userId },
       relations: ['skills'],
@@ -169,17 +167,17 @@ export class UsersService {
 
     // --- Update skills ---
     if (Array.isArray(updates.skills)) {
-      const skillNames = updates.skills.map((s) => s.name.trim().toLowerCase());
+      const skillNames = updates.skills.map((s: any) => s.name.trim().toLowerCase());
 
       const existingSkills = await this.skillRepo.find({
-        where: skillNames.map((name) => ({ name })),
+        where: skillNames.map((name: string) => ({ name })),
       });
 
       const existingNames = existingSkills.map((s) => s.name.toLowerCase());
 
       const newSkills = skillNames
-        .filter((name) => !existingNames.includes(name))
-        .map((name) => this.skillRepo.create({ name }));
+        .filter((name: string) => !existingNames.includes(name))
+        .map((name: string) => this.skillRepo.create({ name }));
 
       const savedNewSkills = await this.skillRepo.save(newSkills);
       user.skills = [...existingSkills, ...savedNewSkills];
@@ -193,7 +191,7 @@ export class UsersService {
     if (Array.isArray(updates.education)) {
       await this.educationRepo.delete({ user: { id: userId } });
 
-      const newEducation = updates.education.map((edu) =>
+      const newEducation = updates.education.map((edu: any) =>
         this.educationRepo.create({
           ...edu,
           user: { id: userId },
@@ -207,7 +205,7 @@ export class UsersService {
     if (Array.isArray(updates.experience)) {
       await this.experienceRepo.delete({ user: { id: userId } });
 
-      const newExperience = updates.experience.map((exp) =>
+      const newExperience = updates.experience.map((exp: any) =>
         this.experienceRepo.create({
           ...exp,
           startDate: normalizeDate(exp.startDate),
@@ -225,23 +223,23 @@ export class UsersService {
     return this.findById(userId); // returns user + profile + skills + education + experience
   }
 
-  async findAdmins() {
-    return this.userRepo.find({ where: { role: 'admin' } });
+  async findHrs() {
+    return this.userRepo.find({ where: { role: 'hr' } });
   }
 
-  async createAdmin(email: string, password: string, role: string = 'admin') {
+  async createHr(email: string, password: string, role: 'super_admin' | 'hr' | 'candidate' = 'hr') {
     const passwordHash = await bcrypt.hash(password, 10);
-    const admin = this.userRepo.create({ email, passwordHash, role });
-    return this.userRepo.save(admin);
+    const hr = this.userRepo.create({ email, passwordHash, role });
+    return this.userRepo.save(hr);
   }
 
-  async countUsers(role?: string) {
+  async countUsers(role?: 'super_admin' | 'hr' | 'candidate') {
     const where = role ? { role } : {};
     const total = await this.userRepo.count({ where });
     return { total };
   }
 
-  async updateProfilePhoto(userId: string, photoUrl: string) {
+  async updateProfilePhoto(userId: number, photoUrl: string) {
     await this.profileRepo.update(userId, { photoUrl });
     const updatedProfile = await this.profileRepo.findOne({
       where: { userId },
@@ -254,12 +252,12 @@ export class UsersService {
     };
   }
 
-  async updateResumeUrl(userId: string, resumeUrl: string) {
+  async updateResumeUrl(userId: number, resumeUrl: string) {
     await this.profileRepo.update({ userId }, { resumeUrl }); // ✅ update the UserProfile table
     return { message: 'CV mis à jour.', resumeUrl };
   }
 
-  async deleteResume(userId: string): Promise<{ message: string }> {
+  async deleteResume(userId: number): Promise<{ message: string }> {
     const userProfile = await this.profileRepo.findOne({ where: { userId } });
 
     if (!userProfile || !userProfile.resumeUrl) {
@@ -282,12 +280,12 @@ export class UsersService {
     }
 
     // Update DB
-    await this.profileRepo.update({ userId }, { resumeUrl: null });
+    await this.profileRepo.update({ userId }, { resumeUrl: null as any });
 
     return { message: 'CV supprimé avec succès.' };
   }
 
-  async deleteCascade(userId: string) {
+  async deleteCascade(userId: number) {
     // Clear skills many-to-many
     const user = await this.userRepo.findOne({
       where: { id: userId },

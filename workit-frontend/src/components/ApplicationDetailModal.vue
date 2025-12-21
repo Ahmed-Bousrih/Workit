@@ -57,19 +57,10 @@
 
           <!-- Status -->
           <div>
-            <p class="text-sm text-slate-500 flex items-center gap-1">
+            <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-2">
               📌 Statut
             </p>
-            <p
-              class="inline-block px-3 py-1 rounded-full text-sm font-medium"
-              :class="{
-                'bg-yellow-100 text-yellow-700': application.status === 'pending',
-                'bg-green-100 text-green-700': application.status === 'reviewed',
-                'bg-red-100 text-red-700': application.status === 'rejected',
-              }"
-            >
-            {{ application.status === 'pending' ? 'En attente' : application.status === 'reviewed' ? 'Étape suivante' : 'Rejetée' }}
-            </p>
+            <StatusBadge :status="application.status" />
           </div>
         </div>
 
@@ -87,6 +78,7 @@
 import { RouterLink } from 'vue-router';
 import type { DashboardApplication } from '@/types/application';
 import { computed } from 'vue';
+import StatusBadge from './StatusBadge.vue';
 
 const { application } = defineProps<{
   application: DashboardApplication | null;

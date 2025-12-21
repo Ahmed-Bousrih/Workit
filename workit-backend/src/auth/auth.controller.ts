@@ -56,13 +56,13 @@ export class AuthController {
     };
   }
 
-  // Admin-only protected route
+  // HR-only protected route
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  @Get('admin-protected')
-  getAdminProtectedData(@Request() req: any) {
+  @Roles('hr')
+  @Get('hr-protected')
+  getHrProtectedData(@Request() req: any) {
     return {
-      message: 'This is protected data for admins only.',
+      message: 'This is protected data for HR only.',
       user: req.user,
     };
   }
@@ -99,7 +99,7 @@ export class AuthController {
     @Body('newPassword') newPassword: string,
   ) {
     return this.authService.changePassword(
-      req.user.userId,
+      parseInt(req.user.userId, 10),
       currentPassword,
       newPassword,
     );
@@ -108,6 +108,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Delete('profile')
   async deleteAccount(@Request() req: any) {
-    return this.authService.deleteAccount(req.user.userId);
+    return this.authService.deleteAccount(parseInt(req.user.userId, 10));
   }
 }

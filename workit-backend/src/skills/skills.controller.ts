@@ -25,7 +25,9 @@ export class SkillsController {
 
   // Private: Update skills of logged-in user
   @Patch('profile/skills')
-  updateMySkills(@Request() req: any, @Body() body: { skillIds: string[] }) {
-    return this.skillsService.updateUserSkills(req.user.userId, body.skillIds);
+  updateMySkills(@Request() req: any, @Body() body: { skillIds: number[] | string[] }) {
+    const userId = parseInt(req.user.userId, 10);
+    const skillIds = body.skillIds.map(id => typeof id === 'string' ? parseInt(id, 10) : id);
+    return this.skillsService.updateUserSkills(userId, skillIds);
   }
 }

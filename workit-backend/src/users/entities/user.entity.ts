@@ -18,8 +18,8 @@ import { Skill } from '../../skills/entities/skill.entity';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column({ unique: true })
   email: string;
@@ -28,7 +28,7 @@ export class User {
   passwordHash: string;
 
   @Column({ default: 'candidate' })
-  role: string;
+  role: 'super_admin' | 'hr' | 'candidate';
 
   @Column({ default: false, name: 'isemailverified' })
   isEmailVerified: boolean;
@@ -52,10 +52,10 @@ export class User {
   skills: Skill[];
 
   @Column({ nullable: true, name: 'password_reset_token' })
-  passwordResetToken: string;
+  passwordResetToken: string | null;
 
   @Column({ nullable: true, name: 'password_reset_expires_at' })
-  passwordResetExpiresAt: Date;
+  passwordResetExpiresAt: Date | null;
 
   @OneToMany(() => Education, (edu) => edu.user)
   educations: Education[];

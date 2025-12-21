@@ -41,7 +41,7 @@
                 @click="changeRole(user)"
                 class="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
               >
-                {{ user.role === 'admin' ? 'Révoquer' : 'Promouvoir' }} admin
+                {{ user.role === 'hr' ? 'Révoquer' : 'Promouvoir' }} HR
               </button>
               <button
                 v-if="user.role !== 'super_admin'"
@@ -97,7 +97,7 @@ const loadUsers = async () => {
 };
 
 const changeRole = async (user: User) => {
-  const newRole = user.role === 'admin' ? 'candidate' : 'admin';
+  const newRole = user.role === 'hr' ? 'candidate' : 'hr';
   try {
     await api.patch(`/users/${user.id}/role`, { role: newRole });
     toast.success(`Rôle mis à jour: ${newRole}`);

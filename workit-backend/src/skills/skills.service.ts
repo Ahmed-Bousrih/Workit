@@ -16,7 +16,7 @@ export class SkillsService {
     return this.skillRepo.find({ order: { name: 'ASC' } });
   }
 
-  async updateUserSkills(userId: string, skillIds: string[]) {
+  async updateUserSkills(userId: number, skillIds: number[]) {
     const user = await this.usersService.findById(userId);
     if (!user) throw new NotFoundException('User not found');
 

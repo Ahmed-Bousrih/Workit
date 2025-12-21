@@ -4,8 +4,8 @@ import router from '@/router'
 import { jwtDecode } from 'jwt-decode'
 
 type JwtPayload = {
-  userId: string
-  role: 'admin' | 'candidate'
+  userId: number
+  role: 'hr' | 'candidate' | 'super_admin'
 }
 
 
@@ -23,8 +23,10 @@ export const useAuthStore = defineStore('auth', {
       const decoded = jwtDecode<JwtPayload>(this.token)
 
       // 🔁 Redirect based on role
-      if (decoded.role === 'admin') {
+      if (decoded.role === 'hr') {
         router.push('/admin/dashboard')
+      } else if (decoded.role === 'super_admin') {
+        router.push('/superadmin')
       } else {
         router.push('/candidate/dashboard') // or candidate area
       }

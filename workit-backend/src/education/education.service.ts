@@ -10,7 +10,7 @@ export class EducationService {
     private readonly educationRepo: Repository<Education>,
   ) {}
 
-  async create(userId: string, data: Partial<Education>) {
+  async create(userId: number, data: Partial<Education>) {
     const education = this.educationRepo.create({
       ...data,
       user: { id: userId },
@@ -18,7 +18,7 @@ export class EducationService {
     return this.educationRepo.save(education);
   }
 
-  async findAllByUser(userId: string) {
+  async findAllByUser(userId: number) {
     return this.educationRepo.find({
       where: { user: { id: userId } },
       order: { startYear: 'DESC' },

@@ -36,16 +36,7 @@
           </div>
 
           <!-- Right: Status -->
-          <span
-            class="px-3 py-1 text-sm font-medium rounded-full"
-            :class="{
-              'bg-yellow-100 text-yellow-700': app.status === 'pending',
-              'bg-green-100 text-green-700': app.status === 'reviewed',
-              'bg-red-100 text-red-700': app.status === 'rejected',
-            }"
-          >
-          {{ app.status === 'pending' ? 'En attente' : app.status === 'reviewed' ? 'Étape suivante' : 'Rejetée' }}
-          </span>
+          <StatusBadge :status="app.status" size="sm" />
         </li>
       </ul>
 
@@ -69,6 +60,7 @@ import { ref, computed, onMounted } from 'vue';
 import GlobalHeader from '@/components/GlobalHeader.vue';
 import GlobalFooter from '@/components/GlobalFooter.vue';
 import ApplicationDetailModal from '@/components/ApplicationDetailModal.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
 import { api } from '@/services/api';
 import type { DashboardApplication } from '@/types/application';
 

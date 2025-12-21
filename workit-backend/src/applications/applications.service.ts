@@ -19,7 +19,7 @@ export class ApplicationsService {
   ) {}
 
   async updateStatus(
-    id: string,
+    id: number,
     status: ApplicationStatus,
     customMessage?: string,
   ) {
@@ -49,10 +49,14 @@ export class ApplicationsService {
     const subject = app.isSpontaneous
       ? status === 'rejected'
         ? 'Réponse à votre candidature spontanée'
-        : 'Votre candidature spontanée avance'
+        : status === 'accepted'
+          ? 'Félicitations ! Votre candidature spontanée a été acceptée'
+          : 'Votre candidature spontanée avance'
       : status === 'rejected'
         ? `Réponse à votre candidature - ${app.job?.title}`
-        : `Votre candidature avance - ${app.job?.title}`;
+        : status === 'accepted'
+          ? `Félicitations ! Votre candidature - ${app.job?.title}`
+          : `Votre candidature avance - ${app.job?.title}`;
 
     await this.mailService.sendMail(app.user.email, subject, text, html);
 
@@ -66,22 +70,34 @@ export class ApplicationsService {
     userName: string = '',
   ): string {
     if (isSpontaneous) {
-      return status === 'rejected'
-        ? `Bonjour ${userName},
+      if (status === 'rejected') {
+        return `Bonjour ${userName},
 
-  Nous vous remercions pour votre candidature spontanée. Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`
-        : `Bonjour ${userName},
+Nous vous remercions pour votre candidature spontanée. Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`;
+      } else if (status === 'accepted') {
+        return `Bonjour ${userName},
 
-  Bonne nouvelle ! Votre candidature spontanée a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+Félicitations ! Votre candidature spontanée a été acceptée. Nous vous contacterons prochainement pour discuter des prochaines étapes.`;
+      } else {
+        return `Bonjour ${userName},
+
+Bonne nouvelle ! Votre candidature spontanée a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+      }
     }
 
-    return status === 'rejected'
-      ? `Bonjour ${userName},
+    if (status === 'rejected') {
+      return `Bonjour ${userName},
 
-  Nous vous remercions pour votre candidature au poste "${jobTitle}". Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`
-      : `Bonjour ${userName},
+Nous vous remercions pour votre candidature au poste "${jobTitle}". Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`;
+    } else if (status === 'accepted') {
+      return `Bonjour ${userName},
 
-  Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+Félicitations ! Votre candidature au poste "${jobTitle}" a été acceptée. Nous vous contacterons prochainement pour discuter des prochaines étapes.`;
+    } else {
+      return `Bonjour ${userName},
+
+Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+    }
   }
 
   async findAll(status?: ApplicationStatus) {
@@ -104,14 +120,14 @@ export class ApplicationsService {
     });
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return this.appRepo.findOne({
       where: { id },
       relations: ['user', 'user.profile', 'job'],
     });
   }
 
-  remove(id: string) {
+  remove(id: number) {
     return this.appRepo.delete(id);
   }
 
@@ -124,7 +140,7 @@ export class ApplicationsService {
     });
   }
 
-  async getByJobId(jobId: string) {
+  async getByJobId(jobId: number) {
     return this.appRepo.find({
       where: {
         job: { id: jobId },
@@ -146,12 +162,12 @@ export class ApplicationsService {
     return { total };
   }
 
-  async countForUser(userId: string) {
+  async countForUser(userId: number) {
     const total = await this.appRepo.count({ where: { user: { id: userId } } });
     return { total };
   }
 
-  async recentForUser(userId: string, limit: number) {
+  async recentForUser(userId: number, limit: number) {
     return this.appRepo.find({
       where: { user: { id: userId } },
       order: { appliedAt: 'DESC' },
@@ -160,7 +176,7 @@ export class ApplicationsService {
     });
   }
 
-  async findMine(userId: string) {
+  async findMine(userId: number) {
     return this.appRepo.find({
       where: { user: { id: userId } },
       relations: ['job', 'user', 'user.profile'],
@@ -168,7 +184,7 @@ export class ApplicationsService {
     });
   }
 
-  async applyToJob(userId: string, jobId: string, coverletter: string | null) {
+  async applyToJob(userId: number, jobId: number, coverletter: string | null) {
     const cleanCover = cleanCoverletter(coverletter);
 
     const application = this.appRepo.create({
@@ -213,7 +229,7 @@ export class ApplicationsService {
     return saved;
   }
 
-  async applySpontaneously(userId: string, coverletter: string | null) {
+  async applySpontaneously(userId: number, coverletter: string | null) {
     const cleanCover = cleanCoverletter(coverletter);
     const application = this.appRepo.create({
       user: { id: userId },
@@ -252,7 +268,7 @@ export class ApplicationsService {
 
     return saved;
   }
-  async checkIfUserApplied(userId: string, jobId: string) {
+  async checkIfUserApplied(userId: number, jobId: number) {
     const existing = await this.appRepo.findOne({
       where: {
         user: { id: userId },

@@ -94,8 +94,8 @@ const togglePassword = () => {
 };
 
 interface JwtPayload {
-  role: string;
-  userId: string;
+  role: 'hr' | 'candidate' | 'super_admin';
+  userId: number;
 }
 
 const handleLogin = async () => {
@@ -120,7 +120,7 @@ const handleLogin = async () => {
     const decoded = jwtDecode<JwtPayload>(auth.token);
       if (decoded.role === "super_admin") {
         router.push("/superadmin");
-      } else if (decoded.role === "admin") {
+      } else if (decoded.role === "hr") {
         router.push("/admin/dashboard");
       } else {
         router.push("/");

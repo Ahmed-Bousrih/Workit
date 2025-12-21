@@ -7,6 +7,6 @@ export class PublicUsersController {
 
   @Get('count')
   countCandidates(@Query('role') role?: string) {
-    return this.usersService.countUsers(role);
+    return this.usersService.countUsers(role as 'super_admin' | 'hr' | 'candidate' | undefined);
   }
 }

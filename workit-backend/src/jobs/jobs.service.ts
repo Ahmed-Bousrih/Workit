@@ -12,8 +12,12 @@ export class JobsService {
     private readonly jobRepo: Repository<Job>,
   ) {}
 
-  async create(createJobDto: CreateJobDto) {
-    const job = this.jobRepo.create(createJobDto);
+  async create(createJobDto: CreateJobDto, postedBy?: number) {
+    const job = this.jobRepo.create({ 
+      ...createJobDto, 
+      postedById: postedBy,
+      postedBy: postedBy ? { id: postedBy } as any : undefined 
+    });
     return this.jobRepo.save(job);
   }
 
@@ -32,19 +36,19 @@ export class JobsService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const job = await this.jobRepo.findOne({ where: { id } });
     if (!job) throw new NotFoundException('Offre non trouvée');
     return job;
   }
 
-  async update(id: string, updateJobDto: UpdateJobDto) {
+  async update(id: number, updateJobDto: UpdateJobDto) {
     const job = await this.findOne(id);
     Object.assign(job, updateJobDto);
     return this.jobRepo.save(job);
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const job = await this.findOne(id);
     return this.jobRepo.remove(job);
   }

@@ -12,7 +12,7 @@ CREATE TABLE Users (
     id BIGSERIAL PRIMARY KEY,
     email CITEXT NOT NULL UNIQUE,
     passwordHash TEXT NOT NULL,
-    role TEXT DEFAULT 'candidate' CHECK (role IN ('super_admin', 'admin', 'candidate')),
+    role TEXT DEFAULT 'candidate' CHECK (role IN ('super_admin', 'hr', 'candidate')),
     isEmailVerified BOOLEAN DEFAULT FALSE,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -50,7 +50,7 @@ CREATE TABLE UserProfile (
     aboutMe TEXT,
     photoUrl TEXT,
     birthDate DATE,
-    gender TEXT CHECK (gender IN ('male','female'))
+    gender TEXT CHECK (gender IN ('male', 'female', 'other'))
 );
 
 -- =====================================
@@ -128,7 +128,7 @@ CREATE TABLE Jobs (
     updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     isDeleted BOOLEAN DEFAULT FALSE,
     deletedAt TIMESTAMP,
-    postedBy BIGINT REFERENCES Users(id),
+    postedBy BIGINT REFERENCES Users(id) ON DELETE SET NULL,
     location TEXT,
     category TEXT,
     jobType TEXT,
@@ -156,11 +156,11 @@ CREATE TABLE Applications (
     jobId BIGINT REFERENCES Jobs(id) ON DELETE CASCADE,
     isSpontaneous BOOLEAN DEFAULT FALSE,
     appliedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'rejected')),
+    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'accepted', 'rejected')),
     coverLetter TEXT,
     isDeleted BOOLEAN DEFAULT FALSE,
     deletedAt TIMESTAMP,
-    CONSTRAINT uniq_user_job UNIQUE(userId, jobId)
+    CONSTRAINT uniq_user_job UNIQUE(userId, jobId) WHERE isDeleted = FALSE
 );
 
 -- Indexes for Applications

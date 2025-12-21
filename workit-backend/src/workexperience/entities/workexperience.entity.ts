@@ -9,8 +9,8 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity('workexperience')
 export class WorkExperience {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @ManyToOne(() => User, (user) => user.workExperiences, {
     onDelete: 'CASCADE',
@@ -18,8 +18,8 @@ export class WorkExperience {
   @JoinColumn({ name: 'userid' })
   user: User;
 
-  @Column({ name: 'userid' }) // if you access userId directly
-  userId: string;
+  @Column({ name: 'userid' })
+  userId: number;
 
   @Column()
   company: string;

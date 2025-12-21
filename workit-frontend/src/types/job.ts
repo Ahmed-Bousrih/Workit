@@ -1,13 +1,22 @@
+import { JobType, JobCategory } from './enums'
+
 export type Job = {
-  id: string
+  id: number
   title: string
-  descriptionGeneral: string
-  missions: string
-  profile: string
+  descriptionGeneral?: string
+  missions?: string
+  profile?: string
   advantages?: string
   location?: string
+  category?: JobCategory
+  jobType?: JobType
   createdAt?: string
-  applications?: { id: string }[]
+  updatedAt?: string
+  postedBy?: {
+    id: number
+    email: string
+  }
+  applications?: { id: number }[]
 }
 export type JobChartData = {
   title: string;

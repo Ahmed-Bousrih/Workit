@@ -24,9 +24,9 @@ import AdminProfileView from '@/views/AdminProfileView.vue';
 import SuperAdminView from '@/views/SuperAdminView.vue';
 
 type JwtPayload = {
-  userId: string
+  userId: number
   email: string
-  role: 'admin' | 'candidate'
+  role: 'hr' | 'candidate' | 'super_admin'
 }
 
 const routes: RouteRecordRaw[] = [
@@ -70,19 +70,19 @@ const routes: RouteRecordRaw[] = [
     path: '/admin/jobs',
     name: 'AdminJobs',
     component: AdminJobsView,
-    meta: { requiresAuth: true, role: 'admin', title: 'Offres Admin' },
+    meta: { requiresAuth: true, role: 'hr', title: 'Offres HR' },
   },
   {
     path: '/admin/dashboard',
     name: 'AdminDashboard',
     component: AdminDashboardView,
-    meta: { requiresAuth: true, role: 'admin', title: 'Dashboard Admin' },
+    meta: { requiresAuth: true, role: 'hr', title: 'Dashboard HR' },
   },
   {
     path: '/admin/spontaneous',
     name: 'SpontaneousAdmin',
     component: SpontaneousApplicationsView,
-    meta: { requiresAuth: true, role: 'admin', title: 'Candidatures Spontanées' },
+    meta: { requiresAuth: true, role: 'hr', title: 'Candidatures Spontanées' },
   },
   {
     path: '/about',
@@ -148,7 +148,7 @@ const routes: RouteRecordRaw[] = [
     path: '/admin/profile/:id',
     name: 'AdminProfileView',
     component: AdminProfileView,
-    meta: { requiresAuth: true, role: 'admin', title: 'Profil Candidat' },
+    meta: { requiresAuth: true, role: 'hr', title: 'Profil Candidat' },
   },
   {
     path: '/superadmin',

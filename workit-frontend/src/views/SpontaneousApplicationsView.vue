@@ -38,14 +38,20 @@
 
             <div class="flex gap-2 mt-1 sm:mt-0">
               <button
-                class="text-sm bg-green-100 dark:bg-green-700 hover:bg-green-200 dark:hover:bg-green-600 text-green-700 dark:text-green-200 px-3 py-1 rounded transition"
-                @click="openEmailModal(app.id, 'reviewed')"
+                class="text-sm bg-blue-100 dark:bg-blue-700 hover:bg-blue-200 dark:hover:bg-blue-600 text-blue-700 dark:text-blue-200 px-3 py-1 rounded transition"
+                @click="openEmailModal(app.id, ApplicationStatus.REVIEWED)"
               >
-                ✅ Étape suivante
+                👀 Étape suivante
+              </button>
+              <button
+                class="text-sm bg-green-100 dark:bg-green-700 hover:bg-green-200 dark:hover:bg-green-600 text-green-700 dark:text-green-200 px-3 py-1 rounded transition"
+                @click="openEmailModal(app.id, ApplicationStatus.ACCEPTED)"
+              >
+                ✅ Accepter
               </button>
               <button
                 class="text-sm bg-red-100 dark:bg-red-700 hover:bg-red-200 dark:hover:bg-red-600 text-red-700 dark:text-red-200 px-3 py-1 rounded transition"
-                @click="openEmailModal(app.id, 'rejected')"
+                @click="openEmailModal(app.id, ApplicationStatus.REJECTED)"
               >
                 ❌ Rejeter
               </button>
@@ -117,7 +123,7 @@ const loadSpontaneousApplications = async () => {
   try {
     const res = await api.get('/applications/spontaneous');
     // ✅ Only keep pending applications
-    applications.value = res.data.filter((app: Application) => app.status === 'pending');
+    applications.value = res.data.filter((app: Application) => app.status === ApplicationStatus.PENDING);
   } catch (err) {
     console.error('Erreur lors du chargement des candidatures spontanées', err);
   }
@@ -136,21 +142,29 @@ const toggleLetter = (id: string) => {
 //custom emails handle
 const showEmailModal = ref(false)
 const selectedAppId = ref<string | null>(null)
-const selectedStatus = ref<'rejected' | 'reviewed' | null>(null)
+import { ApplicationStatus } from '@/types/enums'
+
+const selectedStatus = ref<ApplicationStatus | null>(null)
 const customMessage = ref('')
 
 // Build a default message based on the action
-const buildDefaultMessage = (status: 'rejected' | 'reviewed') => {
-  return status === 'rejected'
-    ? `Bonjour,
+const buildDefaultMessage = (status: ApplicationStatus) => {
+  if (status === ApplicationStatus.REJECTED) {
+    return `Bonjour,
 
-Nous vous remercions pour votre candidature spontanée. Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`
-    : `Bonjour,
+Nous vous remercions pour votre candidature spontanée. Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`;
+  } else if (status === ApplicationStatus.ACCEPTED) {
+    return `Bonjour,
 
-Bonne nouvelle ! Votre candidature spontanée a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`
+Félicitations ! Votre candidature spontanée a été acceptée. Nous vous contacterons prochainement pour discuter des prochaines étapes.`;
+  } else {
+    return `Bonjour,
+
+Bonne nouvelle ! Votre candidature spontanée a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+  }
 }
 
-const openEmailModal = (id: string, status: 'rejected' | 'reviewed') => {
+const openEmailModal = (id: string, status: ApplicationStatus) => {
   selectedAppId.value = id
   selectedStatus.value = status
   customMessage.value = buildDefaultMessage(status)
@@ -165,11 +179,13 @@ const confirmStatusUpdate = async () => {
       customMessage: customMessage.value.trim()
     })
 
-    toast.success(
-      selectedStatus.value === 'rejected'
-        ? 'Candidat rejeté ❌'
-        : 'Le candidat passe à l\'étape suivante ✅'
-    )
+    const statusMessages: Record<ApplicationStatus, string> = {
+      [ApplicationStatus.PENDING]: 'Statut mis à jour',
+      [ApplicationStatus.REJECTED]: 'Candidat rejeté ❌',
+      [ApplicationStatus.REVIEWED]: 'Le candidat passe à l\'étape suivante 👀',
+      [ApplicationStatus.ACCEPTED]: 'Candidature acceptée ✅',
+    };
+    toast.success(statusMessages[selectedStatus.value] || 'Statut mis à jour');
 
     applications.value = applications.value.filter(app => app.id !== selectedAppId.value)
   } catch (err) {

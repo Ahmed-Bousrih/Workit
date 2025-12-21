@@ -20,8 +20,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
-    @InjectRepository(PasswordResetRequest)
-    private readonly resetRepo: Repository<PasswordResetRequest>,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -52,7 +50,7 @@ export class AuthService {
     };
   }
 
-  async signup(email: string, password: string, role: string = 'candidate') {
+  async signup(email: string, password: string, role: 'super_admin' | 'hr' | 'candidate' = 'candidate') {
     // ✅ Step 1: Check for existing email
     const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
@@ -76,8 +74,9 @@ export class AuthService {
       emailVerificationToken,
     });
 
-    // Build confirmation URL (change domain as needed)
-    const confirmationUrl = `http://localhost:5173/verify-email/${emailVerificationToken}`;
+    // Build confirmation URL
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const confirmationUrl = `${frontendUrl}/verify-email/${emailVerificationToken}`;
 
     // Email content
     const subject = 'Confirmez votre adresse email - WorkIt';
@@ -98,7 +97,8 @@ export class AuthService {
       await this.mailService.sendMail(email, subject, text, html);
       console.log(`✅ Confirmation email sent to ${email}`);
     } catch (error) {
-      console.error(`❌ Failed to send email to ${email}: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Failed to send email to ${email}: ${errorMessage}`);
     }
 
     return user;
@@ -127,7 +127,8 @@ export class AuthService {
 
     await this.usersService.markPasswordResetToken(user.id, token);
 
-    const resetUrl = `http://localhost:5173/reset-password/${token}`;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetUrl = `${frontendUrl}/reset-password/${token}`;
 
     const subject = 'Réinitialisation de votre mot de passe';
     const text = `Cliquez sur ce lien pour réinitialiser votre mot de passe : ${resetUrl}`;
@@ -155,8 +156,8 @@ export class AuthService {
 
     const hashed = await bcrypt.hash(newPassword, 10);
     user.passwordHash = hashed;
-    user.passwordResetToken = null;
-    user.passwordResetExpiresAt = null;
+    user.passwordResetToken = null as any;
+    user.passwordResetExpiresAt = null as any;
 
     await this.usersService.updatePassword(user.id, hashed);
 
@@ -164,7 +165,7 @@ export class AuthService {
   }
 
   async changePassword(
-    userId: string,
+    userId: number,
     currentPassword: string,
     newPassword: string,
   ) {
@@ -187,7 +188,7 @@ export class AuthService {
     return { message: 'Mot de passe mis à jour avec succès' };
   }
 
-  async deleteAccount(userId: string) {
+  async deleteAccount(userId: number) {
     const user = await this.usersService.findById(userId);
     if (!user) throw new NotFoundException('Utilisateur introuvable');
 

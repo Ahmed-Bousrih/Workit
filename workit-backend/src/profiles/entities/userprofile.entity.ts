@@ -3,8 +3,8 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity('userprofile')
 export class UserProfile {
-  @PrimaryColumn({ name: 'userid' }) // link to the correct column name
-  userId: string;
+  @PrimaryColumn({ name: 'userid', type: 'bigint' })
+  userId: number;
 
   @Column({ name: 'firstname' })
   firstName: string;
@@ -19,7 +19,7 @@ export class UserProfile {
   address: string;
 
   @Column({ nullable: true, name: 'resumeurl' })
-  resumeUrl: string;
+  resumeUrl: string | null;
 
   @Column({ nullable: true, name: 'aboutme' })
   aboutMe: string;

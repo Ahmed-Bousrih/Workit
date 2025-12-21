@@ -10,12 +10,12 @@ export class WorkExperienceService {
     private readonly workRepo: Repository<WorkExperience>,
   ) {}
 
-  async create(userId: string, data: Partial<WorkExperience>) {
+  async create(userId: number, data: Partial<WorkExperience>) {
     const experience = this.workRepo.create({ ...data, user: { id: userId } });
     return this.workRepo.save(experience);
   }
 
-  async findAllByUser(userId: string) {
+  async findAllByUser(userId: number) {
     return this.workRepo.find({
       where: { user: { id: userId } },
       order: { startDate: 'DESC' },

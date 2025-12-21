@@ -97,19 +97,9 @@ const stats = ref({
   spontaneous: 0,
 });
 
-const recentApps = ref<
-  {
-    id: string
-    user: {
-      email: string
-      profile?: {
-        firstName: string
-        lastName: string
-      }
-    }
-    job: { title: string } | null
-  }[]
->([])
+import type { Application } from '@/types/application'
+
+const recentApps = ref<Application[]>([])
 
 const loadStats = async () => {
   try {

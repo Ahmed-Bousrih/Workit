@@ -38,24 +38,24 @@ export class UsersController {
   // @UseGuards(JwtAuthGuard, RolesGuard)
   // @Roles('admin')
   countUsers(@Query('role') role?: string) {
-    return this.usersService.countUsers(role);
+    return this.usersService.countUsers(role as 'super_admin' | 'hr' | 'candidate' | undefined);
   }
 
   @Get('me')
-  getCurrentUser(@Req() req) {
-    return this.usersService.findById(req.user.userId);
+  getCurrentUser(@Req() req: any) {
+    return this.usersService.findById(parseInt(req.user.userId, 10));
   }
 
   @Put('me')
   @UseGuards(JwtAuthGuard) // No RolesGuard needed here
-  updateOwnProfile(@Req() req, @Body() body: any) {
-    return this.usersService.updateUser(req.user.userId, body);
+  updateOwnProfile(@Req() req: any, @Body() body: any) {
+    return this.usersService.updateUser(parseInt(req.user.userId, 10), body);
   }
 
   @Get(':id') // <-- Comes after
   @UseGuards(JwtAuthGuard)
   getUser(@Param('id') id: string) {
-    return this.usersService.findById(id);
+    return this.usersService.findById(parseInt(id, 10));
   }
 
   @Post()
@@ -65,13 +65,13 @@ export class UsersController {
   ) {
     const { email, password, role } = body;
     const passwordHash = await bcrypt.hash(password, 10); // Hash the password
-    return this.usersService.createUser({ email, passwordHash, role });
+    return this.usersService.createUser({ email, passwordHash, role: role as 'super_admin' | 'hr' | 'candidate' });
   }
 
   @Put(':id')
-  @Roles('admin', 'super_admin')
+  @Roles('hr', 'super_admin')
   updateUser(@Param('id') id: string, @Body() body: any) {
-    return this.usersService.updateUser(id, body);
+    return this.usersService.updateUser(parseInt(id, 10), body);
   }
 
   // DELETE /users/:id
@@ -79,7 +79,7 @@ export class UsersController {
   @Roles('super_admin')
   @Delete(':id')
   removeUser(@Param('id') id: string) {
-    return this.usersService.remove(id);
+    return this.usersService.remove(parseInt(id, 10));
   }
 
   // PATCH /users/:id/role
@@ -87,7 +87,7 @@ export class UsersController {
   @Roles('super_admin')
   @Patch(':id/role')
   updateUserRole(@Param('id') id: string, @Body('role') role: string) {
-    return this.usersService.updateRole(id, role);
+    return this.usersService.updateRole(parseInt(id, 10), role as 'super_admin' | 'hr' | 'candidate');
   }
 
   @Patch('me/photo')
@@ -97,7 +97,7 @@ export class UsersController {
         destination: './uploads/photos',
         filename: (req, file, cb) => {
           const ext = extname(file.originalname);
-          const uniqueName = `user-${req.user.userId}${ext}`;
+          const uniqueName = `user-${(req.user as any).userId}${ext}`;
           cb(null, uniqueName);
         },
       }),
@@ -117,9 +117,9 @@ export class UsersController {
       limits: { fileSize: 2 * 1024 * 1024 },
     }),
   )
-  async uploadOwnPhoto(@Req() req, @UploadedFile() file: any) {
+  async uploadOwnPhoto(@Req() req: any, @UploadedFile() file: any) {
     const photoUrl = `/uploads/photos/${file.filename}`;
-    return this.usersService.updateProfilePhoto(req.user.userId, photoUrl);
+    return this.usersService.updateProfilePhoto(parseInt((req.user as any).userId, 10), photoUrl);
   }
 
   @Patch('me/resume')
@@ -129,7 +129,7 @@ export class UsersController {
         destination: './uploads/resumes',
         filename: (req, file, cb) => {
           const ext = extname(file.originalname);
-          const uniqueName = `resume-${req.user.userId}${ext}`;
+          const uniqueName = `resume-${(req.user as any).userId}${ext}`;
           cb(null, uniqueName);
         },
       }),
@@ -148,8 +148,8 @@ export class UsersController {
       limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
-  async uploadOwnResume(@Req() req, @UploadedFile() file: any) {
+  async uploadOwnResume(@Req() req: any, @UploadedFile() file: any) {
     const resumeUrl = `/uploads/resumes/${file.filename}`;
-    return this.usersService.updateResumeUrl(req.user.userId, resumeUrl);
+    return this.usersService.updateResumeUrl(parseInt(req.user.userId, 10), resumeUrl);
   }
 }

@@ -3,8 +3,8 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity('skills')
 export class Skill {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column({ unique: true })
   name: string;

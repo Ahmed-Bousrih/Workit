@@ -25,7 +25,7 @@ export class AdminController {
   ) {}
 
   @Get('candidates')
-  @Roles('admin')
+  @Roles('hr')
   searchCandidates(
     @Query('skill') skill?: string,
     @Query('jobTitle') jobTitle?: string,
@@ -34,54 +34,58 @@ export class AdminController {
   }
 
   @Get('candidates/:id')
-  @Roles('admin')
+  @Roles('hr')
   getCandidateById(@Param('id') id: string) {
-    return this.profilesService.getProfile(id);
+    return this.profilesService.getProfile(parseInt(id, 10));
   }
 
   @Post('candidates')
-  @Roles('admin')
+  @Roles('hr')
   createCandidate(
     @Body()
     body: {
-      userId: string;
+      userId: string | number;
       firstName: string;
       lastName: string;
       skills: string[];
       jobTitle?: string;
     },
   ) {
-    return this.profilesService.createProfile(body);
+    const profileData = {
+      ...body,
+      userId: typeof body.userId === 'string' ? parseInt(body.userId, 10) : body.userId,
+    };
+    return this.profilesService.createProfile(profileData);
   }
 
   @Put('candidates/:id')
-  @Roles('admin')
+  @Roles('hr')
   updateCandidate(@Param('id') id: string, @Body() body: any) {
-    return this.profilesService.updateProfile(id, body);
+    return this.profilesService.updateProfile(parseInt(id, 10), body);
   }
 
   @Delete('candidates/:id')
-  @Roles('admin')
+  @Roles('hr')
   deleteCandidate(@Param('id') id: string) {
-    return this.profilesService.deleteProfile(id);
+    return this.profilesService.deleteProfile(parseInt(id, 10));
   }
 
   @Post('users')
   @Roles('super_admin')
-  createAdmin(@Body() body: CreateUserDto) {
+  createHr(@Body() body: CreateUserDto) {
     const { email, password, role } = body;
-    return this.usersService.createAdmin(email, password, role);
+    return this.usersService.createHr(email, password, role);
   }
 
   @Get('users')
   @Roles('super_admin')
-  getAllAdmins() {
-    return this.usersService.findAdmins();
+  getAllHrs() {
+    return this.usersService.findHrs();
   }
 
   @Delete('users/:id')
   @Roles('super_admin')
-  deleteAdmin(@Param('id') id: string) {
-    return this.usersService.deleteUser(id);
+  deleteHr(@Param('id') id: string) {
+    return this.usersService.deleteUser(parseInt(id, 10));
   }
 }

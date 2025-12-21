@@ -14,13 +14,13 @@ export class ProfilesService {
     private readonly profileRepo: Repository<UserProfile>,
   ) {}
 
-  async getProfile(userId: string) {
+  async getProfile(userId: number) {
     const profile = await this.profileRepo.findOne({ where: { userId } });
     if (!profile) throw new NotFoundException('Profile not found');
     return profile;
   }
 
-  async updateProfile(userId: string, updates: Partial<UserProfile>) {
+  async updateProfile(userId: number, updates: Partial<UserProfile>) {
     let profile = await this.profileRepo.findOne({ where: { userId } });
 
     if (!profile) {
@@ -33,7 +33,7 @@ export class ProfilesService {
   }
 
   async createProfile(body: {
-    userId: string;
+    userId: number;
     firstName?: string;
     lastName?: string;
     phone?: string;
@@ -52,7 +52,7 @@ export class ProfilesService {
     return this.profileRepo.save(profile);
   }
 
-  async deleteProfile(userId: string) {
+  async deleteProfile(userId: number) {
     const profile = await this.profileRepo.findOne({ where: { userId } });
     if (!profile) {
       throw new NotFoundException('Profile not found');
