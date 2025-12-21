@@ -26,7 +26,9 @@
       </form>
 
       <div class="text-center mt-6">
-        <RouterLink to="/" class="text-cyan-600 hover:underline text-sm">← Retour à l'accueil</RouterLink>
+        <RouterLink to="/" class="text-cyan-600 hover:underline text-sm"
+          >← Retour à l'accueil</RouterLink
+        >
       </div>
     </main>
 
@@ -50,7 +52,7 @@ const coverletter = ref('')
 const submitApplication = async () => {
   try {
     await api.post('/applications/spontaneous', {
-      coverletter: coverletter.value || null
+      coverletter: coverletter.value || null,
     })
     toast.success('Candidature spontanée envoyée 🎉')
     router.push('/') // or to a dashboard route

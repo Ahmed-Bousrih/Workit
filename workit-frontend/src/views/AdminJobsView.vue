@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <!-- Header -->
     <HeaderBar />
 
@@ -35,16 +37,19 @@
           type="text"
           v-model="searchQuery"
           placeholder="Rechercher une offre par titre..."
-          class="w-full pl-10 pr-4 py-2 rounded-lg shadow-sm border focus:outline-none focus:ring-2 focus:ring-cyan-500
-                 bg-white text-slate-800 placeholder-slate-400
-                 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-400 dark:border-slate-600"
+          class="w-full pl-10 pr-4 py-2 rounded-lg shadow-sm border focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-slate-800 placeholder-slate-400 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-400 dark:border-slate-600"
         />
-        <span class="absolute left-3 top-2.5 text-slate-400 dark:text-slate-300 pointer-events-none">
+        <span
+          class="absolute left-3 top-2.5 text-slate-400 dark:text-slate-300 pointer-events-none"
+        >
           🔍
         </span>
       </div>
 
-      <div v-if="filteredJobs.length === 0" class="text-slate-500 dark:text-slate-400 text-center mt-8">
+      <div
+        v-if="filteredJobs.length === 0"
+        class="text-slate-500 dark:text-slate-400 text-center mt-8"
+      >
         Aucune offre trouvée.
       </div>
 
@@ -60,7 +65,9 @@
           class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow hover:shadow-md transition p-4 flex flex-col justify-between"
         >
           <div class="flex items-center justify-between mb-2">
-            <h3 class="text-lg font-bold text-cyan-800 dark:text-cyan-400 truncate">{{ job.title }}</h3>
+            <h3 class="text-lg font-bold text-cyan-800 dark:text-cyan-400 truncate">
+              {{ job.title }}
+            </h3>
             <span
               v-if="job.applications"
               class="bg-emerald-100 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-medium px-2 py-1 rounded-full"
@@ -108,8 +115,8 @@
       @cancel="closeEditModal"
       @updated="
         () => {
-          closeEditModal();
-          loadJobs();
+          closeEditModal()
+          loadJobs()
         }
       "
     />
@@ -123,85 +130,84 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
-import { api } from "@/services/api";
-import JobForm from "@/components/JobForm.vue";
-import { useToast } from "vue-toastification";
-import DeleteConfirmModal from "@/components/DeleteConfirmModal.vue";
-import EditJobModal from "@/components/EditJobModal.vue";
-import type { Job } from "@/types/job";
-import ApplicantListModal from "@/components/ApplicantListModal.vue";
-import HeaderBar from '@/components/HeaderBar.vue';
+import { ref, onMounted, computed } from 'vue'
+import { api } from '@/services/api'
+import JobForm from '@/components/JobForm.vue'
+import { useToast } from 'vue-toastification'
+import DeleteConfirmModal from '@/components/DeleteConfirmModal.vue'
+import EditJobModal from '@/components/EditJobModal.vue'
+import type { Job } from '@/types/job'
+import ApplicantListModal from '@/components/ApplicantListModal.vue'
+import HeaderBar from '@/components/HeaderBar.vue'
 
-const jobs = ref<Job[]>([]);
-const showForm = ref(false);
-const toast = useToast();
+const jobs = ref<Job[]>([])
+const showForm = ref(false)
+const toast = useToast()
 
 const loadJobs = async () => {
   try {
-    const res = await api.get("/jobs");
-    jobs.value = res.data;
+    const res = await api.get('/jobs')
+    jobs.value = res.data
   } catch (err) {
-    console.error("Erreur lors du chargement des offres", err);
+    console.error('Erreur lors du chargement des offres', err)
   }
-};
+}
 
 const onJobCreated = () => {
-  showForm.value = false;
-  loadJobs();
-};
+  showForm.value = false
+  loadJobs()
+}
 
-const jobToDelete = ref<Job | null>(null);
-const showDeleteModal = ref(false);
+const jobToDelete = ref<Job | null>(null)
+const showDeleteModal = ref(false)
 
 const askDelete = (job: Job) => {
-  jobToDelete.value = job;
-  showDeleteModal.value = true;
-};
+  jobToDelete.value = job
+  showDeleteModal.value = true
+}
 
 const confirmDelete = async () => {
-  if (!jobToDelete.value) return;
+  if (!jobToDelete.value) return
 
   try {
-    await api.delete(`/jobs/${jobToDelete.value.id}`);
-    toast.success("Offre supprimée avec succès");
-    loadJobs();
+    await api.delete(`/jobs/${jobToDelete.value.id}`)
+    toast.success('Offre supprimée avec succès')
+    loadJobs()
   } catch (err) {
-    toast.error("Erreur lors de la suppression de l'offre");
-    console.error(err);
+    toast.error("Erreur lors de la suppression de l'offre")
+    console.error(err)
   } finally {
-    showDeleteModal.value = false;
-    jobToDelete.value = null;
+    showDeleteModal.value = false
+    jobToDelete.value = null
   }
-};
+}
 
-const jobToEdit = ref<Job | null>(null);
-const showEditModal = ref(false);
+const jobToEdit = ref<Job | null>(null)
+const showEditModal = ref(false)
 
 const editJob = (job: Job) => {
-  jobToEdit.value = job;
-  showEditModal.value = true;
-};
+  jobToEdit.value = job
+  showEditModal.value = true
+}
 
 const closeEditModal = () => {
-  jobToEdit.value = null;
-  showEditModal.value = false;
-};
+  jobToEdit.value = null
+  showEditModal.value = false
+}
 
-const selectedJob = ref<{ id: string; title: string } | null>(null);
+const selectedJob = ref<{ id: string; title: string } | null>(null)
 
-const searchQuery = ref("");
+const searchQuery = ref('')
 
 const filteredJobs = computed(() => {
-  if (!searchQuery.value) return jobs.value;
-  return jobs.value.filter(job =>
-    job.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
+  if (!searchQuery.value) return jobs.value
+  return jobs.value.filter((job) =>
+    job.title.toLowerCase().includes(searchQuery.value.toLowerCase()),
+  )
+})
 
-onMounted(loadJobs);
+onMounted(loadJobs)
 </script>
 
 <style>
@@ -253,5 +259,4 @@ onMounted(loadJobs);
   opacity: 1;
   transform: translateY(0);
 }
-
 </style>

@@ -28,21 +28,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { publicApi } from '@/services/api';
+import { ref } from 'vue'
+import { publicApi } from '@/services/api'
 
-const email = ref('');
-const success = ref('');
-const error = ref('');
+const email = ref('')
+const success = ref('')
+const error = ref('')
 
 const requestReset = async () => {
-  success.value = '';
-  error.value = '';
+  success.value = ''
+  error.value = ''
   try {
-    await publicApi.post('/auth/request-password-reset', { email: email.value });
-    success.value = '📩 Un lien vous a été envoyé par email.';
+    await publicApi.post('/auth/request-password-reset', { email: email.value })
+    success.value = '📩 Un lien vous a été envoyé par email.'
   } catch {
-    error.value = "❌ Erreur ou email inconnu.";
+    error.value = '❌ Erreur ou email inconnu.'
   }
-};
+}
 </script>

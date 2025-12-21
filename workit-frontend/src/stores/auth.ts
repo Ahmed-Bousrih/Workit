@@ -8,7 +8,6 @@ type JwtPayload = {
   role: 'hr' | 'candidate' | 'super_admin'
 }
 
-
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem('token') || '',
@@ -33,8 +32,8 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async register(email: string, password: string) {
-      const res = await api.post('/auth/register', { email, password });
-      return res.data;
+      const res = await api.post('/auth/register', { email, password })
+      return res.data
     },
 
     logout() {

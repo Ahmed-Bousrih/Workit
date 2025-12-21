@@ -11,10 +11,10 @@
 
 <script setup lang="ts">
 defineProps<{
-  to: string;
-  label: string;
-  icon: string;
-  color?: string;
+  to: string
+  label: string
+  icon: string
+  color?: string
   hoverColor?: string
-}>();
+}>()
 </script>

@@ -5,23 +5,23 @@ import LoginView from '@/views/LoginView.vue'
 import HomeView from '@/views/HomeView.vue'
 import AdminJobsView from '@/views/AdminJobsView.vue'
 import AdminDashboardView from '@/views/AdminDashboardView.vue'
-import SpontaneousApplicationsView from "@/views/SpontaneousApplicationsView.vue";
-import AboutView from '@/views/AboutView.vue';
-import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
+import SpontaneousApplicationsView from '@/views/SpontaneousApplicationsView.vue'
+import AboutView from '@/views/AboutView.vue'
+import PrivacyPolicy from '@/views/PrivacyPolicy.vue'
 import JobsView from '@/views/JobsView.vue'
-import JobDetailsView from '@/views/JobDetailsView.vue';
-import SignupView from '@/views/SignupView.vue';
-import MentionsLegales from '@/views/MentionsLegales.vue';
-import VerifyEmail from '@/views/VerifyEmail.vue';
-import ForgotPassword from '@/views/ForgotPassword.vue';
-import ResetPassword from '@/views/ResetPassword.vue';
-import CandidateDashboardView from '@/views/CandidateDashboardView.vue';
-import CandidateApplicationsView from '@/views/CandidateApplicationsView.vue';
-import ProfileView from '@/views/ProfileView.vue';
-import AccountSettingsView from '@/views/AccountSettingsView.vue';
-import SpontaneousApplicationView from '@/views/SpontaneousApplicationView.vue';
-import AdminProfileView from '@/views/AdminProfileView.vue';
-import SuperAdminView from '@/views/SuperAdminView.vue';
+import JobDetailsView from '@/views/JobDetailsView.vue'
+import SignupView from '@/views/SignupView.vue'
+import MentionsLegales from '@/views/MentionsLegales.vue'
+import VerifyEmail from '@/views/VerifyEmail.vue'
+import ForgotPassword from '@/views/ForgotPassword.vue'
+import ResetPassword from '@/views/ResetPassword.vue'
+import CandidateDashboardView from '@/views/CandidateDashboardView.vue'
+import CandidateApplicationsView from '@/views/CandidateApplicationsView.vue'
+import ProfileView from '@/views/ProfileView.vue'
+import AccountSettingsView from '@/views/AccountSettingsView.vue'
+import SpontaneousApplicationView from '@/views/SpontaneousApplicationView.vue'
+import AdminProfileView from '@/views/AdminProfileView.vue'
+import SuperAdminView from '@/views/SuperAdminView.vue'
 
 type JwtPayload = {
   userId: number
@@ -106,7 +106,7 @@ const routes: RouteRecordRaw[] = [
     path: '/jobs',
     name: 'JobsView',
     component: JobsView,
-    meta: { title: 'Offres d\'emploi' },
+    meta: { title: "Offres d'emploi" },
   },
   {
     path: '/jobs/:id',
@@ -155,7 +155,7 @@ const routes: RouteRecordRaw[] = [
     name: 'SuperAdminView',
     component: SuperAdminView,
     meta: { requiresAuth: true, role: 'super_admin', title: 'Super Admin' },
-  }
+  },
 ]
 
 const router = createRouter({
@@ -164,9 +164,9 @@ const router = createRouter({
 })
 
 router.afterEach((to) => {
-  const title = to.meta.title || 'WorkIt';
-  document.title = `${title} - WorkIt`;
-});
+  const title = to.meta.title || 'WorkIt'
+  document.title = `${title} - WorkIt`
+})
 
 router.beforeEach((to, _from, next) => {
   const auth = useAuthStore()
@@ -194,6 +194,5 @@ router.beforeEach((to, _from, next) => {
 
   next()
 })
-
 
 export default router

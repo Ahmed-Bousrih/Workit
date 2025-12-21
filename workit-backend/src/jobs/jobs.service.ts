@@ -13,10 +13,10 @@ export class JobsService {
   ) {}
 
   async create(createJobDto: CreateJobDto, postedBy?: number) {
-    const job = this.jobRepo.create({ 
-      ...createJobDto, 
+    const job = this.jobRepo.create({
+      ...createJobDto,
       postedById: postedBy,
-      postedBy: postedBy ? { id: postedBy } as any : undefined 
+      postedBy: postedBy ? ({ id: postedBy } as any) : undefined,
     });
     return this.jobRepo.save(job);
   }

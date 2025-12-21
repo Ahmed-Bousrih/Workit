@@ -29,7 +29,7 @@ export class CreateProfileDto {
   @ApiPropertyOptional({ description: 'Address', maxLength: 500 })
   @IsOptional()
   @IsString()
-  @MaxLength(500, { message: 'L\'adresse ne peut pas dépasser 500 caractères' })
+  @MaxLength(500, { message: "L'adresse ne peut pas dépasser 500 caractères" })
   address?: string;
 
   @ApiPropertyOptional({ description: 'About me section', maxLength: 2000 })

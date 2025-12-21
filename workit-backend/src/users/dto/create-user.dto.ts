@@ -10,7 +10,7 @@ export enum UserRole {
 export class CreateUserDto {
   @ApiProperty({ description: 'User email address', example: 'user@example.com' })
   @IsEmail({}, { message: 'Adresse email invalide' })
-  @IsNotEmpty({ message: 'L\'email est requis' })
+  @IsNotEmpty({ message: "L'email est requis" })
   email: string;
 
   @ApiProperty({ description: 'User password', example: 'SecurePassword123!', minLength: 8 })

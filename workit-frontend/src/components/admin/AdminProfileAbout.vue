@@ -14,6 +14,6 @@
 
 <script setup lang="ts">
 defineProps<{
-  aboutMe: string;
-}>();
+  aboutMe: string
+}>()
 </script>

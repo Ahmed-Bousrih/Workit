@@ -38,7 +38,7 @@ watch(
   () => props.value,
   (newVal) => {
     animateToValue(newVal)
-  }
+  },
 )
 
 function animateToValue(target: number) {

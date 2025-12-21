@@ -39,14 +39,8 @@ export class ApplicationsController {
 
   @Post('/spontaneous')
   @UseGuards(JwtAuthGuard)
-  async applySpontaneously(
-    @Body('coverletter') coverletter: string,
-    @Request() req: any,
-  ) {
-    return this.appService.applySpontaneously(
-      parseInt(req.user.userId, 10),
-      coverletter || null,
-    );
+  async applySpontaneously(@Body('coverletter') coverletter: string, @Request() req: any) {
+    return this.appService.applySpontaneously(parseInt(req.user.userId, 10), coverletter || null);
   }
 
   @UseGuards(JwtAuthGuard)

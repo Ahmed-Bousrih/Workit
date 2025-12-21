@@ -40,7 +40,9 @@
         </div>
 
         <div class="mb-4 relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Confirmer le mot de passe</label
+          >
           <input
             v-model="confirmPassword"
             :type="showConfirmPassword ? 'text' : 'password'"
@@ -55,7 +57,9 @@
           >
             <component :is="showConfirmPassword ? EyeOff : Eye" class="w-5 h-5" />
           </button>
-          <p v-if="confirmPasswordError" class="text-red-500 text-sm mt-1">{{ confirmPasswordError }}</p>
+          <p v-if="confirmPasswordError" class="text-red-500 text-sm mt-1">
+            {{ confirmPasswordError }}
+          </p>
         </div>
 
         <div class="mb-4 text-sm text-gray-600">
@@ -63,30 +67,33 @@
             <input type="checkbox" v-model="agreed" class="mt-1" />
             <span>
               J'accepte les
-              <router-link to="/mentions-legales" class="text-cyan-600 underline">conditions générales</router-link>
+              <router-link to="/mentions-legales" class="text-cyan-600 underline"
+                >conditions générales</router-link
+              >
               et la
-              <router-link to="/privacy-policy" class="text-cyan-600 underline">politique de confidentialité</router-link>.
+              <router-link to="/privacy-policy" class="text-cyan-600 underline"
+                >politique de confidentialité</router-link
+              >.
             </span>
           </label>
           <p v-if="agreedError" class="text-red-500 text-sm mt-1">{{ agreedError }}</p>
         </div>
 
         <button
-        type="submit"
-        :disabled="!isFormValid"
-        class="w-full font-bold py-2 px-4 rounded-xl transition
-               text-white
-               bg-cyan-600 hover:bg-cyan-700
-               disabled:bg-slate-400 disabled:cursor-not-allowed"
-      >
-        S'inscrire
-      </button>
+          type="submit"
+          :disabled="!isFormValid"
+          class="w-full font-bold py-2 px-4 rounded-xl transition text-white bg-cyan-600 hover:bg-cyan-700 disabled:bg-slate-400 disabled:cursor-not-allowed"
+        >
+          S'inscrire
+        </button>
 
         <p v-if="formError" class="text-red-500 text-center text-sm mt-4">{{ formError }}</p>
 
         <p class="mt-6 text-sm text-center text-gray-600">
           Vous avez déjà un compte ?
-          <router-link to="/login" class="text-cyan-600 font-semibold hover:underline">Connectez-vous</router-link>
+          <router-link to="/login" class="text-cyan-600 font-semibold hover:underline"
+            >Connectez-vous</router-link
+          >
         </p>
       </form>
     </div>
@@ -94,28 +101,28 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
-import { useToast } from "vue-toastification";
-import router from "@/router";
-import { Eye, EyeOff } from 'lucide-vue-next';
+import { computed, ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useToast } from 'vue-toastification'
+import router from '@/router'
+import { Eye, EyeOff } from 'lucide-vue-next'
 
-const toast = useToast();
-const auth = useAuthStore();
+const toast = useToast()
+const auth = useAuthStore()
 
-const agreed = ref(false);
-const showPassword = ref(false);
-const showConfirmPassword = ref(false);
-const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+const agreed = ref(false)
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
+const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
 
-const email = ref("");
-const password = ref("");
-const emailError = ref("");
-const passwordError = ref("");
-const agreedError = ref("");
-const formError = ref("");
-const confirmPassword = ref("");
-const confirmPasswordError = ref("");
+const email = ref('')
+const password = ref('')
+const emailError = ref('')
+const passwordError = ref('')
+const agreedError = ref('')
+const formError = ref('')
+const confirmPassword = ref('')
+const confirmPasswordError = ref('')
 
 const isFormValid = computed(() => {
   return (
@@ -124,51 +131,51 @@ const isFormValid = computed(() => {
     confirmPassword.value &&
     password.value === confirmPassword.value &&
     agreed.value
-  );
-});
-
+  )
+})
 
 const handleSignup = async () => {
-  emailError.value = "";
-  passwordError.value = "";
-  agreedError.value = "";
-  formError.value = "";
+  emailError.value = ''
+  passwordError.value = ''
+  agreedError.value = ''
+  formError.value = ''
 
-  if (!email.value.includes("@") || !email.value.includes(".")) {
-    emailError.value = "Adresse email invalide";
+  if (!email.value.includes('@') || !email.value.includes('.')) {
+    emailError.value = 'Adresse email invalide'
   }
 
   if (password.value.length < 6) {
-    passwordError.value = "Le mot de passe doit contenir au moins 6 caractères";
+    passwordError.value = 'Le mot de passe doit contenir au moins 6 caractères'
   }
 
   if (!agreed.value) {
-    agreedError.value = "Vous devez accepter les conditions pour continuer";
+    agreedError.value = 'Vous devez accepter les conditions pour continuer'
   }
 
   if (!strongPasswordRegex.test(password.value)) {
     passwordError.value =
-      "Le mot de passe doit contenir au moins 8 caractères avec majuscule, minuscule, chiffre et caractère spécial.";
+      'Le mot de passe doit contenir au moins 8 caractères avec majuscule, minuscule, chiffre et caractère spécial.'
   }
 
-  confirmPasswordError.value = "";
+  confirmPasswordError.value = ''
 
   if (password.value !== confirmPassword.value) {
-    confirmPasswordError.value = "Les mots de passe ne correspondent pas";
+    confirmPasswordError.value = 'Les mots de passe ne correspondent pas'
   }
 
-  if (emailError.value || passwordError.value || agreedError.value || confirmPasswordError.value) return;
+  if (emailError.value || passwordError.value || agreedError.value || confirmPasswordError.value)
+    return
 
   try {
-    await auth.register(email.value, password.value);
-    toast.success("Compte créé avec succès ✅ Un email de confirmation vous a été envoyé.");
-    router.push("/login");
+    await auth.register(email.value, password.value)
+    toast.success('Compte créé avec succès ✅ Un email de confirmation vous a été envoyé.')
+    router.push('/login')
   } catch (err: unknown) {
-      const axiosErr = err as AxiosError<{ message?: string }>;
-      const backendMessage = axiosErr?.response?.data?.message;
+    const axiosErr = err as AxiosError<{ message?: string }>
+    const backendMessage = axiosErr?.response?.data?.message
 
-      formError.value = backendMessage ?? "Erreur lors de l'inscription. Veuillez réessayer.";
-      toast.error(formError.value);
-    }
-};
+    formError.value = backendMessage ?? "Erreur lors de l'inscription. Veuillez réessayer."
+    toast.error(formError.value)
+  }
+}
 </script>

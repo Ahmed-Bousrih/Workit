@@ -4,7 +4,9 @@
       <!-- Avatar + Info -->
       <div class="flex items-center gap-4 flex-grow min-w-0">
         <!-- Avatar -->
-        <div class="relative w-28 h-28 rounded-full overflow-hidden flex items-center justify-center text-3xl font-bold text-white bg-cyan-600 shrink-0">
+        <div
+          class="relative w-28 h-28 rounded-full overflow-hidden flex items-center justify-center text-3xl font-bold text-white bg-cyan-600 shrink-0"
+        >
           <img
             v-if="profilePicture"
             :src="profilePicture"
@@ -76,48 +78,48 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
-  profile: { firstName: string; lastName: string };
-  email: string;
-  profilePicture: string | null;
-  isEditing: boolean;
-}>();
-const router = useRouter();
+  profile: { firstName: string; lastName: string }
+  email: string
+  profilePicture: string | null
+  isEditing: boolean
+}>()
+const router = useRouter()
 
 const emit = defineEmits<{
-  (e: 'update:profile', value: { firstName: string; lastName: string }): void;
-  (e: 'upload-photo', event: Event): void;
-  (e: 'toggle-edit'): void;
-}>();
+  (e: 'update:profile', value: { firstName: string; lastName: string }): void
+  (e: 'upload-photo', event: Event): void
+  (e: 'toggle-edit'): void
+}>()
 
-const editableProfile = ref({ ...props.profile });
+const editableProfile = ref({ ...props.profile })
 
 const emitUpdate = () => {
-  emit('update:profile', { ...editableProfile.value });
-};
+  emit('update:profile', { ...editableProfile.value })
+}
 
 watch(
   () => props.profile,
   (newProfile) => {
-    editableProfile.value = { ...newProfile };
+    editableProfile.value = { ...newProfile }
   },
-  { immediate: true }
-);
+  { immediate: true },
+)
 
 // fallback initials
 const initials = computed(() => {
-  const f = props.profile.firstName?.[0] || '';
-  const l = props.profile.lastName?.[0] || '';
-  return `${f}${l}`.toUpperCase();
-});
+  const f = props.profile.firstName?.[0] || ''
+  const l = props.profile.lastName?.[0] || ''
+  return `${f}${l}`.toUpperCase()
+})
 
 const handleCancel = () => {
-  emit('toggle-edit');
+  emit('toggle-edit')
   setTimeout(() => {
-    router.go(0);
-  }, 500);
-};
+    router.go(0)
+  }, 500)
+}
 </script>

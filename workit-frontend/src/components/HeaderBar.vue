@@ -22,20 +22,20 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/auth";
-import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
 import { useDarkMode } from '@/composables/useDarkMode'
 
-const auth = useAuthStore();
-const router = useRouter();
-const toast = useToast();
+const auth = useAuthStore()
+const router = useRouter()
+const toast = useToast()
 const { isDark, toggleDark } = useDarkMode()
 
 const logout = () => {
-  toast.success("Déconnecté avec succès");
-  localStorage.removeItem('token');
-  auth.logout();
-  router.push("/");
-};
+  toast.success('Déconnecté avec succès')
+  localStorage.removeItem('token')
+  auth.logout()
+  router.push('/')
+}
 </script>

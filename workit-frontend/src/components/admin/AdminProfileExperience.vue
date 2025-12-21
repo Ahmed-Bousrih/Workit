@@ -1,6 +1,8 @@
 <template>
   <div class="space-y-4">
-    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">Expérience Professionnelle</h3>
+    <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
+      Expérience Professionnelle
+    </h3>
     <div
       v-for="(exp, index) in experience"
       :key="index"
@@ -21,15 +23,15 @@
 </template>
 
 <script setup lang="ts">
-import type { WorkExperience } from '@/types/user';
+import type { WorkExperience } from '@/types/user'
 
 defineProps<{
-  experience: WorkExperience[];
-}>();
+  experience: WorkExperience[]
+}>()
 
 function formatDate(str?: string | null) {
-  if (!str) return '';
-  const [year, month] = str.split('-');
-  return `${month}/${year}`;
+  if (!str) return ''
+  const [year, month] = str.split('-')
+  return `${month}/${year}`
 }
 </script>

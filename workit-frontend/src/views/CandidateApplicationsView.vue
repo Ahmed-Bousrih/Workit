@@ -45,49 +45,45 @@
       </p>
     </main>
 
-    <ApplicationDetailModal
-      v-if="selected"
-      :application="selected"
-      @close="selected = null"
-    />
+    <ApplicationDetailModal v-if="selected" :application="selected" @close="selected = null" />
 
     <GlobalFooter />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import GlobalHeader from '@/components/GlobalHeader.vue';
-import GlobalFooter from '@/components/GlobalFooter.vue';
-import ApplicationDetailModal from '@/components/ApplicationDetailModal.vue';
-import StatusBadge from '@/components/StatusBadge.vue';
-import { api } from '@/services/api';
-import type { DashboardApplication } from '@/types/application';
+import { ref, computed, onMounted } from 'vue'
+import GlobalHeader from '@/components/GlobalHeader.vue'
+import GlobalFooter from '@/components/GlobalFooter.vue'
+import ApplicationDetailModal from '@/components/ApplicationDetailModal.vue'
+import StatusBadge from '@/components/StatusBadge.vue'
+import { api } from '@/services/api'
+import type { DashboardApplication } from '@/types/application'
 
-const applications = ref<DashboardApplication[]>([]);
-const selected = ref<DashboardApplication | null>(null);
+const applications = ref<DashboardApplication[]>([])
+const selected = ref<DashboardApplication | null>(null)
 
 const formatDate = (str: string) => {
-  const d = new Date(str);
-  return d.toLocaleDateString('fr-FR');
-};
+  const d = new Date(str)
+  return d.toLocaleDateString('fr-FR')
+}
 
 const openModal = (app: DashboardApplication) => {
-  selected.value = app;
-};
+  selected.value = app
+}
 
 const sortedApps = computed(() =>
   [...applications.value].sort(
-    (a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime()
-  )
-);
+    (a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime(),
+  ),
+)
 
 onMounted(async () => {
   try {
-    const res = await api.get('/applications/mine');
-    applications.value = res.data;
+    const res = await api.get('/applications/mine')
+    applications.value = res.data
   } catch (err) {
-    console.error('Erreur lors du chargement des candidatures', err);
+    console.error('Erreur lors du chargement des candidatures', err)
   }
-});
+})
 </script>

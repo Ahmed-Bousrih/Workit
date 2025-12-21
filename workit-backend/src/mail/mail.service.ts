@@ -14,11 +14,7 @@ export class MailService {
       this.logger.log('SendGrid mail service initialized');
     }
     // Initialize Nodemailer as fallback if SMTP config is provided
-    else if (
-      process.env.SMTP_HOST &&
-      process.env.SMTP_USER &&
-      process.env.SMTP_PASS
-    ) {
+    else if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
       this.transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT || '587', 10),
@@ -88,9 +84,7 @@ export class MailService {
       }
     } else {
       // Log email in development mode if no mail service is configured
-      this.logger.warn(
-        `⚠️  Mail service not configured. Would send email to ${to}`,
-      );
+      this.logger.warn(`⚠️  Mail service not configured. Would send email to ${to}`);
       this.logger.debug(`Subject: ${subject}`);
       this.logger.debug(`Content: ${text}`);
       // Don't throw error in development, just log

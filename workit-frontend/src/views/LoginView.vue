@@ -4,9 +4,7 @@
       <img src="@/assets/logo.png" alt="WorkIt Logo" class="w-40 mb-8" />
     </router-link>
     <div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
-        Connexion à WorkIt
-      </h2>
+      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Connexion à WorkIt</h2>
 
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
@@ -71,66 +69,65 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
-import { useToast } from "vue-toastification";
-import { jwtDecode } from "jwt-decode";
-import router from "@/router";
-import type { AxiosError } from "axios";
-import { Eye, EyeOff } from 'lucide-vue-next';
+import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useToast } from 'vue-toastification'
+import { jwtDecode } from 'jwt-decode'
+import router from '@/router'
+import type { AxiosError } from 'axios'
+import { Eye, EyeOff } from 'lucide-vue-next'
 
-const toast = useToast();
-const auth = useAuthStore();
+const toast = useToast()
+const auth = useAuthStore()
 
-const email = ref("");
-const password = ref("");
-const emailError = ref("");
-const passwordError = ref("");
-const formError = ref("");
-const showPassword = ref(false);
+const email = ref('')
+const password = ref('')
+const emailError = ref('')
+const passwordError = ref('')
+const formError = ref('')
+const showPassword = ref(false)
 
 const togglePassword = () => {
-  showPassword.value = !showPassword.value;
-};
+  showPassword.value = !showPassword.value
+}
 
 interface JwtPayload {
-  role: 'hr' | 'candidate' | 'super_admin';
-  userId: number;
+  role: 'hr' | 'candidate' | 'super_admin'
+  userId: number
 }
 
 const handleLogin = async () => {
-  emailError.value = "";
-  passwordError.value = "";
-  formError.value = "";
+  emailError.value = ''
+  passwordError.value = ''
+  formError.value = ''
 
-  if (!email.value.includes("@") || !email.value.includes(".")) {
-    emailError.value = "Adresse email invalide";
+  if (!email.value.includes('@') || !email.value.includes('.')) {
+    emailError.value = 'Adresse email invalide'
   }
 
   if (password.value.length < 6) {
-    passwordError.value = "Le mot de passe doit contenir au moins 6 caractères";
+    passwordError.value = 'Le mot de passe doit contenir au moins 6 caractères'
   }
 
-  if (emailError.value || passwordError.value) return;
+  if (emailError.value || passwordError.value) return
 
   try {
-    await auth.login(email.value, password.value);
-    toast.success("Connexion réussie ✅");
+    await auth.login(email.value, password.value)
+    toast.success('Connexion réussie ✅')
 
-    const decoded = jwtDecode<JwtPayload>(auth.token);
-      if (decoded.role === "super_admin") {
-        router.push("/superadmin");
-      } else if (decoded.role === "hr") {
-        router.push("/admin/dashboard");
-      } else {
-        router.push("/");
-      }
+    const decoded = jwtDecode<JwtPayload>(auth.token)
+    if (decoded.role === 'super_admin') {
+      router.push('/superadmin')
+    } else if (decoded.role === 'hr') {
+      router.push('/admin/dashboard')
+    } else {
+      router.push('/')
+    }
   } catch (err: unknown) {
-    const axiosErr = err as AxiosError<{ message?: string }>;
+    const axiosErr = err as AxiosError<{ message?: string }>
     formError.value =
-      axiosErr?.response?.data?.message ??
-      "Échec de connexion. Veuillez vérifier vos identifiants.";
-    toast.error(formError.value);
+      axiosErr?.response?.data?.message ?? 'Échec de connexion. Veuillez vérifier vos identifiants.'
+    toast.error(formError.value)
   }
-};
+}
 </script>

@@ -15,14 +15,7 @@ import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      User,
-      UserProfile,
-      Skill,
-      Education,
-      WorkExperience,
-      Application,
-    ]),
+    TypeOrmModule.forFeature([User, UserProfile, Skill, Education, WorkExperience, Application]),
     MailModule,
     forwardRef(() => SkillsModule), // ✅ wrap SkillsModule
   ],

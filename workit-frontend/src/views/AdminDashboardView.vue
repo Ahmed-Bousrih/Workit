@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <!-- 🔷 Header -->
     <HeaderBar />
 
@@ -65,7 +67,9 @@
           </div>
 
           <!-- 🕒 Recent Activity (1/3 width) -->
-          <div class="bg-slate-200 dark:bg-slate-800 p-4 rounded-lg shadow-md h-full overflow-y-auto">
+          <div
+            class="bg-slate-200 dark:bg-slate-800 p-4 rounded-lg shadow-md h-full overflow-y-auto"
+          >
             <RecentActivity :items="recentApps" />
           </div>
         </div>
@@ -81,21 +85,21 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { api } from "@/services/api";
-import StatCard from "@/components/StatCard.vue";
-import AdminShortcut from "@/components/AdminShortcut.vue";
-import DashboardChart from "@/components/DashboardChart.vue";
-import HeaderBar from "@/components/HeaderBar.vue";
-import RecentActivity from "@/components/RecentActivity.vue";
-import type { Job, JobChartData } from "@/types/job";
+import { onMounted, ref } from 'vue'
+import { api } from '@/services/api'
+import StatCard from '@/components/StatCard.vue'
+import AdminShortcut from '@/components/AdminShortcut.vue'
+import DashboardChart from '@/components/DashboardChart.vue'
+import HeaderBar from '@/components/HeaderBar.vue'
+import RecentActivity from '@/components/RecentActivity.vue'
+import type { Job, JobChartData } from '@/types/job'
 
 const stats = ref({
   jobs: 0,
   applications: 0,
   candidates: 0,
   spontaneous: 0,
-});
+})
 
 import type { Application } from '@/types/application'
 
@@ -104,40 +108,40 @@ const recentApps = ref<Application[]>([])
 const loadStats = async () => {
   try {
     const [jobRes, appRes, spontRes, usersRes, recentRes] = await Promise.all([
-      api.get("/jobs/count"),
-      api.get("/applications/count"),
-      api.get("/applications/count-spontaneous?spontaneous=true"),
-      api.get("/users/count?role=candidate"),
-      api.get("/applications/recent"),
-    ]);
+      api.get('/jobs/count'),
+      api.get('/applications/count'),
+      api.get('/applications/count-spontaneous?spontaneous=true'),
+      api.get('/users/count?role=candidate'),
+      api.get('/applications/recent'),
+    ])
 
-    stats.value.jobs = jobRes.data.total;
-    stats.value.applications = appRes.data.total;
-    stats.value.spontaneous = spontRes.data.total;
-    stats.value.candidates = usersRes.data.total;
-    recentApps.value = recentRes.data;
+    stats.value.jobs = jobRes.data.total
+    stats.value.applications = appRes.data.total
+    stats.value.spontaneous = spontRes.data.total
+    stats.value.candidates = usersRes.data.total
+    recentApps.value = recentRes.data
   } catch (err) {
-    console.error("Erreur chargement stats", err);
+    console.error('Erreur chargement stats', err)
   }
-};
+}
 
-const chartData = ref<JobChartData[]>([]);
+const chartData = ref<JobChartData[]>([])
 
 const loadChartData = async () => {
   try {
-    const res = await api.get("/jobs/last-five");
+    const res = await api.get('/jobs/last-five')
     chartData.value = res.data.map((job: Job) => ({
       title: job.title,
       applications: job.applications?.length || 0,
-    }));
+    }))
   } catch (err) {
-    console.error("❌ Error loading chart data", err);
+    console.error('❌ Error loading chart data', err)
   }
-};
+}
 onMounted(() => {
-  loadStats();
-  loadChartData();
-});
+  loadStats()
+  loadChartData()
+})
 </script>
 
 <style>

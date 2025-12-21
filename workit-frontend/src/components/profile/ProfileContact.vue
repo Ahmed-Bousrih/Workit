@@ -33,11 +33,7 @@
           class="w-full px-3 py-2 border rounded-lg bg-white dark:bg-slate-700"
         >
           <option value="" disabled>Choisissez un pays</option>
-          <option
-            v-for="(c, i) in allCountries"
-            :key="i"
-            :value="c"
-          >
+          <option v-for="(c, i) in allCountries" :key="i" :value="c">
             {{ c }}
           </option>
         </select>
@@ -48,54 +44,54 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed } from 'vue'
 
-import EnvelopeIcon from '@/assets/envelope.svg';
-import PhoneIcon from '@/assets/phone.svg';
-import GpsIcon from '@/assets/gps.svg';
-import countries from '@/assets/countries-fr.json';
+import EnvelopeIcon from '@/assets/envelope.svg'
+import PhoneIcon from '@/assets/phone.svg'
+import GpsIcon from '@/assets/gps.svg'
+import countries from '@/assets/countries-fr.json'
 
 const props = defineProps<{
-  phone: string;
-  address: string;
-  email: string;
-  isEditing: boolean;
-}>();
+  phone: string
+  address: string
+  email: string
+  isEditing: boolean
+}>()
 
 const emit = defineEmits<{
-  (e: 'update:phone', value: string): void;
-  (e: 'update:address', value: string): void;
-}>();
+  (e: 'update:phone', value: string): void
+  (e: 'update:address', value: string): void
+}>()
 
 // ✅ Local editable values
-const localPhone = ref(props.phone);
-const selectedAddress = ref(props.address);
+const localPhone = ref(props.phone)
+const selectedAddress = ref(props.address)
 
 // 🔄 Watch and sync
 watch(
   () => props.phone,
   (newVal) => {
-    localPhone.value = newVal;
-  }
-);
+    localPhone.value = newVal
+  },
+)
 
-watch(localPhone, (val) => emit('update:phone', val));
+watch(localPhone, (val) => emit('update:phone', val))
 
 watch(
   () => props.address,
   (newVal) => {
-    selectedAddress.value = newVal;
-  }
-);
+    selectedAddress.value = newVal
+  },
+)
 
-watch(selectedAddress, (val) => emit('update:address', val));
+watch(selectedAddress, (val) => emit('update:address', val))
 
 // Optional phone sanitization
 const onPhoneInput = (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  input.value = input.value.replace(/[^\d+]/g, '');
-  localPhone.value = input.value;
-};
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[^\d+]/g, '')
+  localPhone.value = input.value
+}
 
-const allCountries = computed(() => countries);
+const allCountries = computed(() => countries)
 </script>

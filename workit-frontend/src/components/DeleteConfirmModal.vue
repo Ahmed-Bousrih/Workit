@@ -3,7 +3,9 @@
     v-if="visible"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
   >
-    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg max-w-sm w-full text-center text-slate-800 dark:text-slate-100">
+    <div
+      class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg max-w-sm w-full text-center text-slate-800 dark:text-slate-100"
+    >
       <h2 class="text-lg font-bold text-red-700 dark:text-red-400 mb-4">
         Confirmer la suppression
       </h2>
@@ -28,8 +30,7 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-defineProps<{ visible: boolean }>();
-defineEmits(["confirm", "cancel"]);
+defineProps<{ visible: boolean }>()
+defineEmits(['confirm', 'cancel'])
 </script>

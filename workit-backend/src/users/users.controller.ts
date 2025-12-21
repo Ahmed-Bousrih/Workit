@@ -60,12 +60,14 @@ export class UsersController {
 
   @Post()
   @Roles('super_admin')
-  async createUser(
-    @Body() body: { email: string; password: string; role: string },
-  ) {
+  async createUser(@Body() body: { email: string; password: string; role: string }) {
     const { email, password, role } = body;
     const passwordHash = await bcrypt.hash(password, 10); // Hash the password
-    return this.usersService.createUser({ email, passwordHash, role: role as 'super_admin' | 'hr' | 'candidate' });
+    return this.usersService.createUser({
+      email,
+      passwordHash,
+      role: role as 'super_admin' | 'hr' | 'candidate',
+    });
   }
 
   @Put(':id')
@@ -87,7 +89,10 @@ export class UsersController {
   @Roles('super_admin')
   @Patch(':id/role')
   updateUserRole(@Param('id') id: string, @Body('role') role: string) {
-    return this.usersService.updateRole(parseInt(id, 10), role as 'super_admin' | 'hr' | 'candidate');
+    return this.usersService.updateRole(
+      parseInt(id, 10),
+      role as 'super_admin' | 'hr' | 'candidate',
+    );
   }
 
   @Patch('me/photo')
@@ -108,10 +113,7 @@ export class UsersController {
         if (allowed.includes(ext)) {
           cb(null, true);
         } else {
-          cb(
-            new Error('Seuls les fichiers JPG, JPEG et PNG sont autorisés.'),
-            false,
-          );
+          cb(new Error('Seuls les fichiers JPG, JPEG et PNG sont autorisés.'), false);
         }
       },
       limits: { fileSize: 2 * 1024 * 1024 },
@@ -139,10 +141,7 @@ export class UsersController {
         if (isPdf) {
           cb(null, true);
         } else {
-          cb(
-            new Error('Seuls les fichiers PDF sont autorisés pour le CV.'),
-            false,
-          );
+          cb(new Error('Seuls les fichiers PDF sont autorisés pour le CV.'), false);
         }
       },
       limits: { fileSize: 5 * 1024 * 1024 },

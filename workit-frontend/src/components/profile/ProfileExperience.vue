@@ -1,12 +1,10 @@
 <template>
   <div class="space-y-4">
     <div class="flex justify-between items-center">
-      <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">Expérience Professionnelle</h3>
-      <button
-        v-if="isEditing"
-        @click="addExperience"
-        class="text-sm text-cyan-600 hover:underline"
-      >
+      <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">
+        Expérience Professionnelle
+      </h3>
+      <button v-if="isEditing" @click="addExperience" class="text-sm text-cyan-600 hover:underline">
         Ajouter une expérience
       </button>
     </div>
@@ -101,10 +99,7 @@
       </div>
 
       <div v-if="isEditing" class="text-right">
-        <button
-          @click="removeExperience(index)"
-          class="text-sm text-red-500 hover:underline"
-        >
+        <button @click="removeExperience(index)" class="text-sm text-red-500 hover:underline">
           Supprimer
         </button>
       </div>
@@ -113,21 +108,21 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
-import type { WorkExperience } from '@/types/user';
+import { defineProps, defineEmits } from 'vue'
+import type { WorkExperience } from '@/types/user'
 
 const props = defineProps<{
-  experience: WorkExperience[];
-  isEditing: boolean;
-}>();
+  experience: WorkExperience[]
+  isEditing: boolean
+}>()
 
 const emit = defineEmits<{
-  (e: 'update:experience', value: WorkExperience[]): void;
-}>();
+  (e: 'update:experience', value: WorkExperience[]): void
+}>()
 
 const addExperience = () => {
-  const now = new Date();
-  const formatted = now.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit' }); // "YYYY-MM"
+  const now = new Date()
+  const formatted = now.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit' }) // "YYYY-MM"
 
   const updated = [
     ...props.experience,
@@ -139,11 +134,11 @@ const addExperience = () => {
       isOngoing: false,
       description: '',
     },
-  ];
-  emit('update:experience', updated);
-};
+  ]
+  emit('update:experience', updated)
+}
 const removeExperience = (index: number) => {
-  const updated = props.experience.filter((_, i) => i !== index);
-  emit('update:experience', updated);
-};
+  const updated = props.experience.filter((_, i) => i !== index)
+  emit('update:experience', updated)
+}
 </script>

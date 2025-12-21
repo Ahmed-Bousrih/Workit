@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <GlobalHeader />
 
     <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-10">
@@ -28,9 +30,15 @@
             {{ job.title }}
           </h2>
 
-          <div class="flex flex-col sm:flex-row justify-center gap-8 text-slate-600 dark:text-slate-400 text-sm">
-            <div><span class="font-semibold">📍 Lieu :</span> {{ job.location || 'Non précisé' }}</div>
-            <div><span class="font-semibold">🗓️ Publié le :</span> {{ formatDate(job.createdAt) }}</div>
+          <div
+            class="flex flex-col sm:flex-row justify-center gap-8 text-slate-600 dark:text-slate-400 text-sm"
+          >
+            <div>
+              <span class="font-semibold">📍 Lieu :</span> {{ job.location || 'Non précisé' }}
+            </div>
+            <div>
+              <span class="font-semibold">🗓️ Publié le :</span> {{ formatDate(job.createdAt) }}
+            </div>
           </div>
         </div>
 
@@ -43,17 +51,25 @@
 
           <section v-if="job.missions">
             <h3 class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2">Missions</h3>
-            <p class="text-slate-700 dark:text-slate-200" v-html="formatMultiline(job.missions)"></p>
+            <p
+              class="text-slate-700 dark:text-slate-200"
+              v-html="formatMultiline(job.missions)"
+            ></p>
           </section>
 
           <section v-if="job.profile">
-            <h3 class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2">Profil recherché</h3>
+            <h3 class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2">
+              Profil recherché
+            </h3>
             <p class="text-slate-700 dark:text-slate-200" v-html="formatMultiline(job.profile)"></p>
           </section>
 
           <section v-if="job.advantages">
             <h3 class="text-2xl font-bold text-cyan-700 dark:text-cyan-400 mb-2">Avantages</h3>
-            <p class="text-slate-700 dark:text-slate-200" v-html="formatMultiline(job.advantages)"></p>
+            <p
+              class="text-slate-700 dark:text-slate-200"
+              v-html="formatMultiline(job.advantages)"
+            ></p>
           </section>
         </div>
 
@@ -73,7 +89,9 @@
               </button>
 
               <div v-if="showForm" class="mt-6 max-w-xl mx-auto text-left">
-                <label for="coverletter" class="block mb-2 font-medium">Lettre de motivation (facultatif)</label>
+                <label for="coverletter" class="block mb-2 font-medium"
+                  >Lettre de motivation (facultatif)</label
+                >
                 <textarea
                   id="coverletter"
                   v-model="coverletter"
@@ -151,7 +169,7 @@ const checkAlreadyApplied = async () => {
 const applyToJob = async () => {
   try {
     await api.post(`/applications/jobs/${job.value?.id}/apply`, {
-      coverletter: coverletter.value || null
+      coverletter: coverletter.value || null,
     })
     toast.success('Candidature envoyée avec succès 🎉')
     showForm.value = false

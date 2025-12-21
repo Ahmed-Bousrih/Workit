@@ -5,7 +5,9 @@
     <main class="max-w-7xl mx-auto px-4 py-12 space-y-12">
       <!-- Greeting + Profile Access -->
       <section class="text-center space-y-3">
-        <h2 class="text-3xl font-bold mb-2">Bienvenue {{ user?.profile?.firstName || 'Candidat' }}</h2>
+        <h2 class="text-3xl font-bold mb-2">
+          Bienvenue {{ user?.profile?.firstName || 'Candidat' }}
+        </h2>
 
         <div class="flex flex-col sm:flex-row justify-center gap-3">
           <RouterLink
@@ -38,7 +40,9 @@
           <p class="mt-2 text-slate-600 dark:text-slate-300">Offres disponibles</p>
         </div>
         <div class="bg-slate-100 dark:bg-slate-800 p-6 rounded-xl shadow">
-          <p class="text-4xl font-bold text-cyan-600 dark:text-cyan-400">+{{ stats.myApplications }}</p>
+          <p class="text-4xl font-bold text-cyan-600 dark:text-cyan-400">
+            +{{ stats.myApplications }}
+          </p>
           <p class="mt-2 text-slate-600 dark:text-slate-300">Candidatures envoyées</p>
         </div>
       </section>
@@ -64,11 +68,11 @@
                   {{ app.job.title }}
                 </RouterLink>
               </template>
-              <template v-else>
-                Candidature Spontanée
-              </template>
+              <template v-else> Candidature Spontanée </template>
             </p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Soumise le {{ formatDate(app.appliedAt) }}</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Soumise le {{ formatDate(app.appliedAt) }}
+            </p>
             <StatusBadge :status="app.status" size="sm" />
           </div>
         </div>
@@ -92,35 +96,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { RouterLink } from 'vue-router';
-import GlobalHeader from '@/components/GlobalHeader.vue';
-import GlobalFooter from '@/components/GlobalFooter.vue';
-import ApplicationDetailModal from '@/components/ApplicationDetailModal.vue';
-import StatusBadge from '@/components/StatusBadge.vue';
-import { api } from '@/services/api';
-import type { DashboardApplication } from '@/types/application';
-import type { User } from '@/types/user';
+import { ref, onMounted, computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import GlobalHeader from '@/components/GlobalHeader.vue'
+import GlobalFooter from '@/components/GlobalFooter.vue'
+import ApplicationDetailModal from '@/components/ApplicationDetailModal.vue'
+import StatusBadge from '@/components/StatusBadge.vue'
+import { api } from '@/services/api'
+import type { DashboardApplication } from '@/types/application'
+import type { User } from '@/types/user'
 
-const stats = ref({ jobs: 0, myApplications: 0 });
-const recentApps = ref<DashboardApplication[]>([]);
-const user = ref<User | null>(null);
-const showModal = ref(false);
-const selectedApp = ref<DashboardApplication | null>(null);
+const stats = ref({ jobs: 0, myApplications: 0 })
+const recentApps = ref<DashboardApplication[]>([])
+const user = ref<User | null>(null)
+const showModal = ref(false)
+const selectedApp = ref<DashboardApplication | null>(null)
 
 const formatDate = (str: string) => {
-  const d = new Date(str);
-  return d.toLocaleDateString('fr-FR');
-};
+  const d = new Date(str)
+  return d.toLocaleDateString('fr-FR')
+}
 
 const openModal = (app: DashboardApplication) => {
-  selectedApp.value = app;
-  showModal.value = true;
-};
+  selectedApp.value = app
+  showModal.value = true
+}
 
 const sortedApps = computed(() =>
-  [...recentApps.value].sort((a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime())
-);
+  [...recentApps.value].sort(
+    (a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime(),
+  ),
+)
 
 onMounted(async () => {
   try {
@@ -128,14 +134,14 @@ onMounted(async () => {
       api.get('/jobs/count'),
       api.get('/applications/count-mine'),
       api.get('/applications/recent-mine?limit=3'),
-      api.get('/users/me')
-    ]);
-    stats.value.jobs = jobsRes.data.total;
-    stats.value.myApplications = myAppsRes.data.total;
-    recentApps.value = recentRes.data;
-    user.value = userRes.data;
+      api.get('/users/me'),
+    ])
+    stats.value.jobs = jobsRes.data.total
+    stats.value.myApplications = myAppsRes.data.total
+    recentApps.value = recentRes.data
+    user.value = userRes.data
   } catch (err) {
-    console.error('Erreur chargement dashboard', err);
+    console.error('Erreur chargement dashboard', err)
   }
-});
+})
 </script>

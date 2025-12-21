@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <!-- 🔷 Header -->
     <HeaderBar />
 
@@ -8,7 +10,10 @@
         ✨ Candidatures Spontanées
       </h2>
 
-      <div v-if="applications.length === 0" class="text-slate-500 dark:text-slate-400 text-center mt-8">
+      <div
+        v-if="applications.length === 0"
+        class="text-slate-500 dark:text-slate-400 text-center mt-8"
+      >
         Aucune candidature spontanée trouvée.
       </div>
 
@@ -59,8 +64,14 @@
           </div>
 
           <!-- Cover Letter Toggle -->
-          <div v-if="app.coverletter" class="text-sm text-cyan-600 hover:underline cursor-pointer mt-1" @click="toggleLetter(app.id)">
-            {{ expandedLetters[app.id] ? 'Masquer la lettre de motivation' : '+ Lettre de motivation' }}
+          <div
+            v-if="app.coverletter"
+            class="text-sm text-cyan-600 hover:underline cursor-pointer mt-1"
+            @click="toggleLetter(app.id)"
+          >
+            {{
+              expandedLetters[app.id] ? 'Masquer la lettre de motivation' : '+ Lettre de motivation'
+            }}
           </div>
 
           <!-- Cover Letter Body -->
@@ -74,65 +85,66 @@
       </ul>
       <!-- Custom Message Modal -->
       <div
-      v-if="showEmailModal"
-      class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+        v-if="showEmailModal"
+        class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
       >
-      <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 w-full max-w-lg p-6 rounded-lg shadow-lg space-y-4">
-        <h3 class="text-lg font-bold">
-          Message à envoyer au candidat
-        </h3>
+        <div
+          class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 w-full max-w-lg p-6 rounded-lg shadow-lg space-y-4"
+        >
+          <h3 class="text-lg font-bold">Message à envoyer au candidat</h3>
 
-        <textarea
-          v-model="customMessage"
-          rows="8"
-          class="w-full p-3 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 whitespace-pre-line"
-        ></textarea>
+          <textarea
+            v-model="customMessage"
+            rows="8"
+            class="w-full p-3 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 whitespace-pre-line"
+          ></textarea>
 
-        <div class="flex justify-end gap-2 pt-2">
-          <button
-            @click="showEmailModal = false"
-            class="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:underline"
-          >
-            Annuler
-          </button>
-          <button
-            @click="confirmStatusUpdate"
-            class="px-4 py-2 text-sm font-semibold bg-cyan-600 hover:bg-cyan-700 text-white rounded"
-          >
-            Envoyer et mettre à jour
-          </button>
+          <div class="flex justify-end gap-2 pt-2">
+            <button
+              @click="showEmailModal = false"
+              class="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:underline"
+            >
+              Annuler
+            </button>
+            <button
+              @click="confirmStatusUpdate"
+              class="px-4 py-2 text-sm font-semibold bg-cyan-600 hover:bg-cyan-700 text-white rounded"
+            >
+              Envoyer et mettre à jour
+            </button>
+          </div>
         </div>
       </div>
-</div>
     </main>
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { api } from '@/services/api';
-import HeaderBar from '@/components/HeaderBar.vue';
-import type { Application } from '@/types/application';
-import { useToast } from 'vue-toastification';
+import { ref, onMounted } from 'vue'
+import { api } from '@/services/api'
+import HeaderBar from '@/components/HeaderBar.vue'
+import type { Application } from '@/types/application'
+import { useToast } from 'vue-toastification'
 
-const applications = ref<Application[]>([]);
-const toast = useToast();
+const applications = ref<Application[]>([])
+const toast = useToast()
 
 const loadSpontaneousApplications = async () => {
   try {
-    const res = await api.get('/applications/spontaneous');
+    const res = await api.get('/applications/spontaneous')
     // ✅ Only keep pending applications
-    applications.value = res.data.filter((app: Application) => app.status === ApplicationStatus.PENDING);
+    applications.value = res.data.filter(
+      (app: Application) => app.status === ApplicationStatus.PENDING,
+    )
   } catch (err) {
-    console.error('Erreur lors du chargement des candidatures spontanées', err);
+    console.error('Erreur lors du chargement des candidatures spontanées', err)
   }
-};
+}
 
 const formatDate = (dateStr: string) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('fr-FR');
-};
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('fr-FR')
+}
 
 const expandedLetters = ref<Record<string, boolean>>({})
 const toggleLetter = (id: string) => {
@@ -152,15 +164,15 @@ const buildDefaultMessage = (status: ApplicationStatus) => {
   if (status === ApplicationStatus.REJECTED) {
     return `Bonjour,
 
-Nous vous remercions pour votre candidature spontanée. Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`;
+Nous vous remercions pour votre candidature spontanée. Après examen, nous regrettons de vous informer qu'elle n'a pas été retenue.`
   } else if (status === ApplicationStatus.ACCEPTED) {
     return `Bonjour,
 
-Félicitations ! Votre candidature spontanée a été acceptée. Nous vous contacterons prochainement pour discuter des prochaines étapes.`;
+Félicitations ! Votre candidature spontanée a été acceptée. Nous vous contacterons prochainement pour discuter des prochaines étapes.`
   } else {
     return `Bonjour,
 
-Bonne nouvelle ! Votre candidature spontanée a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`;
+Bonne nouvelle ! Votre candidature spontanée a été retenue pour l'étape suivante. Nous reviendrons vers vous prochainement.`
   }
 }
 
@@ -176,18 +188,18 @@ const confirmStatusUpdate = async () => {
   try {
     await api.patch(`/applications/${selectedAppId.value}/status`, {
       status: selectedStatus.value,
-      customMessage: customMessage.value.trim()
+      customMessage: customMessage.value.trim(),
     })
 
     const statusMessages: Record<ApplicationStatus, string> = {
       [ApplicationStatus.PENDING]: 'Statut mis à jour',
       [ApplicationStatus.REJECTED]: 'Candidat rejeté ❌',
-      [ApplicationStatus.REVIEWED]: 'Le candidat passe à l\'étape suivante 👀',
+      [ApplicationStatus.REVIEWED]: "Le candidat passe à l'étape suivante 👀",
       [ApplicationStatus.ACCEPTED]: 'Candidature acceptée ✅',
-    };
-    toast.success(statusMessages[selectedStatus.value] || 'Statut mis à jour');
+    }
+    toast.success(statusMessages[selectedStatus.value] || 'Statut mis à jour')
 
-    applications.value = applications.value.filter(app => app.id !== selectedAppId.value)
+    applications.value = applications.value.filter((app) => app.id !== selectedAppId.value)
   } catch (err) {
     toast.error('Erreur lors de la mise à jour')
     console.error(err)
@@ -199,7 +211,7 @@ const confirmStatusUpdate = async () => {
   }
 }
 
-onMounted(loadSpontaneousApplications);
+onMounted(loadSpontaneousApplications)
 </script>
 
 <style scoped>

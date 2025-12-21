@@ -15,7 +15,7 @@
     <p
       v-else
       class="text-slate-700 dark:text-slate-300 whitespace-pre-line overflow-y-auto"
-      style="max-height: 12rem;"
+      style="max-height: 12rem"
     >
       {{ aboutMe || '—' }}
     </p>
@@ -23,19 +23,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps<{
-  aboutMe: string;
-  isEditing: boolean;
-}>();
+  aboutMe: string
+  isEditing: boolean
+}>()
 
 const emit = defineEmits<{
-  (e: 'update:aboutMe', value: string): void;
-}>();
+  (e: 'update:aboutMe', value: string): void
+}>()
 
 const localAboutMe = computed({
   get: () => props.aboutMe,
   set: (value: string) => emit('update:aboutMe', value),
-});
+})
 </script>

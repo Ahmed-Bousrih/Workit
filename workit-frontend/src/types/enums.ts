@@ -45,7 +45,7 @@ export const JobTypeLabels: Record<JobType, string> = {
   [JobType.CONTRACT]: 'Contrat',
   [JobType.INTERNSHIP]: 'Stage',
   [JobType.FREELANCE]: 'Freelance',
-};
+}
 
 export const JobCategoryLabels: Record<JobCategory, string> = {
   [JobCategory.IT]: 'Informatique',
@@ -56,19 +56,30 @@ export const JobCategoryLabels: Record<JobCategory, string> = {
   [JobCategory.DESIGN]: 'Design',
   [JobCategory.ENGINEERING]: 'Ingénierie',
   [JobCategory.OTHER]: 'Autre',
-};
+}
 
 export const ApplicationStatusLabels: Record<ApplicationStatus, string> = {
   [ApplicationStatus.PENDING]: 'En attente',
-  [ApplicationStatus.REVIEWED]: 'En cours d\'examen',
+  [ApplicationStatus.REVIEWED]: "En cours d'examen",
   [ApplicationStatus.ACCEPTED]: 'Acceptée',
   [ApplicationStatus.REJECTED]: 'Rejetée',
-};
+}
 
 export const ApplicationStatusColors: Record<ApplicationStatus, { bg: string; text: string }> = {
-  [ApplicationStatus.PENDING]: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-700 dark:text-yellow-300' },
-  [ApplicationStatus.REVIEWED]: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-300' },
-  [ApplicationStatus.ACCEPTED]: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-300' },
-  [ApplicationStatus.REJECTED]: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-300' },
-};
-
+  [ApplicationStatus.PENDING]: {
+    bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+    text: 'text-yellow-700 dark:text-yellow-300',
+  },
+  [ApplicationStatus.REVIEWED]: {
+    bg: 'bg-blue-100 dark:bg-blue-900/30',
+    text: 'text-blue-700 dark:text-blue-300',
+  },
+  [ApplicationStatus.ACCEPTED]: {
+    bg: 'bg-green-100 dark:bg-green-900/30',
+    text: 'text-green-700 dark:text-green-300',
+  },
+  [ApplicationStatus.REJECTED]: {
+    bg: 'bg-red-100 dark:bg-red-900/30',
+    text: 'text-red-700 dark:text-red-300',
+  },
+}

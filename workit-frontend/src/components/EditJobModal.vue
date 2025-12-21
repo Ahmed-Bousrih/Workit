@@ -4,37 +4,51 @@
       v-if="visible"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
     >
-    <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 p-6 rounded-xl shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div
+        class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 p-6 rounded-xl shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
+      >
         <h2 class="text-xl font-bold text-cyan-700 dark:text-cyan-400 mb-4">Modifier l'offre</h2>
 
         <form @submit.prevent="handleSubmit" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Titre du poste</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >Titre du poste</label
+            >
             <input v-model="form.title" type="text" class="input-style" required />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Localisation (optionnel)</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >Localisation (optionnel)</label
+            >
             <input v-model="form.location" type="text" class="input-style" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Présentation générale</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >Présentation générale</label
+            >
             <textarea v-model="form.descriptionGeneral" rows="3" class="input-style" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Missions principales</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >Missions principales</label
+            >
             <textarea v-model="form.missions" rows="4" class="input-style" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Profil recherché</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >Profil recherché</label
+            >
             <textarea v-model="form.profile" rows="4" class="input-style" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Avantages (optionnel)</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >Avantages (optionnel)</label
+            >
             <textarea v-model="form.advantages" rows="3" class="input-style" />
           </div>
 
@@ -60,70 +74,69 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from "vue";
-import type { Job } from "@/types/job";
-import { api } from "@/services/api";
-import { useToast } from "vue-toastification";
-import type { CreateJobDto } from '@/types/create-job.dto';
+import { reactive, watch } from 'vue'
+import type { Job } from '@/types/job'
+import { api } from '@/services/api'
+import { useToast } from 'vue-toastification'
+import type { CreateJobDto } from '@/types/create-job.dto'
 
 const props = defineProps<{
-  visible: boolean;
-  job: Job | null;
-}>();
+  visible: boolean
+  job: Job | null
+}>()
 
-const emit = defineEmits(["updated", "cancel"]);
+const emit = defineEmits(['updated', 'cancel'])
 
-const toast = useToast();
+const toast = useToast()
 
 const form = reactive({
-  title: "",
-  location: "",
-  descriptionGeneral: "",
-  missions: "",
-  profile: "",
-  advantages: "",
-});
+  title: '',
+  location: '',
+  descriptionGeneral: '',
+  missions: '',
+  profile: '',
+  advantages: '',
+})
 
 // Watch incoming job and fill form
 watch(
   () => props.job,
   (job) => {
     if (job) {
-      form.title = job.title;
-      form.location = job.location || "";
-      form.descriptionGeneral = job.descriptionGeneral || "";
-      form.missions = job.missions || "";
-      form.profile = job.profile || "";
-      form.advantages = job.advantages || "";
+      form.title = job.title
+      form.location = job.location || ''
+      form.descriptionGeneral = job.descriptionGeneral || ''
+      form.missions = job.missions || ''
+      form.profile = job.profile || ''
+      form.advantages = job.advantages || ''
     }
   },
-  { immediate: true }
-);
+  { immediate: true },
+)
 
 const handleSubmit = async () => {
-  if (!props.job) return;
+  if (!props.job) return
   try {
-    const payload: Partial<CreateJobDto> = {};
+    const payload: Partial<CreateJobDto> = {}
 
-    if (form.title) payload.title = form.title;
-    if (form.location) payload.location = form.location;
-    if (form.descriptionGeneral) payload.descriptionGeneral = form.descriptionGeneral;
-    if (form.missions) payload.missions = form.missions;
-    if (form.profile) payload.profile = form.profile;
-    if (form.advantages) payload.advantages = form.advantages;
+    if (form.title) payload.title = form.title
+    if (form.location) payload.location = form.location
+    if (form.descriptionGeneral) payload.descriptionGeneral = form.descriptionGeneral
+    if (form.missions) payload.missions = form.missions
+    if (form.profile) payload.profile = form.profile
+    if (form.advantages) payload.advantages = form.advantages
 
-    await api.patch(`/jobs/${props.job.id}`, payload);
-    toast.success("✅ Offre modifiée avec succès", {
+    await api.patch(`/jobs/${props.job.id}`, payload)
+    toast.success('✅ Offre modifiée avec succès', {
       timeout: 3000,
-      icon: "✏️",
-    });
-    emit("updated");
+      icon: '✏️',
+    })
+    emit('updated')
   } catch (err) {
-    console.error(err);
-    toast.error("Erreur lors de la mise à jour");
+    console.error(err)
+    toast.error('Erreur lors de la mise à jour')
   }
-};
-
+}
 </script>
 
 <style scoped>

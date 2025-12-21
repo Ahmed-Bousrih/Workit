@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Education } from '@/types/user';
+import type { Education } from '@/types/user'
 
 defineProps<{
-  education: Education[];
-}>();
+  education: Education[]
+}>()
 </script>

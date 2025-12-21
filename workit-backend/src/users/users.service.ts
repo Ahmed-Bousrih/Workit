@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
@@ -33,7 +29,6 @@ export class UsersService {
 
     @InjectRepository(WorkExperience)
     private readonly experienceRepo: Repository<WorkExperience>,
-
 
     @InjectRepository(Application)
     private readonly appRepo: Repository<Application>,
@@ -160,9 +155,7 @@ export class UsersService {
       Object.assign(profile, profileData);
       await this.profileRepo.save(profile);
     } else {
-      await this.profileRepo.save(
-        this.profileRepo.create({ userId, ...profileData }),
-      );
+      await this.profileRepo.save(this.profileRepo.create({ userId, ...profileData }));
     }
 
     // --- Update skills ---
@@ -273,10 +266,7 @@ export class UsersService {
         fs.unlinkSync(filePath);
       }
     } catch (err) {
-      console.warn(
-        `Erreur lors de la suppression du fichier: ${filePath}`,
-        err,
-      );
+      console.warn(`Erreur lors de la suppression du fichier: ${filePath}`, err);
     }
 
     // Update DB

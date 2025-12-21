@@ -19,6 +19,6 @@ export type Job = {
   applications?: { id: number }[]
 }
 export type JobChartData = {
-  title: string;
-  applications: number;
-};
+  title: string
+  applications: number
+}

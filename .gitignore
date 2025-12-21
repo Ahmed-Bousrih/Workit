@@ -18,6 +18,7 @@ start.bat
 type-check-all.bat
 type-check-backend.bat
 type-check-frontend.bat
+format-all.bat
 
 # Logs and temp files
 *.log

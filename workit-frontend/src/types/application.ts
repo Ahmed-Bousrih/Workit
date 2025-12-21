@@ -1,5 +1,5 @@
-import type { Job } from "./job"
-import { ApplicationStatus } from "./enums"
+import type { Job } from './job'
+import { ApplicationStatus } from './enums'
 
 export interface Application {
   id: number

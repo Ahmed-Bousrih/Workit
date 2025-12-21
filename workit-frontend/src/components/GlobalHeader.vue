@@ -23,14 +23,25 @@
           <button @click="logout" class="hover:text-orange-400">Déconnexion</button>
         </template>
         <template v-else>
-          <RouterLink to="/login" class="bg-cyan-500 hover:bg-cyan-400 text-white px-4 py-1 rounded shadow transition">Se connecter</RouterLink>
-          <RouterLink to="/signup" class="bg-orange-500 hover:bg-orange-400 text-white px-4 py-1 rounded shadow transition">Créer un compte</RouterLink>
+          <RouterLink
+            to="/login"
+            class="bg-cyan-500 hover:bg-cyan-400 text-white px-4 py-1 rounded shadow transition"
+            >Se connecter</RouterLink
+          >
+          <RouterLink
+            to="/signup"
+            class="bg-orange-500 hover:bg-orange-400 text-white px-4 py-1 rounded shadow transition"
+            >Créer un compte</RouterLink
+          >
         </template>
       </nav>
     </div>
 
     <!-- Mobile nav -->
-    <div v-if="menuOpen" class="flex flex-col gap-4 px-4 pb-4 md:hidden bg-slate-800 text-white shadow-md">
+    <div
+      v-if="menuOpen"
+      class="flex flex-col gap-4 px-4 pb-4 md:hidden bg-slate-800 text-white shadow-md"
+    >
       <RouterLink to="/" class="hover:text-cyan-400 hover:underline">Accueil</RouterLink>
       <RouterLink to="/jobs" class="hover:text-cyan-400 hover:underline">Offres</RouterLink>
       <button @click="toggleDark" class="hover:text-cyan-400 transition text-lg text-left">
@@ -42,8 +53,16 @@
         <button @click="logout" class="hover:text-orange-400 text-left">Déconnexion</button>
       </template>
       <template v-else>
-        <RouterLink to="/login" class="bg-cyan-500 hover:bg-cyan-400 text-white px-4 py-1 rounded shadow transition">Se connecter</RouterLink>
-        <RouterLink to="/signup" class="bg-orange-500 hover:bg-orange-400 text-white px-4 py-1 rounded shadow transition">Créer un compte</RouterLink>
+        <RouterLink
+          to="/login"
+          class="bg-cyan-500 hover:bg-cyan-400 text-white px-4 py-1 rounded shadow transition"
+          >Se connecter</RouterLink
+        >
+        <RouterLink
+          to="/signup"
+          class="bg-orange-500 hover:bg-orange-400 text-white px-4 py-1 rounded shadow transition"
+          >Créer un compte</RouterLink
+        >
       </template>
     </div>
   </header>
@@ -53,8 +72,8 @@
 import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useDarkMode } from '@/composables/useDarkMode'
-import { useToast } from "vue-toastification"
-import { useAuthStore } from "@/stores/auth";
+import { useToast } from 'vue-toastification'
+import { useAuthStore } from '@/stores/auth'
 
 const isLoggedIn = ref(!!localStorage.getItem('token'))
 const router = useRouter()
@@ -64,8 +83,8 @@ const auth = useAuthStore()
 const menuOpen = ref(false)
 
 function logout() {
-  auth.logout();
-  toast.success("Déconnecté avec succès")
+  auth.logout()
+  toast.success('Déconnecté avec succès')
   localStorage.removeItem('token')
   router.push('/login')
 }

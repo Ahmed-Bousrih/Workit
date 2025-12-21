@@ -14,13 +14,14 @@
           {{ app.user.profile?.firstName }} {{ app.user.profile?.lastName }}
           <small class="text-slate-500 dark:text-slate-400">({{ app.user.email }})</small>
         </strong>
-        <span v-if="app.job">a postulé à <strong>{{ app.job.title }}</strong></span>
+        <span v-if="app.job"
+          >a postulé à <strong>{{ app.job.title }}</strong></span
+        >
         <span v-else>a soumis une candidature spontanée</span>
       </li>
     </ul>
   </section>
 </template>
-
 
 <script setup lang="ts">
 defineProps<{

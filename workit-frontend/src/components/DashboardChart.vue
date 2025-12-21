@@ -8,14 +8,7 @@
 
 <script setup lang="ts">
 import { Bar } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-} from 'chart.js'
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js'
 import { computed } from 'vue'
 
 // Register Chart.js modules

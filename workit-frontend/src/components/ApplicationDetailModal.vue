@@ -5,7 +5,9 @@
       class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
       @click.self="emitClose"
     >
-      <div class="bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-6 w-full max-w-md shadow-lg">
+      <div
+        class="bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-6 w-full max-w-md shadow-lg"
+      >
         <h3 class="text-xl font-bold mb-4">Détails de la candidature</h3>
 
         <div class="space-y-4">
@@ -17,9 +19,7 @@
               {{ initials }}
             </div>
             <div>
-              <p class="text-sm text-slate-500 flex items-center gap-1">
-                📧 Candidat
-              </p>
+              <p class="text-sm text-slate-500 flex items-center gap-1">📧 Candidat</p>
               <p class="font-semibold">
                 {{
                   application.user?.profile
@@ -32,9 +32,7 @@
 
           <!-- Job Info -->
           <div>
-            <p class="text-sm text-slate-500 flex items-center gap-1">
-              🧑‍💼 Offre
-            </p>
+            <p class="text-sm text-slate-500 flex items-center gap-1">🧑‍💼 Offre</p>
             <p class="font-semibold">
               <RouterLink
                 v-if="application.job"
@@ -49,9 +47,7 @@
 
           <!-- Submission Date -->
           <div>
-            <p class="text-sm text-slate-500 flex items-center gap-1">
-              📅 Soumise le
-            </p>
+            <p class="text-sm text-slate-500 flex items-center gap-1">📅 Soumise le</p>
             <p>{{ formatDate(application.appliedAt) }}</p>
           </div>
 
@@ -75,31 +71,31 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
-import type { DashboardApplication } from '@/types/application';
-import { computed } from 'vue';
-import StatusBadge from './StatusBadge.vue';
+import { RouterLink } from 'vue-router'
+import type { DashboardApplication } from '@/types/application'
+import { computed } from 'vue'
+import StatusBadge from './StatusBadge.vue'
 
 const { application } = defineProps<{
-  application: DashboardApplication | null;
-}>();
+  application: DashboardApplication | null
+}>()
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close'])
 
-const emitClose = () => emit('close');
+const emitClose = () => emit('close')
 
 const formatDate = (str: string) => {
-  const d = new Date(str);
-  return d.toLocaleDateString('fr-FR');
-};
+  const d = new Date(str)
+  return d.toLocaleDateString('fr-FR')
+}
 
 const initials = computed(() => {
-  const profile = application?.user?.profile;
-  if (!profile) return '??';
-  const first = profile.firstName?.[0] || '';
-  const last = profile.lastName?.[0] || '';
-  return (first + last).toUpperCase();
-});
+  const profile = application?.user?.profile
+  if (!profile) return '??'
+  const first = profile.firstName?.[0] || ''
+  const last = profile.lastName?.[0] || ''
+  return (first + last).toUpperCase()
+})
 </script>
 
 <style scoped>

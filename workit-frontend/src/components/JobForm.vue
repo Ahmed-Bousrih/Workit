@@ -6,7 +6,9 @@
     <h2 class="text-xl font-bold text-cyan-700 dark:text-cyan-400">Nouvelle Offre d'emploi</h2>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre du poste</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >Titre du poste</label
+      >
       <input
         v-model="form.title"
         type="text"
@@ -17,7 +19,9 @@
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Lieu (optionnel)</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >Lieu (optionnel)</label
+      >
       <input
         v-model="form.location"
         type="text"
@@ -27,7 +31,9 @@
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Présentation générale</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >Présentation générale</label
+      >
       <textarea
         v-model="form.descriptionGeneral"
         placeholder="Présentation rapide"
@@ -47,7 +53,9 @@
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Profil recherché</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >Profil recherché</label
+      >
       <textarea
         v-model="form.profile"
         placeholder="Profil du candidat"
@@ -57,7 +65,9 @@
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Avantages (optionnel)</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >Avantages (optionnel)</label
+      >
       <textarea
         v-model="form.advantages"
         placeholder="Avantages du poste"
@@ -78,40 +88,47 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { api } from "@/services/api";
-import { useToast } from "vue-toastification";
+import { ref } from 'vue'
+import { api } from '@/services/api'
+import { useToast } from 'vue-toastification'
 
-const emit = defineEmits(["jobCreated"]);
-const toast = useToast();
+const emit = defineEmits(['jobCreated'])
+const toast = useToast()
 
 const form = ref({
-  title: "",
-  location: "",
-  descriptionGeneral: "",
-  missions: "",
-  profile: "",
-  advantages: "",
-});
+  title: '',
+  location: '',
+  descriptionGeneral: '',
+  missions: '',
+  profile: '',
+  advantages: '',
+})
 
 const handleSubmit = async () => {
   try {
-    await api.post("/jobs", {
+    await api.post('/jobs', {
       title: form.value.title,
       location: form.value.location,
       descriptionGeneral: form.value.descriptionGeneral,
       missions: form.value.missions,
       profile: form.value.profile,
       advantages: form.value.advantages,
-    });
-    toast.success("Offre créée avec succès ✅");
-    emit("jobCreated");
-    form.value = { title: "", location: "", descriptionGeneral: "", missions: "", profile: "", advantages: "" };
+    })
+    toast.success('Offre créée avec succès ✅')
+    emit('jobCreated')
+    form.value = {
+      title: '',
+      location: '',
+      descriptionGeneral: '',
+      missions: '',
+      profile: '',
+      advantages: '',
+    }
   } catch (err) {
-    toast.error("Erreur lors de l'enregistrement de l'offre ❌");
-    console.error(err);
+    toast.error("Erreur lors de l'enregistrement de l'offre ❌")
+    console.error(err)
   }
-};
+}
 </script>
 
 <style scoped>

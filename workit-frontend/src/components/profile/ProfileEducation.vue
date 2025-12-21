@@ -2,11 +2,7 @@
   <div class="space-y-4">
     <div class="flex justify-between items-center">
       <h3 class="text-lg font-semibold text-cyan-700 dark:text-cyan-400">Éducation</h3>
-      <button
-        v-if="isEditing"
-        @click="addEducation"
-        class="text-sm text-cyan-600 hover:underline"
-      >
+      <button v-if="isEditing" @click="addEducation" class="text-sm text-cyan-600 hover:underline">
         Ajouter une formation
       </button>
     </div>
@@ -83,10 +79,7 @@
       </div>
 
       <div v-if="isEditing" class="text-right">
-        <button
-          @click="removeEducation(index)"
-          class="text-sm text-red-500 hover:underline"
-        >
+        <button @click="removeEducation(index)" class="text-sm text-red-500 hover:underline">
           Supprimer
         </button>
       </div>
@@ -95,28 +88,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import type { Education } from '@/types/user';
+import { ref, watch } from 'vue'
+import type { Education } from '@/types/user'
 
 const props = defineProps<{
-  education: Education[];
-  isEditing: boolean;
-}>();
+  education: Education[]
+  isEditing: boolean
+}>()
 
 const emit = defineEmits<{
-  (e: 'update:education', value: Education[]): void;
-}>();
+  (e: 'update:education', value: Education[]): void
+}>()
 
 // ✅ Create reactive local copy
-const localEducation = ref<Education[]>([...props.education]);
+const localEducation = ref<Education[]>([...props.education])
 
-watch(() => props.education, (val) => {
-  localEducation.value = [...val];
-}, { deep: true, immediate: true });
+watch(
+  () => props.education,
+  (val) => {
+    localEducation.value = [...val]
+  },
+  { deep: true, immediate: true },
+)
 
-watch(localEducation, (val) => {
-  emit('update:education', val);
-}, { deep: true });
+watch(
+  localEducation,
+  (val) => {
+    emit('update:education', val)
+  },
+  { deep: true },
+)
 
 const addEducation = () => {
   localEducation.value.push({
@@ -126,10 +127,10 @@ const addEducation = () => {
     startYear: new Date().getFullYear(),
     endYear: undefined,
     isOngoing: false,
-  });
-};
+  })
+}
 
 const removeEducation = (index: number) => {
-  localEducation.value.splice(index, 1);
-};
+  localEducation.value.splice(index, 1)
+}
 </script>

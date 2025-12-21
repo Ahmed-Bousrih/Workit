@@ -10,9 +10,7 @@
             </RouterLink>
           </li>
           <li>
-            <a href="#" class="hover:text-cyan-500 dark:hover:text-cyan-400 transition">
-              Équipe
-            </a>
+            <a href="#" class="hover:text-cyan-500 dark:hover:text-cyan-400 transition"> Équipe </a>
           </li>
         </ul>
       </div>
@@ -21,9 +19,7 @@
         <h3 class="font-bold text-cyan-400 dark:text-cyan-300 mb-2">Support</h3>
         <ul class="space-y-1 text-sm text-slate-300 dark:text-slate-400">
           <li>
-            <a href="#" class="hover:text-cyan-500 dark:hover:text-cyan-400 transition">
-              FAQ
-            </a>
+            <a href="#" class="hover:text-cyan-500 dark:hover:text-cyan-400 transition"> FAQ </a>
           </li>
           <li>
             <a href="#" class="hover:text-cyan-500 dark:hover:text-cyan-400 transition">
@@ -37,12 +33,18 @@
         <h3 class="font-bold text-cyan-400 dark:text-cyan-300 mb-2">Légal</h3>
         <ul class="space-y-1 text-sm text-slate-300 dark:text-slate-400">
           <li>
-            <RouterLink to="/privacy-policy" class="hover:text-cyan-500 dark:hover:text-cyan-400 transition">
+            <RouterLink
+              to="/privacy-policy"
+              class="hover:text-cyan-500 dark:hover:text-cyan-400 transition"
+            >
               Politique de confidentialité
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/mentions-legales" class="hover:text-cyan-500 dark:hover:text-cyan-400 transition">
+            <RouterLink
+              to="/mentions-legales"
+              class="hover:text-cyan-500 dark:hover:text-cyan-400 transition"
+            >
               Mentions légales
             </RouterLink>
           </li>

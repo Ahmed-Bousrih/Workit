@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <div
+    class="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+  >
     <GlobalHeader />
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -9,7 +11,10 @@
         Chargement des offres...
       </div>
 
-      <div v-else-if="jobs.length === 0" class="text-center text-slate-500 dark:text-slate-400 py-10">
+      <div
+        v-else-if="jobs.length === 0"
+        class="text-center text-slate-500 dark:text-slate-400 py-10"
+      >
         Aucune offre disponible pour le moment.
       </div>
 
@@ -23,7 +28,8 @@
             🚀 Candidature Spontanée
           </h3>
           <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-            Aucune offre ne correspond à votre profil ? Vous pouvez toujours envoyer une candidature spontanée.
+            Aucune offre ne correspond à votre profil ? Vous pouvez toujours envoyer une candidature
+            spontanée.
           </p>
           <RouterLink
             to="/apply/spontaneous"
@@ -53,7 +59,6 @@
           </RouterLink>
         </div>
       </div>
-
     </main>
 
     <GlobalFooter />

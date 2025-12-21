@@ -21,7 +21,12 @@ export enum JobCategory {
 }
 
 export class CreateJobDto {
-  @ApiProperty({ description: 'Job title', example: 'Développeur Full Stack', minLength: 3, maxLength: 100 })
+  @ApiProperty({
+    description: 'Job title',
+    example: 'Développeur Full Stack',
+    minLength: 3,
+    maxLength: 100,
+  })
   @IsString()
   @IsNotEmpty({ message: 'Le titre est requis' })
   @MinLength(3, { message: 'Le titre doit contenir au moins 3 caractères' })
