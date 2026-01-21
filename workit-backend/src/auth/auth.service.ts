@@ -10,9 +10,6 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { MailService } from '../mail/mail.service';
 import { randomBytes } from 'crypto';
-import { Repository } from 'typeorm';
-import { PasswordResetRequest } from './entities/password-reset-request.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
