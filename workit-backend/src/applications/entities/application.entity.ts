@@ -42,4 +42,10 @@ export class Application {
 
   @Column({ type: 'text', nullable: true, name: 'coverletter' })
   coverletter: string | null;
+
+  @Column({ default: false, name: 'isdeleted', type: 'boolean' })
+  isDeleted: boolean;
+
+  @Column({ nullable: true, name: 'deletedat', type: 'timestamp' })
+  deletedAt: Date | null;
 }

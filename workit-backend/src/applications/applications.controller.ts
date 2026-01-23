@@ -125,7 +125,22 @@ export class ApplicationsController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.appService.remove(parseInt(id, 10));
+    // Regular users can only soft delete
+    return this.appService.remove(parseInt(id, 10), false);
+  }
+
+  @Patch(':id/restore')
+  @UseGuards(JwtAuthGuard)
+  @Roles('super_admin')
+  restore(@Param('id') id: string) {
+    return this.appService.restore(parseInt(id, 10));
+  }
+
+  @Delete(':id/hard')
+  @UseGuards(JwtAuthGuard)
+  @Roles('super_admin')
+  hardDelete(@Param('id') id: string) {
+    return this.appService.remove(parseInt(id, 10), true);
   }
 
   @Patch(':id/status')

@@ -1,4 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not } from 'typeorm';
 import { Application, ApplicationStatus } from './entities/application.entity';
@@ -28,7 +31,7 @@ export class ApplicationsService {
     customMessage?: string,
   ) {
     const app = await this.appRepo.findOne({
-      where: { id },
+      where: { id, isDeleted: false }, // Don't allow updating deleted applications
       relations: ['user', 'user.profile', 'job'],
     });
 
@@ -111,8 +114,11 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     }
   }
 
-  async findAll(status?: ApplicationStatus) {
-    const where = status ? { status } : {};
+  async findAll(status?: ApplicationStatus, includeDeleted: boolean = false) {
+    const where: any = status ? { status } : {};
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
     const applications = await this.appRepo.find({
       where,
       relations: ['user', 'user.profile', 'job'],
@@ -129,12 +135,16 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     }));
   }
 
-  async findSpontaneous() {
+  async findSpontaneous(includeDeleted: boolean = false) {
+    const where: any = {
+      isSpontaneous: true,
+      status: Not('rejected'),
+    };
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
     const applications = await this.appRepo.find({
-      where: {
-        isSpontaneous: true,
-        status: Not('rejected'),
-      },
+      where,
       relations: ['user', 'user.profile', 'job'],
       order: { appliedAt: 'DESC' },
     });
@@ -149,9 +159,13 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     }));
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, includeDeleted: boolean = false) {
+    const where: any = { id };
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
     const application = await this.appRepo.findOne({
-      where: { id },
+      where,
       relations: ['user', 'user.profile', 'job'],
     });
     if (!application) return null;
@@ -166,13 +180,47 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     };
   }
 
-  remove(id: number) {
-    return this.appRepo.delete(id);
+  async remove(id: number, hardDelete: boolean = false) {
+    const application = await this.appRepo.findOne({
+      where: { id },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Candidature introuvable');
+    }
+
+    if (hardDelete) {
+      // Hard delete - only for super admin
+      return this.appRepo.remove(application);
+    } else {
+      // Soft delete
+      application.isDeleted = true;
+      application.deletedAt = new Date();
+      return this.appRepo.save(application);
+    }
   }
 
-  async getRecent() {
+  async restore(id: number) {
+    const application = await this.appRepo.findOne({
+      where: { id, isDeleted: true },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Candidature supprimée introuvable');
+    }
+
+    application.isDeleted = false;
+    application.deletedAt = null;
+    return this.appRepo.save(application);
+  }
+
+  async getRecent(includeDeleted: boolean = false) {
+    const where: any = { status: Not('rejected') };
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
     const applications = await this.appRepo.find({
-      where: { status: Not('rejected') },
+      where,
       relations: ['user', 'user.profile', 'job'],
       order: { appliedAt: 'DESC' },
       take: 5,
@@ -188,12 +236,16 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     }));
   }
 
-  async getByJobId(jobId: number) {
+  async getByJobId(jobId: number, includeDeleted: boolean = false) {
+    const where: any = {
+      job: { id: jobId },
+      status: Not('rejected'), // optional, to exclude rejected
+    };
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
     const applications = await this.appRepo.find({
-      where: {
-        job: { id: jobId },
-        status: Not('rejected'), // optional, to exclude rejected
-      },
+      where,
       relations: ['user', 'user.profile', 'job'],
       order: { appliedAt: 'DESC' },
     });
@@ -208,25 +260,40 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     }));
   }
 
-  async count(spontaneous?: boolean) {
+  async count(spontaneous?: boolean, includeDeleted: boolean = false) {
     const where: any = {
       status: Not('rejected'),
     };
     if (spontaneous !== undefined) {
       where.isSpontaneous = spontaneous;
     }
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
     const total = await this.appRepo.count({ where });
     return { total };
   }
 
-  async countForUser(userId: number) {
-    const total = await this.appRepo.count({ where: { user: { id: userId } } });
+  async countForUser(userId: number, includeDeleted: boolean = false) {
+    const where: any = { user: { id: userId } };
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
+    const total = await this.appRepo.count({ where });
     return { total };
   }
 
-  async recentForUser(userId: number, limit: number) {
+  async recentForUser(
+    userId: number,
+    limit: number,
+    includeDeleted: boolean = false,
+  ) {
+    const where: any = { user: { id: userId } };
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
     const applications = await this.appRepo.find({
-      where: { user: { id: userId } },
+      where,
       order: { appliedAt: 'DESC' },
       take: limit,
       relations: ['job', 'user', 'user.profile'],
@@ -242,9 +309,13 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     }));
   }
 
-  async findMine(userId: number) {
+  async findMine(userId: number, includeDeleted: boolean = false) {
+    const where: any = { user: { id: userId } };
+    if (!includeDeleted) {
+      where.isDeleted = false;
+    }
     const applications = await this.appRepo.find({
-      where: { user: { id: userId } },
+      where,
       relations: ['job', 'user', 'user.profile'],
       order: { appliedAt: 'DESC' },
     });
@@ -260,6 +331,15 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
   }
 
   async applyToJob(userId: number, jobId: number, coverletter: string | null) {
+    // Check if job exists and is not deleted
+    const job = await this.jobRepo.findOne({
+      where: { id: jobId, isDeleted: false },
+    });
+
+    if (!job) {
+      throw new NotFoundException('Offre introuvable ou supprimée');
+    }
+
     const cleanCover = cleanCoverletter(coverletter);
 
     const application = this.appRepo.create({
@@ -274,10 +354,6 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     const user = await this.userRepo.findOne({
       where: { id: userId },
       relations: ['profile'],
-    });
-
-    const job = await this.jobRepo.findOne({
-      where: { id: jobId },
     });
 
     if (user?.email && job?.title) {
@@ -345,6 +421,7 @@ L'équipe WorkIt`;
       where: {
         user: { id: userId },
         job: { id: jobId },
+        isDeleted: false, // Only check non-deleted applications
       },
     });
 

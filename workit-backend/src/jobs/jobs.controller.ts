@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
@@ -45,8 +46,8 @@ export class JobsController {
   @Get('all')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('super_admin')
-  findAllForAdmin() {
-    return this.jobsService.findAllForAdmin();
+  findAllForAdmin(@Query('includeDeleted') includeDeleted?: string) {
+    return this.jobsService.findAllForAdmin(includeDeleted === 'true');
   }
 
   @Get('last-five')
@@ -91,10 +92,25 @@ export class JobsController {
   @Roles('hr', 'super_admin')
   remove(@Param('id') id: string, @Request() req: any) {
     // Super admin can delete any job, HR can only delete their own
+    // By default, soft delete
     const userId =
       req.user.role === 'super_admin'
         ? undefined
         : parseInt(req.user.userId, 10);
-    return this.jobsService.remove(parseInt(id, 10), userId);
+    return this.jobsService.remove(parseInt(id, 10), userId, false);
+  }
+
+  @Patch(':id/restore')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('super_admin')
+  restore(@Param('id') id: string) {
+    return this.jobsService.restore(parseInt(id, 10));
+  }
+
+  @Delete(':id/hard')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('super_admin')
+  hardDelete(@Param('id') id: string) {
+    return this.jobsService.remove(parseInt(id, 10), undefined, true);
   }
 }

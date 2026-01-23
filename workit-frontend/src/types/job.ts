@@ -21,6 +21,8 @@ export type Job = {
     }
   }
   applications?: { id: number }[]
+  isDeleted?: boolean
+  deletedAt?: string | null
 }
 export type JobChartData = {
   title: string

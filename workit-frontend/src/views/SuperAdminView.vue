@@ -132,13 +132,26 @@
 
       <!-- Jobs Tab -->
       <div v-if="activeTab === 'jobs'">
-        <div class="mb-6 max-w-md mx-auto">
-          <input
-            v-model="jobSearch"
-            type="text"
-            placeholder="Rechercher une offre par titre..."
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          />
+        <div class="mb-6 flex gap-4 items-center justify-center flex-wrap">
+          <div class="max-w-md flex-1">
+            <input
+              v-model="jobSearch"
+              type="text"
+              placeholder="Rechercher une offre par titre..."
+              class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              v-model="showDeletedJobs"
+              @change="loadJobs"
+              class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
+            />
+            <span class="text-sm text-slate-600 dark:text-slate-400">
+              Afficher les offres supprimées
+            </span>
+          </label>
         </div>
 
         <div
@@ -159,7 +172,12 @@
           <div
             v-for="job in filteredJobs"
             :key="job.id"
-            class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow hover:shadow-md transition p-4 flex flex-col justify-between"
+            :class="[
+              'border rounded-2xl shadow hover:shadow-md transition p-4 flex flex-col justify-between',
+              job.isDeleted
+                ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 opacity-75'
+                : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+            ]"
           >
             <div class="mb-2">
               <h3
@@ -180,10 +198,10 @@
                 }}
               </p>
               <span
-                v-if="job.applications"
-                class="inline-block bg-emerald-100 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-medium px-2 py-1 rounded-full mb-2"
+                v-if="job.isDeleted"
+                class="inline-block bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-300 text-xs font-medium px-2 py-1 rounded-full mb-2"
               >
-                {{ job.applications.length }} candidatures
+                🗑️ Supprimée
               </span>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-3"
@@ -192,18 +210,33 @@
               </p>
             </div>
 
-            <div class="mt-4 flex justify-end gap-2">
+            <div class="mt-4 flex justify-end gap-2 flex-wrap">
               <button
+                v-if="!job.isDeleted"
                 @click="editJob(job)"
                 class="px-3 py-1 text-sm bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-md text-slate-700 dark:text-slate-200"
               >
                 ✏️ Modifier
               </button>
               <button
-                @click="askDeleteJob(job)"
+                v-if="job.isDeleted"
+                @click="restoreJob(job)"
+                class="px-3 py-1 text-sm bg-emerald-100 dark:bg-emerald-700 hover:bg-emerald-200 dark:hover:bg-emerald-600 rounded-md text-emerald-700 dark:text-emerald-200"
+              >
+                ♻️ Restaurer
+              </button>
+              <button
+                v-if="!job.isDeleted"
+                @click="askDeleteJob(job, 'soft')"
                 class="px-3 py-1 text-sm bg-red-100 dark:bg-red-700 hover:bg-red-200 dark:hover:bg-red-600 rounded-md text-red-700 dark:text-red-200"
               >
                 🗑️ Supprimer
+              </button>
+              <button
+                @click="askDeleteJob(job, 'hard')"
+                class="px-3 py-1 text-sm bg-red-600 dark:bg-red-800 hover:bg-red-700 dark:hover:bg-red-900 text-white rounded-md"
+              >
+                ⚠️ Supprimer définitivement
               </button>
             </div>
           </div>
@@ -219,24 +252,36 @@
       <div
         class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl max-w-md w-full"
       >
-        <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
+        <h3 class="text-lg font-semibold mb-4">
+          {{ deleteType === 'hard' ? '⚠️ Suppression définitive' : 'Confirmer la suppression' }}
+        </h3>
         <p class="mb-6">
-          Êtes-vous sûr de vouloir supprimer l'offre
-          <strong>{{ jobToDelete.title }}</strong> ? Cette action est
-          irréversible.
+          <template v-if="deleteType === 'hard'">
+            ⚠️ <strong>ATTENTION:</strong> Vous êtes sur le point de supprimer définitivement l'offre
+            <strong>{{ jobToDelete.title }}</strong>. Cette action est <strong>irréversible</strong> et supprimera également toutes les candidatures associées.
+          </template>
+          <template v-else>
+            Êtes-vous sûr de vouloir supprimer l'offre
+            <strong>{{ jobToDelete.title }}</strong> ? Cette suppression peut être annulée plus tard.
+          </template>
         </p>
         <div class="flex justify-end gap-3">
           <button
-            @click="jobToDelete = null"
+            @click="jobToDelete = null; deleteType = 'soft'"
             class="px-4 py-2 bg-gray-300 dark:bg-slate-700 text-slate-800 dark:text-white rounded"
           >
             Annuler
           </button>
           <button
             @click="deleteJobConfirmed"
-            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            :class="[
+              'px-4 py-2 text-white rounded',
+              deleteType === 'hard'
+                ? 'bg-red-600 hover:bg-red-700'
+                : 'bg-orange-600 hover:bg-orange-700'
+            ]"
           >
-            Supprimer
+            {{ deleteType === 'hard' ? 'Supprimer définitivement' : 'Supprimer' }}
           </button>
         </div>
       </div>
@@ -263,6 +308,8 @@ const jobs = ref<Job[]>([])
 const jobsLoading = ref(false)
 const jobSearch = ref('')
 const jobToDelete = ref<Job | null>(null)
+const deleteType = ref<'soft' | 'hard'>('soft')
+const showDeletedJobs = ref(false)
 
 const loadUsers = async () => {
   loading.value = true
@@ -331,7 +378,10 @@ const filteredJobs = computed(() => {
 const loadJobs = async () => {
   jobsLoading.value = true
   try {
-    const res = await api.get('/jobs/all')
+    const url = showDeletedJobs.value
+      ? '/jobs/all?includeDeleted=true'
+      : '/jobs/all'
+    const res = await api.get(url)
     jobs.value = res.data
   } catch (err) {
     console.error('Erreur lors du chargement des offres', err)
@@ -341,19 +391,36 @@ const loadJobs = async () => {
   }
 }
 
-const askDeleteJob = (job: Job) => {
+const askDeleteJob = (job: Job, type: 'soft' | 'hard' = 'soft') => {
   jobToDelete.value = job
+  deleteType.value = type
 }
 
 const deleteJobConfirmed = async () => {
   if (!jobToDelete.value) return
   try {
-    await api.delete(`/jobs/${jobToDelete.value.id}`)
-    toast.success('Offre supprimée ✅')
+    if (deleteType.value === 'hard') {
+      await api.delete(`/jobs/${jobToDelete.value.id}/hard`)
+      toast.success('Offre supprimée définitivement ✅')
+    } else {
+      await api.delete(`/jobs/${jobToDelete.value.id}`)
+      toast.success('Offre supprimée (peut être restaurée) ✅')
+    }
     jobToDelete.value = null
+    deleteType.value = 'soft'
     await loadJobs()
   } catch {
     toast.error('Erreur lors de la suppression ❌')
+  }
+}
+
+const restoreJob = async (job: Job) => {
+  try {
+    await api.patch(`/jobs/${job.id}/restore`)
+    toast.success('Offre restaurée ✅')
+    await loadJobs()
+  } catch {
+    toast.error('Erreur lors de la restauration ❌')
   }
 }
 

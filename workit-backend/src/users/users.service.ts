@@ -66,7 +66,9 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    return this.userRepo.delete({ id });
+    // Use deleteCascade to ensure all related data is properly deleted
+    await this.deleteCascade(id);
+    return { message: 'Utilisateur supprimé avec succès' };
   }
 
   // Internal method - returns User entity (for database operations)
@@ -397,10 +399,27 @@ L'équipe WorkIt`;
   async removeInactiveUsers(thresholdDays: number = 180) {
     const threshold = new Date();
     threshold.setDate(threshold.getDate() - thresholdDays);
-    const result = await this.userRepo.delete({
-      lastSeenAt: LessThan(threshold),
+
+    // Find users to delete (only candidates, verified, and inactive)
+    const usersToDelete = await this.userRepo.find({
+      where: {
+        role: 'candidate',
+        lastSeenAt: LessThan(threshold),
+        isEmailVerified: true,
+      },
     });
 
-    return { deleted: result.affected };
+    // Delete each user using cascade to ensure all related data is deleted
+    let deletedCount = 0;
+    for (const user of usersToDelete) {
+      try {
+        await this.deleteCascade(user.id);
+        deletedCount++;
+      } catch (error) {
+        console.error(`Error deleting user ${user.id}:`, error);
+      }
+    }
+
+    return { deleted: deletedCount };
   }
 }
