@@ -15,6 +15,8 @@ import { Education } from 'src/education/entities/education.entity';
 import { WorkExperience } from 'src/workexperience/entities/workexperience.entity';
 import { Application } from 'src/applications/entities/application.entity';
 import { MailService } from '../mail/mail.service';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -40,9 +42,13 @@ export class UsersService {
   ) {}
 
   async findAll() {
-    return this.userRepo.find({
+    const users = await this.userRepo.find({
       relations: ['profile'],
       order: { createdAt: 'DESC' },
+    });
+    // Exclude sensitive fields
+    return plainToInstance(UserResponseDto, users, {
+      excludeExtraneousValues: false,
     });
   }
 
@@ -61,7 +67,10 @@ export class UsersService {
       relations: ['profile', 'skills', 'educations', 'workExperiences'], // 👈 include all
     });
     if (!user) throw new NotFoundException('User not found');
-    return user;
+    // Exclude sensitive fields
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: false,
+    });
   }
 
   async findByEmail(email: string) {
@@ -221,11 +230,16 @@ export class UsersService {
     // --- Save updated user (skills relation) ---
     await this.userRepo.save(user);
 
-    return this.findById(userId); // returns user + profile + skills + education + experience
+    // Return user with sensitive fields excluded
+    return this.findById(userId); // returns user + profile + skills + education + experience (sensitive fields excluded)
   }
 
   async findHrs() {
-    return this.userRepo.find({ where: { role: 'hr' } });
+    const hrs = await this.userRepo.find({ where: { role: 'hr' } });
+    // Exclude sensitive fields
+    return plainToInstance(UserResponseDto, hrs, {
+      excludeExtraneousValues: false,
+    });
   }
 
   async createHr(
@@ -270,7 +284,11 @@ export class UsersService {
     }
 
     // Resolve absolute path from resumeUrl
-    const filePath = path.join(__dirname, '../../..', userProfile.resumeUrl); // Adjust as needed
+    // resumeUrl format: /uploads/resumes/filename.pdf
+    // __dirname in dist: workit-backend/dist/users
+    // We need to go: dist/users -> dist -> workit-backend -> uploads/resumes/filename.pdf
+    const projectRoot = path.join(__dirname, '../..');
+    const filePath = path.join(projectRoot, userProfile.resumeUrl);
 
     // Try deleting the file
     try {

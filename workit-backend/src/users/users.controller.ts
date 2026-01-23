@@ -167,4 +167,10 @@ export class UsersController {
       resumeUrl,
     );
   }
+
+  @Patch('me/resume/delete')
+  @UseGuards(JwtAuthGuard)
+  async deleteOwnResume(@Req() req: any) {
+    return this.usersService.deleteResume(parseInt(req.user.userId, 10));
+  }
 }

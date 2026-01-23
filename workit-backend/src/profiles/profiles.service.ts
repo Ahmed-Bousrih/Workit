@@ -6,6 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserProfile } from './entities/userprofile.entity';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 
 @Injectable()
 export class ProfilesService {
@@ -79,6 +81,13 @@ export class ProfilesService {
       });
     }
 
-    return query.getMany();
+    const profiles = await query.getMany();
+    // Sanitize user data in profiles
+    return profiles.map((profile) => ({
+      ...profile,
+      user: profile.user ? plainToInstance(UserResponseDto, profile.user, {
+        excludeExtraneousValues: false,
+      }) : profile.user,
+    }));
   }
 }

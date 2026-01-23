@@ -5,6 +5,8 @@ import { Application, ApplicationStatus } from './entities/application.entity';
 import { User } from '../users/entities/user.entity';
 import { Job } from '../jobs/entities/job.entity';
 import { MailService } from '../mail/mail.service';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 
 @Injectable()
 export class ApplicationsService {
@@ -25,7 +27,7 @@ export class ApplicationsService {
   ) {
     const app = await this.appRepo.findOne({
       where: { id },
-      relations: ['user', 'job'],
+      relations: ['user', 'user.profile', 'job'],
     });
 
     if (!app) throw new NotFoundException('Candidature introuvable');
@@ -102,15 +104,24 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
 
   async findAll(status?: ApplicationStatus) {
     const where = status ? { status } : {};
-    return this.appRepo.find({
+    const applications = await this.appRepo.find({
       where,
       relations: ['user', 'user.profile', 'job'],
       order: { appliedAt: 'DESC' },
     });
+    // Sanitize user data in applications
+    return applications.map((app) => ({
+      ...app,
+      user: app.user
+        ? plainToInstance(UserResponseDto, app.user, {
+            excludeExtraneousValues: false,
+          })
+        : app.user,
+    }));
   }
 
   async findSpontaneous() {
-    return this.appRepo.find({
+    const applications = await this.appRepo.find({
       where: {
         isSpontaneous: true,
         status: Not('rejected'),
@@ -118,13 +129,32 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
       relations: ['user', 'user.profile', 'job'],
       order: { appliedAt: 'DESC' },
     });
+    // Sanitize user data in applications
+    return applications.map((app) => ({
+      ...app,
+      user: app.user
+        ? plainToInstance(UserResponseDto, app.user, {
+            excludeExtraneousValues: false,
+          })
+        : app.user,
+    }));
   }
 
-  findOne(id: number) {
-    return this.appRepo.findOne({
+  async findOne(id: number) {
+    const application = await this.appRepo.findOne({
       where: { id },
       relations: ['user', 'user.profile', 'job'],
     });
+    if (!application) return null;
+    // Sanitize user data
+    return {
+      ...application,
+      user: application.user
+        ? plainToInstance(UserResponseDto, application.user, {
+            excludeExtraneousValues: false,
+          })
+        : application.user,
+    };
   }
 
   remove(id: number) {
@@ -132,16 +162,25 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
   }
 
   async getRecent() {
-    return this.appRepo.find({
+    const applications = await this.appRepo.find({
       where: { status: Not('rejected') },
       relations: ['user', 'user.profile', 'job'],
       order: { appliedAt: 'DESC' },
       take: 5,
     });
+    // Sanitize user data in applications
+    return applications.map((app) => ({
+      ...app,
+      user: app.user
+        ? plainToInstance(UserResponseDto, app.user, {
+            excludeExtraneousValues: false,
+          })
+        : app.user,
+    }));
   }
 
   async getByJobId(jobId: number) {
-    return this.appRepo.find({
+    const applications = await this.appRepo.find({
       where: {
         job: { id: jobId },
         status: Not('rejected'), // optional, to exclude rejected
@@ -149,6 +188,15 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
       relations: ['user', 'user.profile', 'job'],
       order: { appliedAt: 'DESC' },
     });
+    // Sanitize user data in applications
+    return applications.map((app) => ({
+      ...app,
+      user: app.user
+        ? plainToInstance(UserResponseDto, app.user, {
+            excludeExtraneousValues: false,
+          })
+        : app.user,
+    }));
   }
 
   async count(spontaneous?: boolean) {
@@ -168,20 +216,38 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
   }
 
   async recentForUser(userId: number, limit: number) {
-    return this.appRepo.find({
+    const applications = await this.appRepo.find({
       where: { user: { id: userId } },
       order: { appliedAt: 'DESC' },
       take: limit,
       relations: ['job', 'user', 'user.profile'],
     });
+    // Sanitize user data in applications
+    return applications.map((app) => ({
+      ...app,
+      user: app.user
+        ? plainToInstance(UserResponseDto, app.user, {
+            excludeExtraneousValues: false,
+          })
+        : app.user,
+    }));
   }
 
   async findMine(userId: number) {
-    return this.appRepo.find({
+    const applications = await this.appRepo.find({
       where: { user: { id: userId } },
       relations: ['job', 'user', 'user.profile'],
       order: { appliedAt: 'DESC' },
     });
+    // Sanitize user data in applications
+    return applications.map((app) => ({
+      ...app,
+      user: app.user
+        ? plainToInstance(UserResponseDto, app.user, {
+            excludeExtraneousValues: false,
+          })
+        : app.user,
+    }));
   }
 
   async applyToJob(userId: number, jobId: number, coverletter: string | null) {
