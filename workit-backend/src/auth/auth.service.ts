@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { MailService } from '../mail/mail.service';
+import { EmailTemplatesService } from '../mail/email-templates.service';
 import { randomBytes } from 'crypto';
 
 @Injectable()
@@ -17,6 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
+    private readonly emailTemplates: EmailTemplatesService,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -82,17 +84,16 @@ export class AuthService {
     // Email content
     const subject = 'Confirmez votre adresse email - WorkIt';
     const text = `Bonjour,
-  
-  Merci de vous être inscrit sur WorkIt. Veuillez confirmer votre adresse email en cliquant sur le lien suivant :
-  ${confirmationUrl}`;
 
-    const html = `
-      <p>Bonjour,</p>
-      <p>Merci de vous être inscrit sur <strong>WorkIt</strong>.</p>
-      <p>Veuillez confirmer votre adresse email en cliquant sur le lien ci-dessous :</p>
-      <p><a href="${confirmationUrl}" style="color: #0ea5e9;">Confirmer mon adresse</a></p>
-      <p>Si vous n'avez pas créé de compte, ignorez ce message.</p>
-    `;
+Merci de vous être inscrit sur WorkIt. Veuillez confirmer votre adresse email en cliquant sur le lien suivant :
+${confirmationUrl}
+
+Si vous n'avez pas créé de compte, ignorez ce message.`;
+
+    const html = this.emailTemplates.getEmailVerificationTemplate(
+      confirmationUrl,
+      user.profile?.firstName,
+    );
 
     try {
       await this.mailService.sendMail(email, subject, text, html);
@@ -132,14 +133,19 @@ export class AuthService {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const resetUrl = `${frontendUrl}/reset-password/${token}`;
 
-    const subject = 'Réinitialisation de votre mot de passe';
-    const text = `Cliquez sur ce lien pour réinitialiser votre mot de passe : ${resetUrl}`;
-    const html = `
-      <p>Bonjour,</p>
-      <p>Vous avez demandé une réinitialisation de mot de passe.</p>
-      <p><a href="${resetUrl}" style="color: #0ea5e9;">Réinitialiser mon mot de passe</a></p>
-      <p>Si vous n'avez pas fait cette demande, ignorez cet email.</p>
-    `;
+    const subject = 'Réinitialisation de votre mot de passe - WorkIt';
+    const text = `Bonjour,
+
+Vous avez demandé une réinitialisation de mot de passe.
+Cliquez sur ce lien pour réinitialiser votre mot de passe : ${resetUrl}
+
+Ce lien est valide pendant 1 heure uniquement.
+Si vous n'avez pas fait cette demande, ignorez cet email.`;
+
+    const html = this.emailTemplates.getPasswordResetTemplate(
+      resetUrl,
+      user.profile?.firstName,
+    );
 
     await this.mailService.sendMail(user.email, subject, text, html);
 

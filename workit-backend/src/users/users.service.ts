@@ -15,6 +15,7 @@ import { Education } from 'src/education/entities/education.entity';
 import { WorkExperience } from 'src/workexperience/entities/workexperience.entity';
 import { Application } from 'src/applications/entities/application.entity';
 import { MailService } from '../mail/mail.service';
+import { EmailTemplatesService } from '../mail/email-templates.service';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/user-response.dto';
 
@@ -39,6 +40,7 @@ export class UsersService {
     @InjectRepository(Application)
     private readonly appRepo: Repository<Application>,
     private readonly mailService: MailService,
+    private readonly emailTemplates: EmailTemplatesService,
   ) {}
 
   // Internal method - returns User entities
@@ -365,11 +367,27 @@ export class UsersService {
     });
 
     for (const user of users) {
+      const userProfile = await this.profileRepo.findOne({
+        where: { userId: user.id },
+      });
+      const text = `Bonjour ${userProfile?.firstName || ''},
+
+Cela fait longtemps que vous n'avez pas utilisé WorkIt. Votre compte est inactif depuis plus de 5 mois.
+
+Votre compte sera supprimé dans 30 jours si aucune activité n'est détectée. Pour conserver votre compte, connectez-vous simplement sur WorkIt dans les 30 prochains jours.
+
+Cordialement,
+L'équipe WorkIt`;
+
+      const html = this.emailTemplates.getInactiveUserWarningTemplate(
+        userProfile?.firstName,
+      );
+
       await this.mailService.sendMail(
         user.email,
         '⏳ Votre compte WorkIt est inactif',
-        `Bonjour, cela fait longtemps que vous n'avez pas utilisé WorkIt. Votre compte sera supprimé dans 30 jours si aucune activité n'est détectée.`,
-        `<p>Bonjour,</p><p>Votre compte est inactif depuis plus de 5 mois.</p><p>Il sera supprimé dans 30 jours si aucune connexion n'est effectuée.</p>`,
+        text,
+        html,
       );
     }
 

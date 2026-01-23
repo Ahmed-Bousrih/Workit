@@ -5,6 +5,7 @@ import { Application, ApplicationStatus } from './entities/application.entity';
 import { User } from '../users/entities/user.entity';
 import { Job } from '../jobs/entities/job.entity';
 import { MailService } from '../mail/mail.service';
+import { EmailTemplatesService } from '../mail/email-templates.service';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from '../users/dto/user-response.dto';
 
@@ -18,6 +19,7 @@ export class ApplicationsService {
     @InjectRepository(Job)
     private readonly jobRepo: Repository<Job>,
     private readonly mailService: MailService,
+    private readonly emailTemplates: EmailTemplatesService,
   ) {}
 
   async updateStatus(
@@ -46,19 +48,26 @@ export class ApplicationsService {
         app.isSpontaneous,
         userName,
       );
-    const html = `<p>${text.replace(/\n/g, '<br>')}</p>`;
 
     const subject = app.isSpontaneous
       ? status === 'rejected'
-        ? 'Réponse à votre candidature spontanée'
+        ? 'Réponse à votre candidature spontanée - WorkIt'
         : status === 'accepted'
-          ? 'Félicitations ! Votre candidature spontanée a été acceptée'
-          : 'Votre candidature spontanée avance'
+          ? 'Félicitations ! Votre candidature spontanée a été acceptée - WorkIt'
+          : 'Votre candidature spontanée avance - WorkIt'
       : status === 'rejected'
-        ? `Réponse à votre candidature - ${app.job?.title}`
+        ? `Réponse à votre candidature - ${app.job?.title} - WorkIt`
         : status === 'accepted'
-          ? `Félicitations ! Votre candidature - ${app.job?.title}`
-          : `Votre candidature avance - ${app.job?.title}`;
+          ? `Félicitations ! Votre candidature - ${app.job?.title} - WorkIt`
+          : `Votre candidature avance - ${app.job?.title} - WorkIt`;
+
+    const html = this.emailTemplates.getApplicationStatusTemplate(
+      status,
+      text,
+      app.job?.title,
+      app.isSpontaneous,
+      userName,
+    );
 
     await this.mailService.sendMail(app.user.email, subject, text, html);
 
@@ -272,22 +281,20 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     });
 
     if (user?.email && job?.title) {
-      const subject = `📩 Candidature reçue pour le poste : ${job.title}`;
-      const text = `Bonjour,
-  
-  Nous avons bien reçu votre candidature pour le poste de "${job.title}" via WorkIt.
-  
-  Notre équipe de recrutement l'examinera prochainement.
-  
-  Cordialement,
-  L'équipe WorkIt`;
+      const subject = `📩 Candidature reçue pour le poste : ${job.title} - WorkIt`;
+      const text = `Bonjour ${user.profile?.firstName || ''},
 
-      const html = `
-        <p>Bonjour ${user.profile?.firstName || ''},</p>
-        <p>Nous avons bien reçu votre <strong>candidature</strong> pour le poste de <strong>${job.title}</strong> sur WorkIt.</p>
-        <p>Vous recevrez une réponse une fois qu'elle aura été examinée.</p>
-        <p style="margin-top: 1rem;">Cordialement,<br/>L'équipe WorkIt</p>
-      `;
+Nous avons bien reçu votre candidature pour le poste de "${job.title}" via WorkIt.
+
+Notre équipe de recrutement l'examinera prochainement. Vous recevrez une réponse une fois qu'elle aura été examinée.
+
+Cordialement,
+L'équipe WorkIt`;
+
+      const html = this.emailTemplates.getApplicationReceivedTemplate(
+        job.title,
+        user.profile?.firstName,
+      );
 
       await this.mailService.sendMail(user.email, subject, text, html);
     }
@@ -312,22 +319,21 @@ Bonne nouvelle ! Votre candidature au poste "${jobTitle}" a été retenue pour l
     });
 
     if (user?.email) {
-      const subject = '📩 Votre candidature spontanée a bien été reçue';
-      const text = `Bonjour,
-  
-        Nous avons bien reçu votre candidature spontanée sur WorkIt.
-        
-        Elle sera examinée par notre équipe dès que possible.
-        
-        Cordialement,
-        L'équipe WorkIt`;
+      const subject =
+        '📩 Votre candidature spontanée a bien été reçue - WorkIt';
+      const text = `Bonjour ${user.profile?.firstName || ''},
 
-      const html = `
-        <p>Bonjour ${user.profile?.firstName || ''},</p>
-        <p>Nous avons bien reçu votre <strong>candidature spontanée</strong> sur WorkIt.</p>
-        <p>Nous vous contacterons si un poste correspond à votre profil.</p>
-        <p style="margin-top: 1rem;">Cordialement,<br/>L'équipe WorkIt</p>
-      `;
+Nous avons bien reçu votre candidature spontanée sur WorkIt.
+
+Elle sera examinée par notre équipe dès que possible. Nous vous contacterons si un poste correspond à votre profil.
+
+Cordialement,
+L'équipe WorkIt`;
+
+      const html =
+        this.emailTemplates.getSpontaneousApplicationReceivedTemplate(
+          user.profile?.firstName,
+        );
 
       await this.mailService.sendMail(user.email, subject, text, html);
     }
