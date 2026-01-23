@@ -24,7 +24,8 @@
             >
               {{
                 app.user?.profile?.firstName && app.user?.profile?.lastName
-                  ? (app.user.profile.firstName[0] || '') + (app.user.profile.lastName[0] || '')
+                  ? (app.user.profile.firstName[0] || '') +
+                    (app.user.profile.lastName[0] || '')
                   : '??'
               }}
             </div>

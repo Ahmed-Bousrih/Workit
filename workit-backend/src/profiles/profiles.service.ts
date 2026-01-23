@@ -85,9 +85,11 @@ export class ProfilesService {
     // Sanitize user data in profiles
     return profiles.map((profile) => ({
       ...profile,
-      user: profile.user ? plainToInstance(UserResponseDto, profile.user, {
-        excludeExtraneousValues: false,
-      }) : profile.user,
+      user: profile.user
+        ? plainToInstance(UserResponseDto, profile.user, {
+            excludeExtraneousValues: false,
+          })
+        : profile.user,
     }));
   }
 }

@@ -10,7 +10,9 @@
       </h2>
 
       <!-- Tabs -->
-      <div class="flex gap-4 mb-6 justify-center border-b border-slate-300 dark:border-slate-700">
+      <div
+        class="flex gap-4 mb-6 justify-center border-b border-slate-300 dark:border-slate-700"
+      >
         <button
           @click="activeTab = 'users'"
           :class="[
@@ -39,94 +41,94 @@
       <div v-if="activeTab === 'users'">
         <!-- Search Bar -->
         <div class="mb-6 max-w-md mx-auto">
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Rechercher par nom ou email..."
-          class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-        />
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Rechercher par nom ou email..."
+            class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
         </div>
 
         <div
           v-if="loading"
-        class="text-center text-slate-500 dark:text-slate-400 py-10"
-      >
+          class="text-center text-slate-500 dark:text-slate-400 py-10"
+        >
           Chargement des utilisateurs...
         </div>
 
         <table v-else class="w-full table-auto border-collapse">
-        <thead>
-          <tr
-            class="bg-slate-100 dark:bg-slate-800 text-left text-sm uppercase text-slate-600 dark:text-slate-400"
-          >
-            <th class="p-3">Nom</th>
-            <th class="p-3">Email</th>
-            <th class="p-3">Rôle</th>
-            <th class="p-3">Créé le</th>
-            <th class="p-3 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="user in filteredUsers"
-            :key="user.id"
-            class="border-b border-slate-200 dark:border-slate-700"
-          >
-            <td class="p-3">
-              {{ user.profile?.firstName }} {{ user.profile?.lastName }}
-            </td>
-            <td class="p-3">{{ user.email }}</td>
-            <td class="p-3 capitalize">{{ user.role.replace('_', ' ') }}</td>
-            <td class="p-3">{{ formatDate(user.createdAt) }}</td>
-            <td class="p-3 text-right space-x-2">
-              <button
-                v-if="user.role !== 'super_admin'"
-                @click="changeRole(user)"
-                class="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                {{ user.role === 'hr' ? 'Révoquer' : 'Promouvoir' }} HR
-              </button>
-              <button
-                v-if="user.role !== 'super_admin'"
-                @click="confirmDelete(user)"
-                class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Supprimer
-              </button>
-            </td>
-          </tr>
-        </tbody>
+          <thead>
+            <tr
+              class="bg-slate-100 dark:bg-slate-800 text-left text-sm uppercase text-slate-600 dark:text-slate-400"
+            >
+              <th class="p-3">Nom</th>
+              <th class="p-3">Email</th>
+              <th class="p-3">Rôle</th>
+              <th class="p-3">Créé le</th>
+              <th class="p-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="user in filteredUsers"
+              :key="user.id"
+              class="border-b border-slate-200 dark:border-slate-700"
+            >
+              <td class="p-3">
+                {{ user.profile?.firstName }} {{ user.profile?.lastName }}
+              </td>
+              <td class="p-3">{{ user.email }}</td>
+              <td class="p-3 capitalize">{{ user.role.replace('_', ' ') }}</td>
+              <td class="p-3">{{ formatDate(user.createdAt) }}</td>
+              <td class="p-3 text-right space-x-2">
+                <button
+                  v-if="user.role !== 'super_admin'"
+                  @click="changeRole(user)"
+                  class="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                >
+                  {{ user.role === 'hr' ? 'Révoquer' : 'Promouvoir' }} HR
+                </button>
+                <button
+                  v-if="user.role !== 'super_admin'"
+                  @click="confirmDelete(user)"
+                  class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Supprimer
+                </button>
+              </td>
+            </tr>
+          </tbody>
         </table>
 
         <!-- Delete Confirmation Modal -->
         <div
           v-if="userToDelete"
-        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-      >
-        <div
-          class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl max-w-md w-full"
+          class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
         >
-          <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
-          <p class="mb-6">
-            Êtes-vous sûr de vouloir supprimer l'utilisateur
-            <strong>{{ userToDelete.email }}</strong> ? Cette action est
-            irréversible.
-          </p>
-          <div class="flex justify-end gap-3">
-            <button
-              @click="userToDelete = null"
-              class="px-4 py-2 bg-gray-300 dark:bg-slate-700 text-slate-800 dark:text-white rounded"
-            >
-              Annuler
-            </button>
-            <button
-              @click="deleteUserConfirmed"
-              class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Supprimer
-            </button>
+          <div
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl max-w-md w-full"
+          >
+            <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
+            <p class="mb-6">
+              Êtes-vous sûr de vouloir supprimer l'utilisateur
+              <strong>{{ userToDelete.email }}</strong> ? Cette action est
+              irréversible.
+            </p>
+            <div class="flex justify-end gap-3">
+              <button
+                @click="userToDelete = null"
+                class="px-4 py-2 bg-gray-300 dark:bg-slate-700 text-slate-800 dark:text-white rounded"
+              >
+                Annuler
+              </button>
+              <button
+                @click="deleteUserConfirmed"
+                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Supprimer
+              </button>
+            </div>
           </div>
-        </div>
         </div>
       </div>
 
@@ -176,7 +178,7 @@
               'border rounded-2xl shadow hover:shadow-md transition p-4 flex flex-col justify-between',
               job.isDeleted
                 ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 opacity-75'
-                : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700',
             ]"
           >
             <div class="mb-2">
@@ -253,21 +255,31 @@
         class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl max-w-md w-full"
       >
         <h3 class="text-lg font-semibold mb-4">
-          {{ deleteType === 'hard' ? '⚠️ Suppression définitive' : 'Confirmer la suppression' }}
+          {{
+            deleteType === 'hard'
+              ? '⚠️ Suppression définitive'
+              : 'Confirmer la suppression'
+          }}
         </h3>
         <p class="mb-6">
           <template v-if="deleteType === 'hard'">
-            ⚠️ <strong>ATTENTION:</strong> Vous êtes sur le point de supprimer définitivement l'offre
-            <strong>{{ jobToDelete.title }}</strong>. Cette action est <strong>irréversible</strong> et supprimera également toutes les candidatures associées.
+            ⚠️ <strong>ATTENTION:</strong> Vous êtes sur le point de supprimer
+            définitivement l'offre <strong>{{ jobToDelete.title }}</strong
+            >. Cette action est <strong>irréversible</strong> et supprimera
+            également toutes les candidatures associées.
           </template>
           <template v-else>
             Êtes-vous sûr de vouloir supprimer l'offre
-            <strong>{{ jobToDelete.title }}</strong> ? Cette suppression peut être annulée plus tard.
+            <strong>{{ jobToDelete.title }}</strong> ? Cette suppression peut
+            être annulée plus tard.
           </template>
         </p>
         <div class="flex justify-end gap-3">
           <button
-            @click="jobToDelete = null; deleteType = 'soft'"
+            @click="
+              jobToDelete = null
+              deleteType = 'soft'
+            "
             class="px-4 py-2 bg-gray-300 dark:bg-slate-700 text-slate-800 dark:text-white rounded"
           >
             Annuler
@@ -278,10 +290,12 @@
               'px-4 py-2 text-white rounded',
               deleteType === 'hard'
                 ? 'bg-red-600 hover:bg-red-700'
-                : 'bg-orange-600 hover:bg-orange-700'
+                : 'bg-orange-600 hover:bg-orange-700',
             ]"
           >
-            {{ deleteType === 'hard' ? 'Supprimer définitivement' : 'Supprimer' }}
+            {{
+              deleteType === 'hard' ? 'Supprimer définitivement' : 'Supprimer'
+            }}
           </button>
         </div>
       </div>
@@ -370,9 +384,7 @@ const filteredUsers = computed(() => {
 const filteredJobs = computed(() => {
   if (!jobSearch.value.trim()) return jobs.value
   const term = jobSearch.value.toLowerCase()
-  return jobs.value.filter((job) =>
-    job.title.toLowerCase().includes(term),
-  )
+  return jobs.value.filter((job) => job.title.toLowerCase().includes(term))
 })
 
 const loadJobs = async () => {

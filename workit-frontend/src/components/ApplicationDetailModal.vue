@@ -24,7 +24,8 @@
               </p>
               <p class="font-semibold">
                 {{
-                  application.user?.profile?.firstName && application.user?.profile?.lastName
+                  application.user?.profile?.firstName &&
+                  application.user?.profile?.lastName
                     ? `${application.user.profile.firstName} ${application.user.profile.lastName} (${application.user.email})`
                     : application.user?.email || 'Non disponible'
                 }}
