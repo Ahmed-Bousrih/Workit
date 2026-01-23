@@ -35,11 +35,27 @@ export class JobsController {
     return this.jobsService.findAll();
   }
 
+  @Get('mine')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('hr')
+  findMyJobs(@Request() req: any) {
+    return this.jobsService.findByPostedBy(parseInt(req.user.userId, 10));
+  }
+
+  @Get('all')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('super_admin')
+  findAllForAdmin() {
+    return this.jobsService.findAllForAdmin();
+  }
+
   @Get('last-five')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('hr')
-  findLastFive() {
-    return this.jobsService.findLastFive();
+  findLastFive(@Request() req: any) {
+    return this.jobsService.findLastFiveByPostedBy(
+      parseInt(req.user.userId, 10),
+    );
   }
 
   // @UseGuards(JwtAuthGuard, RolesGuard)
@@ -56,15 +72,29 @@ export class JobsController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('hr')
-  update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobsService.update(parseInt(id, 10), updateJobDto);
+  @Roles('hr', 'super_admin')
+  update(
+    @Param('id') id: string,
+    @Body() updateJobDto: UpdateJobDto,
+    @Request() req: any,
+  ) {
+    // Super admin can update any job, HR can only update their own
+    const userId =
+      req.user.role === 'super_admin'
+        ? undefined
+        : parseInt(req.user.userId, 10);
+    return this.jobsService.update(parseInt(id, 10), updateJobDto, userId);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('hr')
-  remove(@Param('id') id: string) {
-    return this.jobsService.remove(parseInt(id, 10));
+  @Roles('hr', 'super_admin')
+  remove(@Param('id') id: string, @Request() req: any) {
+    // Super admin can delete any job, HR can only delete their own
+    const userId =
+      req.user.role === 'super_admin'
+        ? undefined
+        : parseInt(req.user.userId, 10);
+    return this.jobsService.remove(parseInt(id, 10), userId);
   }
 }

@@ -151,10 +151,12 @@ const toast = useToast()
 
 const loadJobs = async () => {
   try {
-    const res = await api.get('/jobs')
+    // HR users should only see their own jobs
+    const res = await api.get('/jobs/mine')
     jobs.value = res.data
   } catch (err) {
     console.error('Erreur lors du chargement des offres', err)
+    toast.error('Erreur lors du chargement des offres')
   }
 }
 
@@ -200,7 +202,7 @@ const closeEditModal = () => {
   showEditModal.value = false
 }
 
-const selectedJob = ref<{ id: string; title: string } | null>(null)
+const selectedJob = ref<{ id: number; title: string } | null>(null)
 
 const searchQuery = ref('')
 

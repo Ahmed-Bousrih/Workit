@@ -15,6 +15,10 @@ export type Job = {
   postedBy?: {
     id: number
     email: string
+    profile?: {
+      firstName?: string
+      lastName?: string
+    }
   }
   applications?: { id: number }[]
 }

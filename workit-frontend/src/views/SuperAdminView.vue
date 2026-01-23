@@ -6,27 +6,55 @@
 
     <main class="max-w-6xl mx-auto px-4 py-12">
       <h2 class="text-3xl font-bold text-center mb-6">
-        Gestion des Utilisateurs
+        Panneau Super Administrateur
       </h2>
 
-      <!-- Search Bar -->
-      <div class="mb-6 max-w-md mx-auto">
+      <!-- Tabs -->
+      <div class="flex gap-4 mb-6 justify-center border-b border-slate-300 dark:border-slate-700">
+        <button
+          @click="activeTab = 'users'"
+          :class="[
+            'px-6 py-2 font-semibold transition',
+            activeTab === 'users'
+              ? 'border-b-2 border-cyan-600 text-cyan-600'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200',
+          ]"
+        >
+          👥 Utilisateurs
+        </button>
+        <button
+          @click="activeTab = 'jobs'"
+          :class="[
+            'px-6 py-2 font-semibold transition',
+            activeTab === 'jobs'
+              ? 'border-b-2 border-cyan-600 text-cyan-600'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200',
+          ]"
+        >
+          📋 Toutes les Offres
+        </button>
+      </div>
+
+      <!-- Users Tab -->
+      <div v-if="activeTab === 'users'">
+        <!-- Search Bar -->
+        <div class="mb-6 max-w-md mx-auto">
         <input
           v-model="search"
           type="text"
           placeholder="Rechercher par nom ou email..."
           class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
         />
-      </div>
+        </div>
 
-      <div
-        v-if="loading"
+        <div
+          v-if="loading"
         class="text-center text-slate-500 dark:text-slate-400 py-10"
       >
-        Chargement des utilisateurs...
-      </div>
+          Chargement des utilisateurs...
+        </div>
 
-      <table v-else class="w-full table-auto border-collapse">
+        <table v-else class="w-full table-auto border-collapse">
         <thead>
           <tr
             class="bg-slate-100 dark:bg-slate-800 text-left text-sm uppercase text-slate-600 dark:text-slate-400"
@@ -68,11 +96,11 @@
             </td>
           </tr>
         </tbody>
-      </table>
+        </table>
 
-      <!-- Delete Confirmation Modal -->
-      <div
-        v-if="userToDelete"
+        <!-- Delete Confirmation Modal -->
+        <div
+          v-if="userToDelete"
         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       >
         <div
@@ -99,16 +127,129 @@
             </button>
           </div>
         </div>
+        </div>
+      </div>
+
+      <!-- Jobs Tab -->
+      <div v-if="activeTab === 'jobs'">
+        <div class="mb-6 max-w-md mx-auto">
+          <input
+            v-model="jobSearch"
+            type="text"
+            placeholder="Rechercher une offre par titre..."
+            class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+        <div
+          v-if="jobsLoading"
+          class="text-center text-slate-500 dark:text-slate-400 py-10"
+        >
+          Chargement des offres...
+        </div>
+
+        <div
+          v-else-if="filteredJobs.length === 0"
+          class="text-center text-slate-500 dark:text-slate-400 py-10"
+        >
+          Aucune offre trouvée.
+        </div>
+
+        <div v-else class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div
+            v-for="job in filteredJobs"
+            :key="job.id"
+            class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow hover:shadow-md transition p-4 flex flex-col justify-between"
+          >
+            <div class="mb-2">
+              <h3
+                class="text-lg font-bold text-cyan-800 dark:text-cyan-400 truncate mb-2"
+              >
+                {{ job.title }}
+              </h3>
+              <p
+                class="text-xs text-slate-500 dark:text-slate-400 mb-2"
+                v-if="job.postedBy"
+              >
+                📌 Posté par:
+                {{
+                  job.postedBy.profile?.firstName &&
+                  job.postedBy.profile?.lastName
+                    ? `${job.postedBy.profile.firstName} ${job.postedBy.profile.lastName}`
+                    : job.postedBy.email
+                }}
+              </p>
+              <span
+                v-if="job.applications"
+                class="inline-block bg-emerald-100 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-medium px-2 py-1 rounded-full mb-2"
+              >
+                {{ job.applications.length }} candidatures
+              </span>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-3"
+              >
+                {{ job.descriptionGeneral }}
+              </p>
+            </div>
+
+            <div class="mt-4 flex justify-end gap-2">
+              <button
+                @click="editJob(job)"
+                class="px-3 py-1 text-sm bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-md text-slate-700 dark:text-slate-200"
+              >
+                ✏️ Modifier
+              </button>
+              <button
+                @click="askDeleteJob(job)"
+                class="px-3 py-1 text-sm bg-red-100 dark:bg-red-700 hover:bg-red-200 dark:hover:bg-red-600 rounded-md text-red-700 dark:text-red-200"
+              >
+                🗑️ Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
+
+    <!-- Job Delete Confirmation Modal -->
+    <div
+      v-if="jobToDelete"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl max-w-md w-full"
+      >
+        <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
+        <p class="mb-6">
+          Êtes-vous sûr de vouloir supprimer l'offre
+          <strong>{{ jobToDelete.title }}</strong> ? Cette action est
+          irréversible.
+        </p>
+        <div class="flex justify-end gap-3">
+          <button
+            @click="jobToDelete = null"
+            class="px-4 py-2 bg-gray-300 dark:bg-slate-700 text-slate-800 dark:text-white rounded"
+          >
+            Annuler
+          </button>
+          <button
+            @click="deleteJobConfirmed"
+            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { api } from '@/services/api'
 import { useToast } from 'vue-toastification'
 import type { User } from '@/types/user'
+import type { Job } from '@/types/job'
 import HeaderBar from '@/components/HeaderBar.vue'
 
 const users = ref<User[]>([])
@@ -116,6 +257,12 @@ const loading = ref(true)
 const toast = useToast()
 const search = ref('')
 const userToDelete = ref<User | null>(null)
+
+const activeTab = ref<'users' | 'jobs'>('users')
+const jobs = ref<Job[]>([])
+const jobsLoading = ref(false)
+const jobSearch = ref('')
+const jobToDelete = ref<Job | null>(null)
 
 const loadUsers = async () => {
   loading.value = true
@@ -173,5 +320,59 @@ const filteredUsers = computed(() => {
   )
 })
 
-onMounted(loadUsers)
+const filteredJobs = computed(() => {
+  if (!jobSearch.value.trim()) return jobs.value
+  const term = jobSearch.value.toLowerCase()
+  return jobs.value.filter((job) =>
+    job.title.toLowerCase().includes(term),
+  )
+})
+
+const loadJobs = async () => {
+  jobsLoading.value = true
+  try {
+    const res = await api.get('/jobs/all')
+    jobs.value = res.data
+  } catch (err) {
+    console.error('Erreur lors du chargement des offres', err)
+    toast.error('Erreur lors du chargement des offres ❌')
+  } finally {
+    jobsLoading.value = false
+  }
+}
+
+const askDeleteJob = (job: Job) => {
+  jobToDelete.value = job
+}
+
+const deleteJobConfirmed = async () => {
+  if (!jobToDelete.value) return
+  try {
+    await api.delete(`/jobs/${jobToDelete.value.id}`)
+    toast.success('Offre supprimée ✅')
+    jobToDelete.value = null
+    await loadJobs()
+  } catch {
+    toast.error('Erreur lors de la suppression ❌')
+  }
+}
+
+const editJob = (job: Job) => {
+  // Navigate to edit job page or open modal
+  toast.info('Fonctionnalité de modification à venir')
+}
+
+// Watch for tab changes to load jobs
+watch(
+  () => activeTab.value,
+  (newTab) => {
+    if (newTab === 'jobs' && jobs.value.length === 0) {
+      loadJobs()
+    }
+  },
+)
+
+onMounted(() => {
+  loadUsers()
+})
 </script>
