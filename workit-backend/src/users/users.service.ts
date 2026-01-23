@@ -41,11 +41,17 @@ export class UsersService {
     private readonly mailService: MailService,
   ) {}
 
-  async findAll() {
-    const users = await this.userRepo.find({
+  // Internal method - returns User entities
+  async findAll(): Promise<User[]> {
+    return this.userRepo.find({
       relations: ['profile'],
       order: { createdAt: 'DESC' },
     });
+  }
+
+  // Public method - returns sanitized DTOs
+  async findAllSafe(): Promise<UserResponseDto[]> {
+    const users = await this.findAll();
     // Exclude sensitive fields
     return plainToInstance(UserResponseDto, users, {
       excludeExtraneousValues: false,
@@ -61,12 +67,19 @@ export class UsersService {
     return this.userRepo.delete({ id });
   }
 
-  async findById(id: number) {
+  // Internal method - returns User entity (for database operations)
+  async findById(id: number): Promise<User> {
     const user = await this.userRepo.findOne({
       where: { id },
       relations: ['profile', 'skills', 'educations', 'workExperiences'], // 👈 include all
     });
     if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  // Public method - returns sanitized DTO (for API responses)
+  async findByIdSafe(id: number): Promise<UserResponseDto> {
+    const user = await this.findById(id);
     // Exclude sensitive fields
     return plainToInstance(UserResponseDto, user, {
       excludeExtraneousValues: false,
@@ -230,12 +243,24 @@ export class UsersService {
     // --- Save updated user (skills relation) ---
     await this.userRepo.save(user);
 
-    // Return user with sensitive fields excluded
-    return this.findById(userId); // returns user + profile + skills + education + experience (sensitive fields excluded)
+    // Return user entity (caller can transform if needed)
+    return this.findById(userId);
   }
 
-  async findHrs() {
-    const hrs = await this.userRepo.find({ where: { role: 'hr' } });
+  // Public method - returns sanitized DTO after update
+  async updateUserSafe(userId: number, updates: any): Promise<UserResponseDto> {
+    await this.updateUser(userId, updates);
+    return this.findByIdSafe(userId);
+  }
+
+  // Internal method - returns User entities
+  async findHrs(): Promise<User[]> {
+    return this.userRepo.find({ where: { role: 'hr' } });
+  }
+
+  // Public method - returns sanitized DTOs
+  async findHrsSafe(): Promise<UserResponseDto[]> {
+    const hrs = await this.findHrs();
     // Exclude sensitive fields
     return plainToInstance(UserResponseDto, hrs, {
       excludeExtraneousValues: false,

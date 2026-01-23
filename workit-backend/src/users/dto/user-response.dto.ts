@@ -3,6 +3,7 @@ import { UserProfile } from '../../profiles/entities/userprofile.entity';
 import { Skill } from '../../skills/entities/skill.entity';
 import { Education } from '../../education/entities/education.entity';
 import { WorkExperience } from '../../workexperience/entities/workexperience.entity';
+import { Application } from '../../applications/entities/application.entity';
 
 export class UserResponseDto {
   id: number;
@@ -10,8 +11,7 @@ export class UserResponseDto {
   role: 'super_admin' | 'hr' | 'candidate';
   isEmailVerified: boolean;
   createdAt: Date;
-  updatedAt: Date;
-  lastSeenAt: Date;
+  lastSeenAt: Date | null;
 
   @Exclude()
   passwordHash: string;
@@ -29,6 +29,5 @@ export class UserResponseDto {
   skills?: Skill[];
   educations?: Education[];
   workExperiences?: WorkExperience[];
-  applications?: any[];
+  applications?: Application[];
 }
-

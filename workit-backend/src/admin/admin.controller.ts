@@ -83,7 +83,7 @@ export class AdminController {
   @Get('users')
   @Roles('super_admin')
   getAllHrs() {
-    return this.usersService.findHrs();
+    return this.usersService.findHrsSafe();
   }
 
   @Delete('users/:id')

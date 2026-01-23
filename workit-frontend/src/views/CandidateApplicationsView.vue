@@ -23,8 +23,8 @@
               class="bg-cyan-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm"
             >
               {{
-                app.user.profile
-                  ? app.user.profile.firstName[0] + app.user.profile.lastName[0]
+                app.user?.profile?.firstName && app.user?.profile?.lastName
+                  ? (app.user.profile.firstName[0] || '') + (app.user.profile.lastName[0] || '')
                   : '??'
               }}
             </div>

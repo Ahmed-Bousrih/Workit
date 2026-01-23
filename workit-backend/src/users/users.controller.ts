@@ -31,7 +31,7 @@ export class UsersController {
   @Roles('super_admin')
   @Get()
   findAllUsers() {
-    return this.usersService.findAll();
+    return this.usersService.findAllSafe();
   }
 
   @Get('count') // <-- MUST come first!
@@ -45,19 +45,22 @@ export class UsersController {
 
   @Get('me')
   getCurrentUser(@Req() req: any) {
-    return this.usersService.findById(parseInt(req.user.userId, 10));
+    return this.usersService.findByIdSafe(parseInt(req.user.userId, 10));
   }
 
   @Put('me')
   @UseGuards(JwtAuthGuard) // No RolesGuard needed here
   updateOwnProfile(@Req() req: any, @Body() body: any) {
-    return this.usersService.updateUser(parseInt(req.user.userId, 10), body);
+    return this.usersService.updateUserSafe(
+      parseInt(req.user.userId, 10),
+      body,
+    );
   }
 
   @Get(':id') // <-- Comes after
   @UseGuards(JwtAuthGuard)
   getUser(@Param('id') id: string) {
-    return this.usersService.findById(parseInt(id, 10));
+    return this.usersService.findByIdSafe(parseInt(id, 10));
   }
 
   @Post()
@@ -77,7 +80,7 @@ export class UsersController {
   @Put(':id')
   @Roles('hr', 'super_admin')
   updateUser(@Param('id') id: string, @Body() body: any) {
-    return this.usersService.updateUser(parseInt(id, 10), body);
+    return this.usersService.updateUserSafe(parseInt(id, 10), body);
   }
 
   // DELETE /users/:id
