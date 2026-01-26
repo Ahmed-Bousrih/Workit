@@ -277,7 +277,7 @@
         <div class="flex justify-end gap-3">
           <button
             @click="
-              jobToDelete = null
+              jobToDelete = null,
               deleteType = 'soft'
             "
             class="px-4 py-2 bg-gray-300 dark:bg-slate-700 text-slate-800 dark:text-white rounded"
