@@ -43,7 +43,7 @@ export class User {
   @JoinColumn({ name: 'id', referencedColumnName: 'userId' })
   profile: UserProfile;
 
-  @ManyToMany(() => Skill, (skill) => skill.users, { cascade: true })
+  @ManyToMany(() => Skill, (skill) => skill.users)
   @JoinTable({
     name: 'userskills',
     joinColumn: { name: 'userid', referencedColumnName: 'id' },

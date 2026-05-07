@@ -5,15 +5,15 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThan, Repository } from 'typeorm';
+import { In, LessThan, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { UserProfile } from 'src/profiles/entities/userprofile.entity';
+import { UserProfile } from '../profiles/entities/userprofile.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Skill } from '../skills/entities/skill.entity';
-import { Education } from 'src/education/entities/education.entity';
-import { WorkExperience } from 'src/workexperience/entities/workexperience.entity';
-import { Application } from 'src/applications/entities/application.entity';
+import { Education } from '../education/entities/education.entity';
+import { WorkExperience } from '../workexperience/entities/workexperience.entity';
+import { Application } from '../applications/entities/application.entity';
 import { MailService } from '../mail/mail.service';
 import { EmailTemplatesService } from '../mail/email-templates.service';
 import { plainToInstance } from 'class-transformer';
@@ -192,12 +192,18 @@ export class UsersService {
 
     // --- Update skills ---
     if (Array.isArray(updates.skills)) {
-      const skillNames = updates.skills.map((s: any) =>
-        s.name.trim().toLowerCase(),
+      const skillNames: string[] = Array.from(
+        new Set(
+          updates.skills
+            .map((s: any) =>
+              typeof s?.name === 'string' ? s.name.trim().toLowerCase() : '',
+            )
+            .filter((name: string) => name.length > 0),
+        ),
       );
 
       const existingSkills = await this.skillRepo.find({
-        where: skillNames.map((name: string) => ({ name })),
+        where: { name: In(skillNames) },
       });
 
       const existingNames = existingSkills.map((s) => s.name.toLowerCase());
@@ -206,8 +212,26 @@ export class UsersService {
         .filter((name: string) => !existingNames.includes(name))
         .map((name: string) => this.skillRepo.create({ name }));
 
-      const savedNewSkills = await this.skillRepo.save(newSkills);
-      user.skills = [...existingSkills, ...savedNewSkills];
+      const savedNewSkills = newSkills.length
+        ? await this.skillRepo.save(newSkills)
+        : [];
+
+      const currentSkillIds = user.skills?.map((skill) => skill.id) || [];
+      const targetSkillIds = [...existingSkills, ...savedNewSkills].map(
+        (skill) => skill.id,
+      );
+
+      await this.userRepo
+        .createQueryBuilder()
+        .relation(User, 'skills')
+        .of({ id: userId })
+        .remove(currentSkillIds);
+
+      await this.userRepo
+        .createQueryBuilder()
+        .relation(User, 'skills')
+        .of({ id: userId })
+        .add(targetSkillIds);
     }
 
     // --- Normalize helper ---
@@ -243,9 +267,6 @@ export class UsersService {
 
       await this.experienceRepo.save(newExperience);
     }
-
-    // --- Save updated user (skills relation) ---
-    await this.userRepo.save(user);
 
     // Return user entity (caller can transform if needed)
     return this.findById(userId);
